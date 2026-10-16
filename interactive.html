@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدي عادات الشعوب | برنامج IB MYP - اكتساب اللغة العربية</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Tajawal & Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            indigo: '#4f46e5',
+                            purple: '#7c3aed',
+                            amber: '#f59e0b',
+                            coral: '#ff6b6b'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        tajawal: ['Tajawal', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f3e8ff 50%, #fef3c7 100%);
+            min-height: 100vh;
+        }
+
+        /* Bounce animation for Robot mascot */
+        @keyframes floatRobot {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        .robot-bounce {
+            animation: floatRobot 3.5s ease-in-out infinite;
+        }
+
+        /* Pulse animation for badges */
+        @keyframes badgeGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(79, 70, 229, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(79, 70, 229, 0.7); }
+        }
+
+        .glow-effect {
+            animation: badgeGlow 2s infinite;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        /* Reordering level styles */
+        .sentence-item {
+            transition: all 0.25s ease;
+            touch-action: manipulation;
+        }
+
+        .sentence-item:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased p-2 sm:p-4 md:p-6 flex flex-col justify-between min-h-screen">
+
+    <!-- Header Banner -->
+    <header class="max-w-5xl mx-auto w-full glass-card rounded-2xl p-4 mb-4 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4 border-b-4 border-indigo-500">
+        <div class="flex items-center gap-3">
+            <div class="bg-indigo-600 text-white p-3 rounded-xl shadow-md text-2xl">
+                <i class="fa-solid fa-earth-americas"></i>
+            </div>
+            <div>
+                <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2.5 py-0.5 rounded-full">برنامج MYP - الصف الثامن</span>
+                <h1 class="text-xl md:text-2xl font-extrabold text-slate-800">تحدي عادات الشعوب 🌍</h1>
+            </div>
+        </div>
+
+        <!-- Scoreboard & Progress -->
+        <div class="flex items-center gap-4 w-full md:w-auto justify-around bg-slate-100/80 p-2.5 rounded-xl border border-slate-200">
+            <div class="text-center px-3 border-l border-slate-300">
+                <p class="text-xs text-slate-500 font-semibold">المستوى</p>
+                <p id="current-level-display" class="text-lg font-bold text-indigo-600">1 / 3</p>
+            </div>
+            <div class="text-center px-3 border-l border-slate-300">
+                <p class="text-xs text-slate-500 font-semibold">النقاط</p>
+                <p id="score-display" class="text-xl font-black text-amber-500">0 ⭐</p>
+            </div>
+            <button id="reset-btn" onclick="confirmReset()" class="text-xs bg-rose-100 hover:bg-rose-200 text-rose-700 px-3 py-2 rounded-lg transition font-bold flex items-center gap-1">
+                <i class="fa-solid fa-rotate-right"></i> البدء من جديد
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-5xl mx-auto w-full flex-grow grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+
+        <!-- Robot Mascot Helper Column -->
+        <aside class="lg:col-span-1 glass-card rounded-2xl p-5 shadow-md flex flex-col items-center text-center justify-start border-t-4 border-amber-400">
+            <div class="relative mb-3">
+                <!-- Robot SVG Graphic -->
+                <svg class="w-28 h-28 robot-bounce drop-shadow-md" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Antenna -->
+                    <line x1="100" y1="35" x2="100" y2="15" stroke="#4F46E5" stroke-width="6" stroke-linecap="round"/>
+                    <circle cx="100" cy="12" r="10" fill="#F59E0B" />
+                    <!-- Ears -->
+                    <rect x="35" y="65" width="15" height="30" rx="5" fill="#6366F1" />
+                    <rect x="150" y="65" width="15" height="30" rx="5" fill="#6366F1" />
+                    <!-- Head -->
+                    <rect x="45" y="35" width="110" height="90" rx="20" fill="#4F46E5" />
+                    <!-- Screen/Face -->
+                    <rect x="55" y="48" width="90" height="64" rx="12" fill="#1E1B4B" />
+                    <!-- Eyes -->
+                    <circle cx="80" cy="75" r="12" fill="#38BDF8" />
+                    <circle cx="82" cy="73" r="4" fill="#FFFFFF" />
+                    <circle cx="120" cy="75" r="12" fill="#38BDF8" />
+                    <circle cx="122" cy="73" r="4" fill="#FFFFFF" />
+                    <!-- Smile -->
+                    <path d="M 80 95 Q 100 110 120 95" stroke="#F59E0B" stroke-width="5" stroke-linecap="round" fill="none" />
+                    <!-- Body -->
+                    <rect x="60" y="130" width="80" height="55" rx="15" fill="#4F46E5" />
+                    <circle cx="100" cy="155" r="12" fill="#22C55E" />
+                    <!-- Arms -->
+                    <path d="M 60 145 C 40 150 30 170 45 180" stroke="#4F46E5" stroke-width="8" stroke-linecap="round" fill="none" />
+                    <path d="M 140 145 C 160 150 170 170 155 180" stroke="#4F46E5" stroke-width="8" stroke-linecap="round" fill="none" />
+                </svg>
+            </div>
+            
+            <h2 class="text-lg font-bold text-slate-800 mb-1">المرشد «سالم» 🤖</h2>
+            <p class="text-xs text-indigo-600 font-semibold mb-3">مساعدك في رحلة اكتساب اللغة</p>
+            
+            <!-- Dialogue Box -->
+            <div class="bg-amber-50 border border-amber-200 text-slate-700 text-sm p-3.5 rounded-xl shadow-inner relative w-full leading-relaxed min-h-[100px] flex items-center justify-center text-right">
+                <p id="robot-speech" class="w-full">
+                    مرحباً بك يا بطل! أنا الروبوت سالم. هل أنت جاهز لاستكشاف عادات الشعوب واكتساب مهارات جديدة في اللغة العربية؟ لنبدأ المستوى الأول!
+                </p>
+            </div>
+
+            <!-- Vocabulary Helper Card -->
+            <div class="mt-4 w-full bg-indigo-50 border border-indigo-100 rounded-xl p-3 text-right">
+                <h3 class="text-xs font-bold text-indigo-900 mb-2 flex items-center gap-1.5">
+                    <i class="fa-solid fa-lightbulb text-amber-500"></i> كلمات مساعدة:
+                </h3>
+                <ul class="text-xs text-slate-600 space-y-1">
+                    <li>🔹 <strong>العادات:</strong> السلوك المعتاد للشعوب.</li>
+                    <li>🔹 <strong>التقاليد:</strong> ما يتوارثه الأجيال.</li>
+                    <li>🔹 <strong>الاحترام:</strong> تقدير ثقافة الآخرين.</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Interactive Challenge Area -->
+        <section class="lg:col-span-3 glass-card rounded-2xl p-5 md:p-7 shadow-md flex flex-col justify-between border-t-4 border-indigo-600">
+            
+            <!-- Progress Bar -->
+            <div class="w-full mb-6">
+                <div class="flex justify-between items-center text-xs font-bold text-slate-600 mb-1">
+                    <span id="level-title-label">المستوى 1: اختر الإجابة الصحيحة</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                    <div id="progress-bar" class="bg-indigo-600 h-full transition-all duration-500 w-0"></div>
+                </div>
+            </div>
+
+            <!-- LEVEL 1: Multiple Choice Questions -->
+            <div id="level-1-container" class="level-container space-y-6">
+                <div class="bg-white/80 p-4 rounded-xl border border-slate-200">
+                    <span class="inline-block bg-indigo-100 text-indigo-800 text-xs font-bold px-2.5 py-1 rounded-md mb-2" id="q-number-tag">السؤال 1 من 5</span>
+                    <h3 id="l1-question-text" class="text-lg md:text-xl font-bold text-slate-800 leading-snug">
+                        جاري تحميل السؤال...
+                    </h3>
+                </div>
+
+                <div id="l1-options" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    <!-- Options injected via JavaScript -->
+                </div>
+            </div>
+
+            <!-- LEVEL 2: Find & Correct Errors -->
+            <div id="level-2-container" class="level-container hidden space-y-6">
+                <div class="bg-amber-50/90 border border-amber-200 p-4 rounded-xl">
+                    <span class="inline-block bg-amber-200 text-amber-900 text-xs font-bold px-2.5 py-1 rounded-md mb-2">المستوى 2: تصحيح المعلومة الخطأ</span>
+                    <p class="text-sm text-slate-600 mb-2">اقرأ الجملة التالية بتمعن، هناك معلومة غير صحيحة ثقافياً أو لغوياً. حدد التصحيح المناسب:</p>
+                    <div id="l2-statement" class="p-4 bg-white rounded-lg border-2 border-amber-300 text-base md:text-lg font-bold text-slate-800 shadow-sm">
+                        <!-- Fact statement injected via JS -->
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-bold text-slate-700 mb-3">اختر التصحيح الصحيح للجملة أعلاه:</h4>
+                    <div id="l2-options" class="space-y-3">
+                        <!-- Correction Options injected via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEVEL 3: Sentence Reordering (Paragraph Building) -->
+            <div id="level-3-container" class="level-container hidden space-y-5">
+                <div class="bg-purple-50/90 border border-purple-200 p-4 rounded-xl">
+                    <span class="inline-block bg-purple-200 text-purple-900 text-xs font-bold px-2.5 py-1 rounded-md mb-1">المستوى 3: ترتيب الفقرة</span>
+                    <h3 class="text-base font-bold text-slate-800">رتب الجمل التالية لتكوين فقرة مترابطة عن "احترام عادات الشعوب":</h3>
+                    <p class="text-xs text-slate-500 mt-1">انقر على الأسهم للأعلى وللأسفل لترتيب الجمل بالسلسلة الصحيحة من البداية للنهاية.</p>
+                </div>
+
+                <div id="l3-sentences-list" class="space-y-2.5">
+                    <!-- Reordering Items Injected Here -->
+                </div>
+
+                <button onclick="checkLevel3Answer()" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-check-double"></i> تحقق من صحة الترتيب
+                </button>
+            </div>
+
+            <!-- EXIT TICKET CONTAINER (Displayed after finishing level 3) -->
+            <div id="exit-ticket-container" class="level-container hidden space-y-6">
+                <div class="bg-emerald-50 border-2 border-emerald-300 p-5 rounded-2xl text-center">
+                    <div class="w-16 h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto text-3xl mb-3 shadow-md">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-emerald-900 mb-1">أحسنت صنعاً! أتممت جميع المستويات 🎉</h3>
+                    <p class="text-sm text-emerald-700">لقد حزت على <span id="final-score" class="font-bold text-lg">0</span> نقطة!</p>
+                </div>
+
+                <!-- Reflection Question for MYP -->
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="flex items-center gap-2 text-indigo-700 font-bold text-base">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <h4>تذكرة الخروج (سؤال تأملي):</h4>
+                    </div>
+                    <p class="text-sm text-slate-700 font-medium">
+                        "لماذا يُعدّ التعرّف على عادات الشعوب المختلفة أمراً مهماً لبناء السلام والتفاهم الدولي؟ وكيف يمكنك إظهار الاحترام لعادات زميلك من ثقافة أخرى؟"
+                    </p>
+                    <textarea id="reflection-input" rows="4" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm leading-relaxed" placeholder="اكتب تأملك هنا بأسلوبك الخلاق (مثال: التعرف على الثقافات يعلمنا التسامح وتقبل الآخرين...)"></textarea>
+                    
+                    <button onclick="submitExitTicket()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> تقديم التأمل وإنهاء التحدي
+                    </button>
+                </div>
+            </div>
+
+            <!-- FINAL SUMMARY & CERTIFICATE CONTAINER -->
+            <div id="completion-summary" class="level-container hidden text-center space-y-6 py-4">
+                <div class="bg-white p-6 rounded-2xl border-2 border-indigo-200 shadow-xl space-y-4">
+                    <div class="inline-block p-4 bg-amber-100 text-amber-600 rounded-full text-4xl mb-2">
+                        🏆
+                    </div>
+                    <h2 class="text-2xl font-black text-slate-800">بطاقة إنجاز متعلم MYP</h2>
+                    <p class="text-slate-600 text-sm">تهانينا! لقد أظهرت وعياً عالمياً ومهارات لغوية ممتازة.</p>
+                    
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-right space-y-2 text-sm">
+                        <p><strong>النتيجة النهائية:</strong> <span id="summary-score" class="text-indigo-600 font-bold"></span></p>
+                        <p><strong>تأملك الشخصي:</strong></p>
+                        <p id="summary-reflection" class="italic text-slate-700 bg-white p-3 rounded-lg border border-slate-200"></p>
+                    </div>
+
+                    <div class="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+                        <button onclick="resetGame()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md transition">
+                            <i class="fa-solid fa-rotate-right ml-2"></i> خوض التحدي مرة أخرى
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback Toast Container inside game card -->
+            <div id="feedback-box" class="hidden mt-4 p-4 rounded-xl text-sm font-bold flex items-center justify-between transition-all">
+                <span id="feedback-text"></span>
+                <button id="next-step-btn" onclick="nextQuestion()" class="hidden bg-white/20 hover:bg-white/30 text-current px-4 py-1.5 rounded-lg text-xs font-bold transition">
+                    التالي <i class="fa-solid fa-arrow-left mr-1"></i>
+                </button>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-5xl mx-auto w-full text-center text-xs text-slate-500 py-3 border-t border-slate-200/60 mt-auto">
+        <p>تطبيق تعليمي تفاعلي لبرنامج السنوات المتوسطة (MYP) - اكتساب اللغة العربية - الصف الثامن 📚</p>
+        <p class="mt-1 text-slate-400">تصميم آمن دون جمع أي بيانات شخصية للطلاب</p>
+    </footer>
+
+    <script>
+        // Game State Data
+        let state = {
+            score: 0,
+            currentLevel: 1,
+            l1Index: 0,
+            l2Index: 0,
+            level3Order: [0, 1, 2, 3], // Dynamic index tracking for Level 3
+            reflectionsSubmitted: false
+        };
+
+        // Level 1 Data (5 Multiple Choice Questions)
+        const level1Data = [
+            {
+                question: "في اليابان، يعتبر انحناء الشخص عند التحية دليلاً على:",
+                options: ["الاحترام والتقدير", "التعب والنعاس", "الغضب والاعتراض", "السرعة والعجلة"],
+                correct: 0,
+                explanation: "ممتاز! الانحناء في الثقافة اليابانية تعبير أساسي عن الاحترام والتقدير للآخرين."
+            },
+            {
+                question: "ما هي الوجبة التقليدية الإيطالية التي أصبحت مشهورة في جميع أنحاء العالم؟",
+                options: ["السوشي", "البيتزا والباستا", "الكسكسي", "التشاباتي"],
+                correct: 1,
+                explanation: "إجابة صحيحة! البيتزا والباستا من أشهر المأكولات الإيطالية عالمياً."
+            },
+            {
+                question: "في دولة الإمارات العربية المتحدة والعالم العربي، يقدم كرمز للضيافة والترحيب بالضيوف:",
+                options: ["الشاي المثلج", "القهوة العربية والتمر", "عصير الليمون فقط", "الماء الساخن"],
+                correct: 1,
+                explanation: "رائع! القهوة العربية والتمر هما رمز أصيل للضيافة والكرم العربي."
+            },
+            {
+                question: "مهرجان الألوان (هولي) هو احتفال تقليدي شهير يقام سنوياً في دولة:",
+                options: ["الصين", "الهند", "البرازيل", "كندا"],
+                correct: 1,
+                explanation: "أحسنت! مهرجان هولي بالألوان هو احتفال تقليدي بقدوم الربيع في الهند."
+            },
+            {
+                question: "ارتداء الملابس التقليدية مثل 'الثوب' و'العباءة' في الخليج العربي يعبر عن:",
+                options: ["الاعتزاز بالهوية والثقافة", "موضة حديثة فقط", "الطقس البارد جداً", "عدم وجود ملابس أخرى"],
+                correct: 0,
+                explanation: "صحيح جداً! الملابس التقليدية تعكس الاعتزاز بالأصالة والهوية الوطنية."
+            }
+        ];
+
+        // Level 2 Data (Spot and Correct Errors)
+        const level2Data = [
+            {
+                statement: "«في الصين، يستخدم الناس السكينة والشوكة فقط لتناول أطعمتهم التقليدية مثل الأرز.»",
+                options: [
+                    "التصحيح: يستخدم الناس عِصِيّ الأكل (Chopsticks) بدلاً من السكينة والشوكة.",
+                    "التصحيح: لا يطبخون الأرز إطلاقاً في الصين.",
+                    "التصحيح: يأكلون باستخدام الملعقة الخشبية الكبيرة فقط."
+                ],
+                correct: 0,
+                explanation: "أحسنت الاكتشاف! عِصِيّ الأكل هي أداة تناول الطعام التقليدية والأكثر شيوعاً في الصين."
+            },
+            {
+                statement: "«مهرجان الفوانيس وتنين النار التقليدي يُقام سنوياً في دولة ألمانيا.»",
+                options: [
+                    "التصحيح: المهرجان يُقام في البرازيل خلال الصيف.",
+                    "التصحيح: رقصة التنين والفوانيس احتفال تقليدي شهير في الثقافة الصينية.",
+                    "التصحيح: هذا المهرجان لا وجود له في أي ثقافة."
+                ],
+                correct: 1,
+                explanation: "رائع! استبدال ألمانيا بالصين صحيح، فرقصة التنين والفوانيس رمز صيني عريق."
+            },
+            {
+                statement: "«الزي التقليدي المكسيكي الشهير للرجال يسمى الكيمونو.»",
+                options: [
+                    "التصحيح: الكيمونو زي تقليدي ياباني وليس مكسيكياً.",
+                    "التصحيح: الكيمونو يرتدى فقط في الشتاء بفرنسا.",
+                    "التصحيح: الكيمونو رياضة دفاع عن النفس."
+                ],
+                correct: 0,
+                explanation: "إجابة ممتازة! الكيمونو هو الزي التقليدي الياباني الأصيل."
+            }
+        ];
+
+        // Level 3 Data (Sentence Order)
+        const level3Sentences = [
+            "تتميز كل دولة في العالم بعادات وتقاليد فريدة تعكس تاريخها وثقافتها.",
+            "فعلى سبيل المثال، يختلف شكل التحية والمأكولات والملابس من شعب إلى آخر.",
+            "عندما نسافر أو نتعرف على أناس جدد، يجب علينا احترام هذه الاختلافات الثقافية.",
+            "إن التنوع الثقافي يثري جوامع التفاهم ويسهم في بناء عالم أكثر سلاماً وتعاوناً."
+        ];
+
+        window.onload = function() {
+            initGame();
+        };
+
+        function initGame() {
+            state.score = 0;
+            state.currentLevel = 1;
+            state.l1Index = 0;
+            state.l2Index = 0;
+            state.level3Order = [0, 1, 2, 3];
+            state.reflectionsSubmitted = false;
+
+            updateScoreUI();
+            showLevel(1);
+            loadL1Question();
+            setRobotSpeech("مرحباً بك! لنبدأ المستوى الأول: اختر الإجابة الصحيحة للتعرف على عادات الشعوب.");
+        }
+
+        function setRobotSpeech(text) {
+            const speechBubble = document.getElementById('robot-speech');
+            speechBubble.innerHTML = text;
+        }
+
+        function updateScoreUI() {
+            document.getElementById('score-display').innerText = `${state.score} ⭐`;
+            document.getElementById('current-level-display').innerText = `${state.currentLevel} / 3`;
+        }
+
+        function showLevel(levelNum) {
+            state.currentLevel = levelNum;
+            updateScoreUI();
+
+            // Hide all level containers
+            document.querySelectorAll('.level-container').forEach(el => el.classList.add('hidden'));
+            hideFeedback();
+
+            if (levelNum === 1) {
+                document.getElementById('level-1-container').classList.remove('hidden');
+                document.getElementById('level-title-label').innerText = "المستوى 1: أسئلة الاختيار من متعدد";
+            } else if (levelNum === 2) {
+                document.getElementById('level-2-container').classList.remove('hidden');
+                document.getElementById('level-title-label').innerText = "المستوى 2: اكتشاف وتصحيح الخطأ الثقافي";
+                loadL2Question();
+            } else if (levelNum === 3) {
+                document.getElementById('level-3-container').classList.remove('hidden');
+                document.getElementById('level-title-label').innerText = "المستوى 3: ترتيب جمل الفقرة";
+                loadL3Sentences();
+            } else if (levelNum === 4) {
+                document.getElementById('exit-ticket-container').classList.remove('hidden');
+                document.getElementById('level-title-label').innerText = "تذكرة الخروج: التفكير والتأمل";
+                document.getElementById('progress-bar').style.width = '100%';
+                document.getElementById('progress-percent').innerText = '100%';
+                document.getElementById('final-score').innerText = state.score;
+                setRobotSpeech("عمل رائع وصولك هنا! يرجى كتابة تأملك البناء في تذكرة الخروج لإنهاء التحدي.");
+            }
+        }
+
+        function loadL1Question() {
+            hideFeedback();
+            const qData = level1Data[state.l1Index];
+            
+            // Update Progress Bar
+            const progress = ((state.l1Index) / level1Data.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress * 0.33}%`;
+            document.getElementById('progress-percent').innerText = `${Math.round(progress * 0.33)}%`;
+
+            document.getElementById('q-number-tag').innerText = `السؤال ${state.l1Index + 1} من ${level1Data.length}`;
+            document.getElementById('l1-question-text').innerText = qData.question;
+
+            const optionsDiv = document.getElementById('l1-options');
+            optionsDiv.innerHTML = '';
+
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-right p-4 bg-white border-2 border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 rounded-xl transition duration-200 text-sm font-semibold text-slate-700 flex items-center justify-between group shadow-sm";
+                btn.onclick = () => checkL1Answer(idx);
+                btn.innerHTML = `
+                    <span>${opt}</span>
+                    <span class="w-6 h-6 rounded-full bg-slate-100 border border-slate-300 text-xs flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition">${idx + 1}</span>
+                `;
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function checkL1Answer(selectedIndex) {
+            const qData = level1Data[state.l1Index];
+            const optionsDiv = document.getElementById('l1-options');
+            const buttons = optionsDiv.querySelectorAll('button');
+
+            // Disable all buttons after selection
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === qData.correct) {
+                buttons[selectedIndex].classList.remove('border-slate-200');
+                buttons[selectedIndex].classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-900');
+                state.score += 10;
+                updateScoreUI();
+                showFeedback(true, qData.explanation);
+                setRobotSpeech("إجابة أحسنت اختيارها! " + qData.explanation);
+            } else {
+                buttons[selectedIndex].classList.remove('border-slate-200');
+                buttons[selectedIndex].classList.add('border-rose-500', 'bg-rose-50', 'text-rose-900');
+                buttons[qData.correct].classList.add('border-emerald-500', 'bg-emerald-50');
+                showFeedback(false, "حاول مرة أخرى في السؤال القادم. " + qData.explanation);
+                setRobotSpeech("لا بأس يا صديقي! التعلم يأتي من الأخطاء. تفقد الإجابة الصحيحة باللون الأخضر.");
+            }
+        }
+
+        function loadL2Question() {
+            hideFeedback();
+            const qData = level2Data[state.l2Index];
+
+            // Progress Update for Level 2 (33% to 66%)
+            const baseProgress = 33;
+            const levelProgress = ((state.l2Index) / level2Data.length) * 33;
+            document.getElementById('progress-bar').style.width = `${baseProgress + levelProgress}%`;
+            document.getElementById('progress-percent').innerText = `${Math.round(baseProgress + levelProgress)}%`;
+
+            document.getElementById('l2-statement').innerText = qData.statement;
+
+            const optionsDiv = document.getElementById('l2-options');
+            optionsDiv.innerHTML = '';
+
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-right p-4 bg-white border-2 border-slate-200 hover:border-amber-400 hover:bg-amber-50/50 rounded-xl transition duration-200 text-sm font-semibold text-slate-700 shadow-sm";
+                btn.onclick = () => checkL2Answer(idx);
+                btn.innerText = opt;
+                optionsDiv.appendChild(btn);
+            });
+
+            setRobotSpeech("المستوى الثاني: اقرأ الجملة بتمعن، واعثر على المعلومة الخاطئة ثم اختر التصحيح المناسب.");
+        }
+
+        function checkL2Answer(selectedIndex) {
+            const qData = level2Data[state.l2Index];
+            const optionsDiv = document.getElementById('l2-options');
+            const buttons = optionsDiv.querySelectorAll('button');
+
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === qData.correct) {
+                buttons[selectedIndex].classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-900');
+                state.score += 15;
+                updateScoreUI();
+                showFeedback(true, qData.explanation);
+                setRobotSpeech("ملاحظة دقيقة وتصحيح رائع! " + qData.explanation);
+            } else {
+                buttons[selectedIndex].classList.add('border-rose-500', 'bg-rose-50');
+                buttons[qData.correct].classList.add('border-emerald-500', 'bg-emerald-50');
+                showFeedback(false, "التصحيح الصحيح محدد باللون الأخضر. " + qData.explanation);
+                setRobotSpeech("تأمل الإجابة الصحيحة لنتعلم معاً كيف نكتشف الأخطاء الثقافية.");
+            }
+        }
+
+        function loadL3Sentences() {
+            hideFeedback();
+            // Progress Bar at 66%
+            document.getElementById('progress-bar').style.width = `66%`;
+            document.getElementById('progress-percent').innerText = `66%`;
+
+            renderL3List();
+            setRobotSpeech("المستوى الثالث والأخير: رتب الجمل التالية بالترتيب المنطقي لتكوين فقرة صحيحة ومترابطة.");
+        }
+
+        function renderL3List() {
+            const listDiv = document.getElementById('l3-sentences-list');
+            listDiv.innerHTML = '';
+
+            state.level3Order.forEach((originalIndex, currentPos) => {
+                const item = document.createElement('div');
+                item.className = "sentence-item bg-white border-2 border-purple-200 p-3.5 rounded-xl flex items-center justify-between gap-3 shadow-sm";
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="w-7 h-7 bg-purple-100 text-purple-800 font-bold text-xs rounded-full flex items-center justify-center shrink-0">
+                            ${currentPos + 1}
+                        </span>
+                        <p class="text-sm font-medium text-slate-800">${level3Sentences[originalIndex]}</p>
+                    </div>
+                    <div class="flex flex-col gap-1 shrink-0">
+                        <button onclick="moveSentence(${currentPos}, -1)" ${currentPos === 0 ? 'disabled class="opacity-30 cursor-not-allowed"' : 'class="bg-purple-100 text-purple-700 hover:bg-purple-200 px-2 py-1 rounded text-xs"'}>
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                        <button onclick="moveSentence(${currentPos}, 1)" ${currentPos === state.level3Order.length - 1 ? 'disabled class="opacity-30 cursor-not-allowed"' : 'class="bg-purple-100 text-purple-700 hover:bg-purple-200 px-2 py-1 rounded text-xs"'}>
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </button>
+                    </div>
+                `;
+                listDiv.appendChild(item);
+            });
+        }
+
+        function moveSentence(fromIndex, direction) {
+            const toIndex = fromIndex + direction;
+            if (toIndex < 0 || toIndex >= state.level3Order.length) return;
+
+            // Swap elements in state array
+            const temp = state.level3Order[fromIndex];
+            state.level3Order[fromIndex] = state.level3Order[toIndex];
+            state.level3Order[toIndex] = temp;
+
+            renderL3List();
+        }
+
+        function checkLevel3Answer() {
+            // Correct order is 0, 1, 2, 3
+            const isCorrect = state.level3Order.every((val, idx) => val === idx);
+
+            if (isCorrect) {
+                state.score += 25;
+                updateScoreUI();
+                showFeedback(true, "ترتيب ممتاز وصحيح جداً! لقد كونت فقرة متناسقة حول احترام الثقافات.");
+                setRobotSpeech("رائع جداً! لقد أكملت ترتيب الفقرة بنجاح باهر. حان الوقت لتذكرة الخروج!");
+                
+                // Show next button to move to exit ticket
+                document.getElementById('next-step-btn').classList.remove('hidden');
+            } else {
+                showFeedback(false, "الترتيب ليس كاملاً بعد. حاول إعادة ترتيب الجمل لتبدأ بالمقدمة العامة ثم الأمثلة والخاتمة.");
+                setRobotSpeech("فكر في بداية الفقرة: عادة تبدأ الجمل بالتعريف العام، ثم إعطاء الأمثلة، ثم الخاتمة.");
+            }
+        }
+
+        function showFeedback(isSuccess, text) {
+            const fbBox = document.getElementById('feedback-box');
+            const fbText = document.getElementById('feedback-text');
+            const nextBtn = document.getElementById('next-step-btn');
+
+            fbBox.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-900', 'border-emerald-300', 'bg-rose-100', 'text-rose-900', 'border-rose-300');
+
+            if (isSuccess) {
+                fbBox.classList.add('bg-emerald-100', 'text-emerald-900', 'border', 'border-emerald-300');
+                fbText.innerHTML = `<i class="fa-solid fa-circle-check ml-2 text-emerald-600"></i> ${text}`;
+            } else {
+                fbBox.classList.add('bg-rose-100', 'text-rose-900', 'border', 'border-rose-300');
+                fbText.innerHTML = `<i class="fa-solid fa-circle-xmark ml-2 text-rose-600"></i> ${text}`;
+            }
+
+            nextBtn.classList.remove('hidden');
+        }
+
+        function hideFeedback() {
+            document.getElementById('feedback-box').classList.add('hidden');
+            document.getElementById('next-step-btn').classList.add('hidden');
+        }
+
+        function nextQuestion() {
+            if (state.currentLevel === 1) {
+                state.l1Index++;
+                if (state.l1Index < level1Data.length) {
+                    loadL1Question();
+                } else {
+                    showLevel(2);
+                }
+            } else if (state.currentLevel === 2) {
+                state.l2Index++;
+                if (state.l2Index < level2Data.length) {
+                    loadL2Question();
+                } else {
+                    showLevel(3);
+                }
+            } else if (state.currentLevel === 3) {
+                showLevel(4); // Exit Ticket Level
+            }
+        }
+
+        function submitExitTicket() {
+            const reflection = document.getElementById('reflection-input').value.trim();
+
+            if (reflection.length < 10) {
+                alert("يرجى كتابة تأمل بسيط (على الأقل جملة مفيدة) للتعبير عن رأيك قبل التسليم.");
+                return;
+            }
+
+            // Hide Exit Ticket & Show Final Summary
+            document.getElementById('exit-ticket-container').classList.add('hidden');
+            document.getElementById('completion-summary').classList.remove('hidden');
+
+            document.getElementById('summary-score').innerText = `${state.score} نقطة من 85`;
+            document.getElementById('summary-reflection').innerText = `« ${reflection} »`;
+
+            setRobotSpeech("مبارك إتمام التحدي بنجاح! لقد أظهرت تفوقاً كبيراً ووعياً دولياً ممتازاً 🌟");
+        }
+
+        function confirmReset() {
+            if (confirm("هل ترغب في إعادة التحدي من البداية؟")) {
+                resetGame();
+            }
+        }
+
+        function resetGame() {
+            document.getElementById('completion-summary').classList.add('hidden');
+            document.getElementById('reflection-input').value = '';
+            initGame();
+        }
+    </script>
+</body>
+</html>
