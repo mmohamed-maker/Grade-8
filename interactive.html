@@ -93,6 +93,7 @@
 </head>
 <body class="text-slate-800 antialiased p-2 sm:p-4 md:p-6 flex flex-col justify-between min-h-screen">
 
+    <nav class="max-w-5xl mx-auto w-full mb-3"><a href="./" class="text-indigo-700 font-bold">العودة إلى مكتبة الألعاب</a></nav>
     <!-- Header Banner -->
     <header class="max-w-5xl mx-auto w-full glass-card rounded-2xl p-4 mb-4 shadow-lg flex flex-col md:flex-row items-center justify-between gap-4 border-b-4 border-indigo-500">
         <div class="flex items-center gap-3">
@@ -236,7 +237,7 @@
                     <!-- Reordering Items Injected Here -->
                 </div>
 
-                <button onclick="checkLevel3Answer()" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2">
+                <button id="check-order-btn" onclick="checkLevel3Answer()" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-2">
                     <i class="fa-solid fa-check-double"></i> تحقق من صحة الترتيب
                 </button>
             </div>
@@ -292,7 +293,7 @@
             </div>
 
             <!-- Feedback Toast Container inside game card -->
-            <div id="feedback-box" class="hidden mt-4 p-4 rounded-xl text-sm font-bold flex items-center justify-between transition-all">
+            <div role="status" aria-live="polite" id="feedback-box" class="hidden mt-4 p-4 rounded-xl text-sm font-bold flex items-center justify-between transition-all">
                 <span id="feedback-text"></span>
                 <button id="next-step-btn" onclick="nextQuestion()" class="hidden bg-white/20 hover:bg-white/30 text-current px-4 py-1.5 rounded-lg text-xs font-bold transition">
                     التالي <i class="fa-solid fa-arrow-left mr-1"></i>
@@ -392,19 +393,35 @@
             "تتميز كل دولة في العالم بعادات وتقاليد فريدة تعكس تاريخها وثقافتها.",
             "فعلى سبيل المثال، يختلف شكل التحية والمأكولات والملابس من شعب إلى آخر.",
             "عندما نسافر أو نتعرف على أناس جدد، يجب علينا احترام هذه الاختلافات الثقافية.",
-            "إن التنوع الثقافي يثري جوامع التفاهم ويسهم في بناء عالم أكثر سلاماً وتعاوناً."
+            "إن التنوع الثقافي يثري التفاهم ويسهم في بناء عالم أكثر سلاماً وتعاوناً."
         ];
 
         window.onload = function() {
             initGame();
         };
 
+        const MAX_SCORE = level1Data.length * 10 + level2Data.length * 15 + 25;
+
+        function shuffledSentenceOrder() {
+            const order = level3Sentences.map((_, index) => index);
+            for (let i = order.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [order[i], order[j]] = [order[j], order[i]];
+            }
+            if (order.every((value, index) => value === index)) {
+                [order[0], order[1]] = [order[1], order[0]];
+            }
+            return order;
+        }
+
         function initGame() {
             state.score = 0;
             state.currentLevel = 1;
             state.l1Index = 0;
             state.l2Index = 0;
-            state.level3Order = [0, 1, 2, 3];
+            state.level3Order = shuffledSentenceOrder();
+            state.level3Completed = false;
+            state.answerLocked = false;
             state.reflectionsSubmitted = false;
 
             updateScoreUI();
@@ -420,7 +437,7 @@
 
         function updateScoreUI() {
             document.getElementById('score-display').innerText = `${state.score} ⭐`;
-            document.getElementById('current-level-display').innerText = `${state.currentLevel} / 3`;
+            document.getElementById('current-level-display').innerText = `${Math.min(state.currentLevel, 3)} / 3`;
         }
 
         function showLevel(levelNum) {
@@ -453,6 +470,7 @@
         }
 
         function loadL1Question() {
+            state.answerLocked = false;
             hideFeedback();
             const qData = level1Data[state.l1Index];
             
@@ -480,6 +498,8 @@
         }
 
         function checkL1Answer(selectedIndex) {
+            if (state.currentLevel !== 1 || state.answerLocked) return;
+            state.answerLocked = true;
             const qData = level1Data[state.l1Index];
             const optionsDiv = document.getElementById('l1-options');
             const buttons = optionsDiv.querySelectorAll('button');
@@ -504,6 +524,7 @@
         }
 
         function loadL2Question() {
+            state.answerLocked = false;
             hideFeedback();
             const qData = level2Data[state.l2Index];
 
@@ -530,6 +551,8 @@
         }
 
         function checkL2Answer(selectedIndex) {
+            if (state.currentLevel !== 2 || state.answerLocked) return;
+            state.answerLocked = true;
             const qData = level2Data[state.l2Index];
             const optionsDiv = document.getElementById('l2-options');
             const buttons = optionsDiv.querySelectorAll('button');
@@ -556,6 +579,7 @@
             document.getElementById('progress-bar').style.width = `66%`;
             document.getElementById('progress-percent').innerText = `66%`;
 
+            document.getElementById('check-order-btn').disabled = state.level3Completed;
             renderL3List();
             setRobotSpeech("المستوى الثالث والأخير: رتب الجمل التالية بالترتيب المنطقي لتكوين فقرة صحيحة ومترابطة.");
         }
@@ -575,10 +599,10 @@
                         <p class="text-sm font-medium text-slate-800">${level3Sentences[originalIndex]}</p>
                     </div>
                     <div class="flex flex-col gap-1 shrink-0">
-                        <button onclick="moveSentence(${currentPos}, -1)" ${currentPos === 0 ? 'disabled class="opacity-30 cursor-not-allowed"' : 'class="bg-purple-100 text-purple-700 hover:bg-purple-200 px-2 py-1 rounded text-xs"'}>
+                        <button aria-label="تحريك الجملة إلى أعلى" onclick="moveSentence(${currentPos}, -1)" ${currentPos === 0 ? 'disabled class="opacity-30 cursor-not-allowed"' : 'class="bg-purple-100 text-purple-700 hover:bg-purple-200 px-2 py-1 rounded text-xs"'}>
                             <i class="fa-solid fa-arrow-up"></i>
                         </button>
-                        <button onclick="moveSentence(${currentPos}, 1)" ${currentPos === state.level3Order.length - 1 ? 'disabled class="opacity-30 cursor-not-allowed"' : 'class="bg-purple-100 text-purple-700 hover:bg-purple-200 px-2 py-1 rounded text-xs"'}>
+                        <button aria-label="تحريك الجملة إلى أسفل" onclick="moveSentence(${currentPos}, 1)" ${currentPos === state.level3Order.length - 1 ? 'disabled class="opacity-30 cursor-not-allowed"' : 'class="bg-purple-100 text-purple-700 hover:bg-purple-200 px-2 py-1 rounded text-xs"'}>
                             <i class="fa-solid fa-arrow-down"></i>
                         </button>
                     </div>
@@ -588,6 +612,7 @@
         }
 
         function moveSentence(fromIndex, direction) {
+            if (state.currentLevel !== 3 || state.level3Completed) return;
             const toIndex = fromIndex + direction;
             if (toIndex < 0 || toIndex >= state.level3Order.length) return;
 
@@ -600,11 +625,15 @@
         }
 
         function checkLevel3Answer() {
+            if (state.currentLevel !== 3 || state.level3Completed) return;
             // Correct order is 0, 1, 2, 3
             const isCorrect = state.level3Order.every((val, idx) => val === idx);
 
             if (isCorrect) {
+                state.level3Completed = true;
                 state.score += 25;
+                document.getElementById('check-order-btn').disabled = true;
+                document.querySelectorAll('#l3-sentences-list button').forEach(btn => btn.disabled = true);
                 updateScoreUI();
                 showFeedback(true, "ترتيب ممتاز وصحيح جداً! لقد كونت فقرة متناسقة حول احترام الثقافات.");
                 setRobotSpeech("رائع جداً! لقد أكملت ترتيب الفقرة بنجاح باهر. حان الوقت لتذكرة الخروج!");
@@ -632,7 +661,7 @@
                 fbText.innerHTML = `<i class="fa-solid fa-circle-xmark ml-2 text-rose-600"></i> ${text}`;
             }
 
-            nextBtn.classList.remove('hidden');
+            nextBtn.classList.toggle('hidden', state.currentLevel === 3 && !state.level3Completed);
         }
 
         function hideFeedback() {
@@ -641,6 +670,8 @@
         }
 
         function nextQuestion() {
+            if (state.currentLevel < 3 && !state.answerLocked) return;
+            if (state.currentLevel === 3 && !state.level3Completed) return;
             if (state.currentLevel === 1) {
                 state.l1Index++;
                 if (state.l1Index < level1Data.length) {
@@ -672,7 +703,7 @@
             document.getElementById('exit-ticket-container').classList.add('hidden');
             document.getElementById('completion-summary').classList.remove('hidden');
 
-            document.getElementById('summary-score').innerText = `${state.score} نقطة من 85`;
+            document.getElementById('summary-score').innerText = `${state.score} نقطة من ${MAX_SCORE}`;
             document.getElementById('summary-reflection').innerText = `« ${reflection} »`;
 
             setRobotSpeech("مبارك إتمام التحدي بنجاح! لقد أظهرت تفوقاً كبيراً ووعياً دولياً ممتازاً 🌟");
