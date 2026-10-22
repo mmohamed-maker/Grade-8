@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة تفاعلية: الربيع في مصر - الصف الثامن</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e88e5;
+            --secondary: #26a69a;
+            --accent: #ff9800;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --correct: #4caf50;
+            --wrong: #f44336;
+        }
+
+        body {
+            font-family: 'Tajawal', Tahoma, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+
+        h1 { margin: 0 0 10px 0; font-size: 24px; }
+        p.subtitle { margin: 0; opacity: 0.9; font-size: 15px; }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .section-title {
+            border-right: 5px solid var(--accent);
+            padding-right: 10px;
+            margin: 25px 0 15px 0;
+            color: var(--primary);
+        }
+
+        /* Flip Cards Style */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            height: 120px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .flip-card-front {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .flip-card-back {
+            background-color: var(--secondary);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        /* Quiz Section Style */
+        .quiz-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .question {
+            font-weight: bold;
+            font-size: 17px;
+            margin-bottom: 12px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-btn {
+            background: #eef2f5;
+            border: 2px solid transparent;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-align: right;
+            font-family: inherit;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            background: #e0e7ff;
+        }
+
+        .option-btn.correct {
+            background: #e8f5e9;
+            border-color: var(--correct);
+            color: var(--correct);
+            font-weight: bold;
+        }
+
+        .option-btn.wrong {
+            background: #ffebee;
+            border-color: var(--wrong);
+            color: var(--wrong);
+            font-weight: bold;
+        }
+
+        /* Match Table Style */
+        .match-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .match-table th, .match-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+
+        .match-table th {
+            background: var(--primary);
+            color: white;
+        }
+
+        select {
+            padding: 8px;
+            border-radius: 5px;
+            font-family: inherit;
+            border: 1px solid #ccc;
+        }
+        * { box-sizing: border-box; }
+        button:focus-visible, a:focus-visible, select:focus-visible, .flip-card:focus-visible { outline:3px solid #9b5500; outline-offset:3px; }
+        .score-board { flex-wrap:wrap; gap:12px; }
+        select { max-width:100%; }
+        .feedback { min-height:1.5em; font-weight:bold; }
+        @media(max-width:400px){body{padding:12px}.match-table td,.match-table th{padding:6px}h1{font-size:21px}}
+    </style>
+</head>
+<body>
+<nav class="container" style="margin-bottom:16px"><a href="./">العودة إلى مكتبة الألعاب</a></nav>
+
+<div class="container">
+    <header>
+        <h1>درس تفاعلي: من عادات الشعوب (الربيع في مصر)</h1>
+        <p class="subtitle">مدرسة ابن خلدون الوطنية - اللغة العربية | الصف الثامن</p>
+    </header>
+
+    <div class="score-board">
+        <span>النتيجة: <span id="score">0</span> / 100</span>
+        <span>المعجم التفاعلي: <span id="cards-flipped">0</span> / 3</span>
+    </div>
+
+    <!-- Section 1: Flip Cards Vocabulary -->
+    <h2 class="section-title">1. معجم المفردات (اضغط على الكلمة لكشف المعنى)</h2>
+    <div class="cards-grid">
+        <div class="flip-card" role="button" tabindex="0" aria-expanded="false" onclick="flipCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard(this)}">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">العريقة</div>
+                <div class="flip-card-back">القديمة ذات التاريخ الأصيل</div>
+            </div>
+        </div>
+        <div class="flip-card" role="button" tabindex="0" aria-expanded="false" onclick="flipCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard(this)}">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">المودة</div>
+                <div class="flip-card-back">المحبة والألفة</div>
+            </div>
+        </div>
+        <div class="flip-card" role="button" tabindex="0" aria-expanded="false" onclick="flipCard(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard(this)}">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">الطقوس</div>
+                <div class="flip-card-back">أفعال وعادات متوارثة</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Multiple Choice Questions -->
+    <h2 class="section-title">2. الفهم والاستيعاب</h2>
+
+    <div class="quiz-card">
+        <div class="question">1. تعود عادة احتفال "شم النسيم" عند المصريين إلى زمن:</div>
+        <div class="options">
+            <button class="option-btn" onclick="checkAnswer(this, false, 1)">العصر الحديث</button>
+            <button class="option-btn" onclick="checkAnswer(this, true, 1)">الفراعنة القدماء</button>
+            <button class="option-btn" onclick="checkAnswer(this, false, 1)">العصر اليوناني</button>
+            <button class="option-btn" onclick="checkAnswer(this, false, 1)">العصر الروماني</button>
+        </div>
+    </div>
+
+    <div class="quiz-card">
+        <div class="question">2. المكان المفضل الذي يخرج إليه المصريون في هذا اليوم هو:</div>
+        <div class="options">
+            <button class="option-btn" onclick="checkAnswer(this, true, 2)">الحدائق العامة وضفاف النيل</button>
+            <button class="option-btn" onclick="checkAnswer(this, false, 2)">المتاجر المغلقة</button>
+            <button class="option-btn" onclick="checkAnswer(this, false, 2)">قاعات السينما</button>
+        </div>
+    </div>
+
+    <div class="quiz-card">
+        <div class="question">3. من الأطعمة التقليدية المشهورة في احتفال شم النسيم:</div>
+        <div class="options">
+            <button class="option-btn" onclick="checkAnswer(this, false, 3)">البيتزا والوجبات السريعة</button>
+            <button class="option-btn" onclick="checkAnswer(this, true, 3)">البيض الملون والسمك المملح</button>
+            <button class="option-btn" onclick="checkAnswer(this, false, 3)">الحساء بالدجاج المشوي</button>
+        </div>
+    </div>
+
+    <div class="quiz-card">
+        <div class="question">4. ما الفكرة الرئيسة التي يدور حولها النص؟</div>
+        <div class="options">
+            <button class="option-btn" onclick="checkAnswer(this, true, 4)">مظاهر الاحتفال بفصل الربيع وعمقها التاريخي عند المصريين</button>
+            <button class="option-btn" onclick="checkAnswer(this, false, 4)">طرق تحضير المأكولات الشعبية في الأعياد</button>
+            <button class="option-btn" onclick="checkAnswer(this, false, 4)">أسباب تغير المناخ في فصل الربيع</button>
+        </div>
+    </div>
+
+    <!-- Section 3: Matching Exercise -->
+    <h2 class="section-title">3. مطابقة المفرد بالجمع</h2>
+    <table class="match-table">
+        <tr>
+            <th>الكلمة (المفرد)</th>
+            <th>اختر الجمع المناسب</th>
+        </tr>
+        <tr>
+            <td>ضفة</td>
+            <td>
+                <select aria-label="جمع ضفة" onchange="checkMatch(this, 'ضفاف')">
+                    <option value="">-- اختر --</option>
+                    <option value="تقاليد">تقاليد</option>
+                    <option value="ضفاف">ضفاف</option>
+                    <option value="بصل">بصل</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>تقليد</td>
+            <td>
+                <select aria-label="جمع تقليد" onchange="checkMatch(this, 'تقاليد')">
+                    <option value="">-- اختر --</option>
+                    <option value="تقاليد">تقاليد</option>
+                    <option value="ضفاف">ضفاف</option>
+                    <option value="بصل">بصل</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <p id="match-feedback" class="feedback" role="status" aria-live="polite"></p>
+    <section id="result" class="quiz-card" hidden aria-live="polite">
+        <h2>بطاقة الإنجاز: الربيع في مصر</h2>
+        <p id="final-result"></p>
+        <p>التقط صورة لهذه البطاقة وسلّمها في واجب Schoology. لا تُرسل النتائج تلقائيًا إلى المعلّم.</p>
+    </section>
+    <button class="option-btn" onclick="location.reload()">إعادة المحاولة</button>
+
+</div>
+
+<script>
+    let score = 0;
+    let flippedCardsCount = 0;
+    let answeredQuestions = {};
+
+    const answeredMatches = new Set();
+
+    function flipCard(card) {
+        if (!card.classList.contains('flipped')) {
+            card.classList.add('flipped');
+            card.setAttribute('aria-expanded', 'true');
+            flippedCardsCount++;
+            document.getElementById('cards-flipped').innerText = flippedCardsCount;
+        }
+    }
+
+    function checkAnswer(btn, isCorrect, qId) {
+        if (answeredQuestions[qId]) return; // منع التكرار
+
+        let buttons = btn.parentElement.querySelectorAll('.option-btn');
+        buttons.forEach(b => b.disabled = true);
+
+        if (isCorrect) {
+            btn.classList.add('correct');
+            score += 20;
+        } else {
+            btn.classList.add('wrong');
+            // إظهار الإجابة الصحيحة
+            buttons.forEach(b => {
+                if(b.getAttribute('onclick').includes('true')) {
+                    b.classList.add('correct');
+                }
+            });
+        }
+        
+        answeredQuestions[qId] = true;
+        updateResult();
+    }
+
+    function checkMatch(selectElement, correctAnswer) {
+        if (answeredMatches.has(selectElement) || selectElement.value === '') return;
+        const correct = selectElement.value === correctAnswer;
+        answeredMatches.add(selectElement);
+        selectElement.disabled = true;
+        selectElement.style.borderColor = correct ? 'green' : 'red';
+        selectElement.style.backgroundColor = correct ? '#e8f5e9' : '#ffebee';
+        if (correct) score += 10;
+        const word = selectElement.closest('tr').cells[0].textContent;
+        document.getElementById('match-feedback').textContent = correct
+            ? `إجابة صحيحة: جمع ${word} هو ${correctAnswer}.`
+            : `إجابة غير صحيحة. جمع ${word} هو ${correctAnswer}.`;
+        updateResult();
+    }
+
+    function updateResult() {
+        document.getElementById('score').innerText = score;
+        if (Object.keys(answeredQuestions).length === 4 && answeredMatches.size === 2) {
+            document.getElementById('result').hidden = false;
+            document.getElementById('final-result').textContent = `أكملت الأنشطة الستة. نتيجتك: ${score} من 100.`;
+        }
+    }
+</script>
+
+</body>
+</html>
