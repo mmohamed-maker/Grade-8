@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حارس العرين - تحدي استكشاف المحمية</title>
+    <style>
+*{box-sizing:border-box}body{margin:0;padding:24px 16px;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(135deg,#064e3b,#047857,#022c22);color:#18372e;line-height:1.8;min-height:100vh}header,main,footer{max-width:900px;margin:auto}header{margin-bottom:24px}header>.glass-card{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px}header>.glass-card>div{display:flex;align-items:center;gap:12px}h1{font-size:clamp(19px,3vw,27px);margin:0}h2{font-size:24px}h3{font-size:21px}p{margin:8px 0}.glass-card{background:#fff;border:1px solid #c9e5d9;border-radius:24px;box-shadow:0 14px 36px #001e2540}section{max-width:700px;margin:18px auto;padding:28px}button,a{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:12px 20px;background:#087453;color:white;font-weight:bold}button:hover{filter:brightness(.94)}button:disabled{cursor:default}button:focus-visible,a:focus-visible,textarea:focus-visible{outline:3px solid #d77900;outline-offset:3px}a{color:#076348}.hidden{display:none!important}#screen-welcome{text-align:center}#screen-welcome>div:first-child{font-size:42px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}.avatar-btn{display:flex;flex-direction:column;align-items:center;background:#eef4f1;color:#18372e;border:2px solid transparent;padding:12px 6px}.avatar-btn span:first-child{font-size:30px}.avatar-btn.border-emerald-500{border-color:#087453;background:#dff5e9}#screen-welcome>button{background:#f5b423;color:#18372e}#sound-btn{padding:10px;background:#e5f4ed;color:#075438}#score-display{white-space:nowrap;font-size:20px}main>div:first-child{display:flex;align-items:center;gap:14px;max-width:700px;margin:auto}main>div:first-child>div:first-child{background:#efb529;color:#14382b;border-radius:18px;padding:16px;font-size:30px}main>div:first-child>div:last-child{background:white;border-radius:18px;padding:16px;flex:1}#guide-text{font-size:15px}#progress-container{max-width:700px;margin:22px auto;color:white}#progress-container>div:first-child{display:flex;justify-content:space-between}#progress-container>div:last-child{background:#003c2e;border-radius:20px;padding:3px;height:14px}#progress-bar{height:8px;border-radius:20px;background:#f6bd43;transition:width .2s}#screen-question>div:first-child{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #dce9e3;padding-bottom:12px;font-size:13px}#options-container{display:grid;gap:12px;margin:22px 0}#options-container button{display:flex;justify-content:space-between;align-items:center;text-align:right;background:#f3f7f5;color:#18372e;border:2px solid #d3e3dc}#options-container button.border-emerald-500{background:#daf4e3;border-color:#11844f}#options-container button.border-rose-400{background:#ffe1e1;border-color:#c74646}#feedback-box{padding:15px;border-radius:12px;background:#eff7f1;margin:16px 0}#screen-question>div:last-child{display:flex;justify-content:space-between;gap:12px}#screen-question>div:last-child>button:first-child{background:#e6eeea;color:#23533d}#screen-exit{text-align:center}textarea{width:100%;min-height:115px;padding:14px;border:1px solid #a7c6b6;border-radius:12px;font:inherit;margin:16px 0}#printable-card{border:4px solid #eeb43d}#printable-card>div:first-child{text-align:center;border-bottom:1px solid #dce9e3;padding-bottom:16px}#printable-card>div:first-child>div{display:flex;justify-content:space-between;font-size:12px}#printable-card>div:nth-child(2)>div{padding:16px;background:#f2f8f4;border-radius:14px;margin:12px 0}#printable-card>div:nth-child(2)>div:first-child{display:flex;justify-content:space-between;gap:16px}#cert-score{font-size:28px;font-weight:bold}#cert-exit-text{white-space:pre-wrap;overflow-wrap:anywhere}#printable-card>div:last-child{display:flex;flex-wrap:wrap;align-items:center;gap:12px}#printable-card a{padding:10px}footer{text-align:center;color:#d1eade;font-size:12px;margin-top:28px}.fa-solid,.fa-regular{font-style:normal;margin:0 4px}.fa-solid:before,.fa-regular:before{content:'◆'}.fa-shield-cat:before{content:'◈'}.fa-volume-high:before{content:'صوت'}.fa-volume-xmark:before{content:'كتم'}.fa-star:before,.fa-award:before{content:'★'}.fa-binoculars:before{content:'◎'}.fa-arrow-left:before{content:'←'}.fa-circle-check:before{content:'✓'}.fa-circle-xmark:before{content:'✕'}.fa-circle:before{content:'○'}.fa-rotate-right:before{content:'↻'}.fa-print:before{content:'▣'}
+@media(max-width:600px){body{padding:14px 10px}header>.glass-card{flex-direction:column;align-items:stretch;padding:16px}header>.glass-card>div:last-child{justify-content:space-between}.grid{grid-template-columns:repeat(2,1fr)}section{padding:20px}#screen-question>div:first-child{flex-wrap:wrap}#printable-card>div:nth-child(2)>div:first-child{flex-wrap:wrap}}
+@media print{body{background:white;padding:0}body *{visibility:hidden}#printable-card,#printable-card *{visibility:visible}#printable-card{position:absolute;top:0;left:0;width:100%;max-width:none;margin:0;box-shadow:none;border:2px solid #087453}.no-print{display:none!important}}
+    </style>
+</head>
+<body class="text-slate-800 antialiased flex flex-col justify-between min-h-screen p-3 sm:p-6">
+
+    <!-- Header / Navbar -->
+    <header class="max-w-4xl mx-auto w-full mb-4">
+        <div class="glass-card rounded-2xl p-4 flex justify-between items-center gap-3">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center text-white text-2xl shadow-md">
+                    <i class="fa-solid fa-shield-cat"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-black text-emerald-900 leading-tight">مغامرة «حارس العرين»</h1>
+                    <p class="text-xs sm:text-sm font-bold text-emerald-700">مراجعة نص محمية العرين - الصف الثامن (اكتساب اللغة)</p>
+                </div>
+            </div>
+
+            <!-- Mute sound toggle & Score -->
+            <div class="flex items-center gap-3">
+                <button aria-label="تشغيل الصوت أو كتمه" id="sound-btn" onclick="toggleSound()" class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 hover:bg-emerald-200 transition flex items-center justify-center text-lg" title="تشغيل/كتم الصوت">
+                    <i id="sound-icon" class="fa-solid fa-volume-high"></i>
+                </button>
+                <div class="bg-amber-100 border border-amber-300 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-star text-amber-500 text-base sm:text-lg"></i>
+                    <div class="text-right">
+                        <span class="text-[10px] sm:text-xs text-amber-800 font-extrabold block leading-none">النقاط</span>
+                        <span id="score-display" class="text-base sm:text-lg font-black text-amber-950">0 / 60</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto w-full flex-1 flex flex-col justify-center">
+
+        <!-- Guide / Assistant Box -->
+        <div class="mb-4 flex items-end gap-3 max-w-2xl mx-auto w-full">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-amber-400 to-emerald-600 rounded-2xl flex items-center justify-center text-white text-3xl sm:text-4xl shadow-lg border-2 border-white float-anim shrink-0">
+                <i class="fa-solid fa-binoculars"></i>
+            </div>
+            <div class="flex-1 bg-white p-3.5 sm:p-4 rounded-2xl border border-emerald-100 shadow-md relative">
+                <span class="text-xs font-black text-emerald-700 block mb-1 flex items-center gap-1">
+                    <i class="fa-solid fa-compass"></i> المرشد «نعمان»:
+                </span>
+                <p id="guide-text" class="text-xs sm:text-sm font-bold text-slate-700 leading-relaxed">
+                    مرحباً بك يا بطل! أنا المرشد نعمان. هل أنت مستعد لخوض اختبار «حارس العرين» والبرهنة على استيعابك للنص المدروس؟
+                </p>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div id="progress-container" class="hidden max-w-2xl mx-auto w-full mb-4">
+            <div class="flex justify-between items-center text-xs font-black text-emerald-100 mb-1 px-1">
+                <span id="progress-label">السؤال 1 من 6</span>
+                <span id="progress-percent">0%</span>
+            </div>
+            <div class="w-full bg-emerald-950/60 h-3 rounded-full overflow-hidden p-0.5 border border-emerald-600/40">
+                <div id="progress-bar" class="bg-gradient-to-r from-amber-400 to-emerald-400 h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <!-- SCREEN 0: WELCOME & AVATAR SELECTION -->
+        <section id="screen-welcome" class="glass-card rounded-3xl p-5 sm:p-8 text-center max-w-2xl mx-auto w-full shadow-2xl">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-4xl mx-auto mb-4 border-2 border-emerald-300">
+                <i class="fa-solid fa-tree-city"></i>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-emerald-950 mb-2">مهمة حماية المحمية!</h2>
+            <p class="text-slate-600 mb-6 text-xs sm:text-sm leading-relaxed font-bold">
+                أجب عن الأسئلة المأخوذة من النص المدروس لتجمع النقاط وتُثبت كفاءتك كحارس لمحمية العرين الطبيعية.
+            </p>
+
+            <div class="mb-6">
+                <label class="block text-xs sm:text-sm font-black text-slate-700 mb-3">اختر شخصيتك المفضّلة للمغامرة:</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <button onclick="selectAvatar('🦁', 'حارس الحيوانات')" class="avatar-btn border-2 border-emerald-500 bg-emerald-50 p-3 rounded-2xl hover:scale-105 transition flex flex-col items-center">
+                        <span class="text-3xl mb-1">🦁</span>
+                        <span class="text-xs font-bold text-slate-800">حارس الحيوانات</span>
+                    </button>
+                    <button onclick="selectAvatar('🦅', 'صقر المحمية')" class="avatar-btn border-2 border-transparent bg-slate-100 p-3 rounded-2xl hover:scale-105 transition flex flex-col items-center">
+                        <span class="text-3xl mb-1">🦅</span>
+                        <span class="text-xs font-bold text-slate-800">صقر المحمية</span>
+                    </button>
+                    <button onclick="selectAvatar('🌿', 'حارس الطبيعة')" class="avatar-btn border-2 border-transparent bg-slate-100 p-3 rounded-2xl hover:scale-105 transition flex flex-col items-center">
+                        <span class="text-3xl mb-1">🌿</span>
+                        <span class="text-xs font-bold text-slate-800">حارس الطبيعة</span>
+                    </button>
+                    <button onclick="selectAvatar('🔍', 'الباحث الذكي')" class="avatar-btn border-2 border-transparent bg-slate-100 p-3 rounded-2xl hover:scale-105 transition flex flex-col items-center">
+                        <span class="text-3xl mb-1">🔍</span>
+                        <span class="text-xs font-bold text-slate-800">الباحث الذكي</span>
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="startGame()" class="bg-amber-500 hover:bg-amber-600 text-emerald-950 text-base sm:text-lg font-black py-3.5 px-8 rounded-2xl shadow-lg transition w-full sm:w-auto">
+                ابدأ المغامرة الآن <i class="fa-solid fa-arrow-left mr-2"></i>
+            </button>
+        </section>
+
+        <!-- SCREEN 1: QUESTION DISPLAY -->
+        <section id="screen-question" class="hidden glass-card rounded-3xl p-5 sm:p-8 max-w-2xl mx-auto w-full shadow-2xl">
+            <div class="flex justify-between items-center mb-4 border-b border-slate-200 pb-3">
+                <span id="q-number-badge" class="bg-emerald-100 text-emerald-800 text-xs font-black px-3 py-1 rounded-full">السؤال 1 من 6</span>
+                <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-book-bookmark text-amber-500 ml-1"></i> بناءً على النص المدروس</span>
+            </div>
+
+            <h3 id="q-title" class="text-base sm:text-lg font-extrabold text-slate-800 mb-6 leading-snug">
+                <!-- Question text inserted dynamically -->
+            </h3>
+
+            <div id="options-container" class="space-y-3 mb-6">
+                <!-- Options buttons inserted dynamically -->
+            </div>
+
+            <!-- Feedback Alert -->
+            <div role="status" aria-live="polite" id="feedback-box" class="hidden p-4 rounded-2xl mb-4 text-xs sm:text-sm font-bold transition-all">
+                <!-- Feedback message -->
+            </div>
+
+            <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+                <button onclick="resetGame()" class="text-slate-400 hover:text-slate-600 text-xs font-bold">
+                    <i class="fa-solid fa-rotate-right ml-1"></i> إعادة البدء
+                </button>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white font-black py-2.5 px-6 rounded-xl transition shadow">
+                    التالي <i class="fa-solid fa-arrow-left mr-1"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCREEN 2: EXIT TICKET -->
+        <section id="screen-exit" class="hidden glass-card rounded-3xl p-5 sm:p-8 max-w-2xl mx-auto w-full shadow-2xl">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-2">
+                    <i class="fa-solid fa-pen-clip"></i>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-black text-slate-800">تذكرة الخروج</h2>
+                <p class="text-xs sm:text-sm text-slate-600 font-bold mt-1">اكتب معلومة واحدة تعلمتها عن محمية العرين من النص المدروس:</p>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl mb-6">
+                <textarea id="exit-input" rows="3" class="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none text-xs sm:text-sm font-bold text-slate-800" placeholder="اكتب إجابتك المباشرة هنا..."></textarea>
+            </div>
+
+            <button onclick="finishGame()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 px-6 rounded-2xl transition shadow-lg text-sm sm:text-base">
+                عرض بطاقة الإنجاز <i class="fa-solid fa-certificate mr-2"></i>
+            </button>
+        </section>
+
+        <!-- SCREEN 3: ACHIEVEMENT CERTIFICATE CARD -->
+        <section id="printable-card" class="hidden glass-card rounded-3xl p-6 sm:p-8 max-w-2xl mx-auto w-full border-4 border-amber-400 relative overflow-hidden my-2">
+            <div class="text-center border-b border-slate-200 pb-4 mb-4">
+                <div class="flex justify-between items-center text-xs font-black text-emerald-800 mb-2">
+                    <span>مملكة البحرين</span>
+                    <span>مادة اللغة العربية - الصف الثامن</span>
+                </div>
+                <i class="fa-solid fa-award text-5xl text-amber-500 mb-2"></i>
+                <h2 class="text-2xl sm:text-3xl font-black text-emerald-950">بطاقة إنجاز: «حارس العرين»</h2>
+                <p class="text-xs font-extrabold text-slate-500">تقييم مراجعة نص محمية العرين الطبيعية</p>
+            </div>
+
+            <div class="space-y-4 my-4">
+                <div class="bg-amber-50/80 border border-amber-200 p-4 rounded-2xl flex justify-between items-center">
+                    <div>
+                        <span class="text-xs font-bold text-slate-500 block">لقب الحارس والشخصية:</span>
+                        <span class="text-lg font-black text-emerald-900"><span id="cert-avatar-icon">🦁</span> <span id="cert-avatar-title">حارس الحيوانات</span></span>
+                    </div>
+                    <div class="text-left">
+                        <span class="text-xs font-bold text-slate-500 block">النتيجة النهائية:</span>
+                        <span class="text-xl font-black text-amber-600"><span id="cert-score">0</span> / 60</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl">
+                    <span class="text-xs font-black text-emerald-800 block mb-1">تذكرة الخروج (معلومة عن المحمية):</span>
+                    <p id="cert-exit-text" class="text-xs sm:text-sm font-bold text-slate-700 italic">...</p>
+                </div>
+            </div>
+
+            <!-- Important instruction for student -->
+            <div class="no-print bg-emerald-50 border border-emerald-300 p-3 rounded-xl mb-4 text-center">
+                <p class="text-xs font-black text-emerald-900">
+                    <i class="fa-solid fa-circle-info text-amber-500 ml-1"></i>
+                    تنبيه: قم بأخذ لقطة شاشة (Screenshot) أو طباعة هذه البطاقة أو احفظها بصيغة PDF لتسليمه بنفسك عبر منصة <strong>Schoology</strong>.
+                </p>
+            </div>
+
+            <div class="no-print flex flex-wrap sm:flex-nowrap gap-3 pt-2">
+                <button onclick="window.print()" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-black py-3 px-4 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-print"></i> طباعة / حفظ PDF
+                </button>
+                <button onclick="resetGame()" class="bg-amber-500 hover:bg-amber-600 text-emerald-950 font-black py-3 px-4 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-rotate-right"></i> إعادة المحاولة
+                </button>
+                <a href="./" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-black py-3 px-4 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-house"></i> العودة
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="no-print max-w-4xl mx-auto w-full mt-6 text-center text-[11px] font-bold text-emerald-100">
+        <p>تطبيق «حارس العرين» - تطبيق تعليمي لمراجعة الفهم القرائي للصف الثامن (اكتساب اللغة)</p>
+    </footer>
+
+    <!-- GAME SCRIPT -->
+    <script>
+        // --- SOUND SYSTEM (Web Audio API) ---
+        let soundEnabled = true;
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioContext();
+        }
+
+        function playSound(freq, type, duration) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {}
+        }
+
+        function playSuccess() {
+            playSound(523.25, 'sine', 0.1);
+            setTimeout(() => playSound(659.25, 'sine', 0.15), 100);
+        }
+
+        function playError() {
+            playSound(220, 'sawtooth', 0.15);
+            setTimeout(() => playSound(180, 'sawtooth', 0.2), 100);
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (soundEnabled) {
+                icon.className = "fa-solid fa-volume-high";
+                playSound(600, 'sine', 0.1);
+            } else {
+                icon.className = "fa-solid fa-volume-xmark";
+            }
+        }
+
+        // --- GAME DATA & STATE ---
+        const questionsData = [
+            {
+                q: "١. حدّد موقع محمية العرين بحسب النص المدروس:",
+                options: ["الصخير", "المحرق", "المنامة"],
+                correct: "الصخير",
+                hint: "اقرأ السؤال جيدًا واختر إجابة واحدة مما تعلمته في الدرس."
+            },
+            {
+                q: "٢. حدّد سنة تأسيس المحمية بحسب النص المدروس:",
+                options: ["١٩٧٩", "٢٠٠٥", "٢٠١٣"],
+                correct: "١٩٧٩",
+                hint: "اقرأ السؤال جيدًا واختر إجابة واحدة مما تعلمته في الدرس."
+            },
+            {
+                q: "٣. اختر حيوانًا ورد ذكره في النص المدروس:",
+                options: ["المها العربي", "البطريق", "الدب القطبي"],
+                correct: "المها العربي",
+                hint: "اقرأ السؤال جيدًا واختر إجابة واحدة مما تعلمته في الدرس."
+            },
+            {
+                q: "٤. حدّد الغرض من تربية الحيوانات المهددة بالانقراض:",
+                options: ["حمايتها والمحافظة عليها", "بيعها", "تدريبها على السباق"],
+                correct: "حمايتها والمحافظة عليها",
+                hint: "اقرأ السؤال جيدًا واختر إجابة واحدة مما تعلمته في الدرس."
+            },
+            {
+                q: "٥. حدّد العبارة الصحيحة بناءً على النص المدروس:",
+                options: ["يوجد قسم مخصص للمختصين والباحثين", "جميع أقسام المحمية مفتوحة للجمهور"],
+                correct: "يوجد قسم مخصص للمختصين والباحثين",
+                hint: "اقرأ السؤال جيدًا واختر إجابة واحدة مما تعلمته في الدرس."
+            },
+            {
+                q: "٦. اختر السلوك الذي يحافظ على المحمية:",
+                options: ["الالتزام بالتعليمات والنظافة", "ترك المخلفات", "إزعاج الحيوانات"],
+                correct: "الالتزام بالتعليمات والنظافة",
+                hint: "اقرأ السؤال جيدًا واختر إجابة واحدة مما تعلمته في الدرس."
+            }
+        ];
+
+        let state = {
+            avatarIcon: '🦁',
+            avatarTitle: 'حارس الحيوانات',
+            score: 0,
+            currentIndex: 0,
+            answeredCurrent: false,
+            exitTicket: ''
+        };
+
+        // Shuffle helper
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Select Avatar
+        function selectAvatar(icon, title) {
+            state.avatarIcon = icon;
+            state.avatarTitle = title;
+            const btns = document.querySelectorAll('.avatar-btn');
+            btns.forEach(b => {
+                if (b.innerText.includes(title)) {
+                    b.className = "avatar-btn border-2 border-emerald-500 bg-emerald-50 p-3 rounded-2xl hover:scale-105 transition flex flex-col items-center";
+                } else {
+                    b.className = "avatar-btn border-2 border-transparent bg-slate-100 p-3 rounded-2xl hover:scale-105 transition flex flex-col items-center";
+                }
+            });
+            playSound(500, 'sine', 0.05);
+        }
+
+        function updateGuide(text) {
+            document.getElementById('guide-text').innerText = text;
+        }
+
+        function updateScore(pts) {
+            state.score += pts;
+            document.getElementById('score-display').innerText = `${state.score} / 60`;
+        }
+
+        function setScreen(id) {
+            state.screen = id;
+            ['screen-welcome', 'screen-question', 'screen-exit', 'printable-card'].forEach(s => {
+                const el = document.getElementById(s);
+                if (s === id) el.classList.remove('hidden');
+                else el.classList.add('hidden');
+            });
+
+            const prog = document.getElementById('progress-container');
+            if (id === 'screen-question') prog.classList.remove('hidden');
+            else prog.classList.add('hidden');
+        }
+
+        // Start Game
+        function startGame() {
+            state.exitTicket = "";
+            document.getElementById("exit-input").value = "";
+            state.score = 0;
+            state.currentIndex = 0;
+            document.getElementById('score-display').innerText = `0 / 60`;
+            setScreen('screen-question');
+            renderQuestion();
+        }
+
+        // Render Current Question
+        function renderQuestion() {
+            state.answeredCurrent = false;
+            const q = questionsData[state.currentIndex];
+
+            // Progress Update
+            const total = questionsData.length;
+            const pct = Math.round((state.currentIndex / total) * 100);
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+            document.getElementById('progress-percent').innerText = `${pct}%`;
+            document.getElementById('progress-label').innerText = `السؤال ${state.currentIndex + 1} من ${total}`;
+            document.getElementById('q-number-badge').innerText = `السؤال ${state.currentIndex + 1} من ${total}`;
+
+            document.getElementById('q-title').innerText = q.q;
+            updateGuide(q.hint);
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const feedback = document.getElementById('feedback-box');
+            feedback.className = "hidden p-4 rounded-2xl mb-4 text-xs sm:text-sm font-bold transition-all";
+            document.getElementById('next-btn').classList.add('hidden');
+
+            // Shuffle options
+            const shuffledOptions = shuffleArray(q.options);
+
+            shuffledOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-right p-3.5 sm:p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-emerald-500 hover:bg-emerald-50/50 transition font-extrabold text-slate-800 text-xs sm:text-sm flex items-center justify-between";
+                btn.innerHTML = `<span>${opt}</span><i class="fa-regular fa-circle text-slate-300"></i>`;
+                btn.onclick = () => handleAnswer(opt, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        // Handle Answer
+        function handleAnswer(selectedOpt, btnElement) {
+            if (state.screen !== "screen-question" || state.answeredCurrent) return; // Lock question after answer
+            state.answeredCurrent = true;
+
+            const q = questionsData[state.currentIndex];
+            const allBtns = document.querySelectorAll('#options-container button');
+            const feedback = document.getElementById('feedback-box');
+
+            // Disable all buttons to prevent multiple clicks
+            allBtns.forEach(b => b.disabled = true);
+
+            if (selectedOpt === q.correct) {
+                playSuccess();
+                btnElement.classList.remove('border-slate-200', 'bg-white');
+                btnElement.classList.add('border-emerald-500', 'bg-emerald-100', 'text-emerald-950');
+                btnElement.querySelector('i').className = "fa-solid fa-circle-check text-emerald-600";
+
+                feedback.className = "p-4 rounded-2xl mb-4 text-xs sm:text-sm font-bold bg-emerald-100 text-emerald-900 border border-emerald-300";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check ml-1"></i> إجابة صحيحة وممتازة! (+١٠ نقاط)`;
+
+                updateScore(10);
+                updateGuide("أحسنت! إجابة دقيقة تؤكد استيعابك للنص المدروس.");
+            } else {
+                playError();
+                btnElement.classList.remove('border-slate-200', 'bg-white');
+                btnElement.classList.add('border-rose-400', 'bg-rose-100', 'text-rose-950');
+                btnElement.querySelector('i').className = "fa-solid fa-circle-xmark text-rose-600";
+
+                // Highlight correct answer
+                allBtns.forEach(b => {
+                    if (b.innerText.includes(q.correct)) {
+                        b.classList.add('border-emerald-500', 'bg-emerald-50');
+                        b.querySelector('i').className = "fa-solid fa-circle-check text-emerald-600";
+                    }
+                });
+
+                feedback.className = "p-4 rounded-2xl mb-4 text-xs sm:text-sm font-bold bg-rose-100 text-rose-900 border border-rose-300";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark ml-1"></i> إجابة خاطئة! الإجابة الصحيحة بحسب النص هي: (${q.correct})`;
+
+                updateGuide("لا بأس يا بطل، راجع الإجابة الصحيحة واستعد للسؤال القادم.");
+            }
+
+            feedback.classList.remove('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        // Next Question or Exit Ticket
+        function nextQuestion() {
+            if(state.screen !== "screen-question" || !state.answeredCurrent) return;
+            state.answeredCurrent = false;
+            state.currentIndex++;
+            if (state.currentIndex < questionsData.length) {
+                renderQuestion();
+            } else {
+                // All questions done -> Go to Exit Ticket
+                document.getElementById('progress-bar').style.width = `100%`;
+                document.getElementById('progress-percent').innerText = `100%`;
+                setScreen('screen-exit');
+                updateGuide("ممتاز! لقد أنهيت جميع الأسئلة. أجب عن تذكرة الخروج لاستلام بطاقة الإنجاز.");
+            }
+        }
+
+        // Finish Game & Show Card
+        function finishGame() {
+            if(state.screen !== "screen-exit") return;
+            const val = document.getElementById('exit-input').value.trim();
+            if (!val) {
+                alert("لطفاً، اكتب معلومة تعلّمتها عن المحمية في تذكرة الخروج قبل المتابعة.");
+                return;
+            }
+            state.exitTicket = val;
+
+            document.getElementById('cert-avatar-icon').innerText = state.avatarIcon;
+            document.getElementById('cert-avatar-title').innerText = state.avatarTitle;
+            document.getElementById('cert-score').innerText = state.score;
+            document.getElementById('cert-exit-text').innerText = `"${state.exitTicket}"`;
+
+            setScreen('printable-card');
+            updateGuide("مبارك! هذه بطاقة إنجازك. احفظها وسلمها عبر Schoology.");
+            playSuccess();
+        }
+
+        // Reset Game
+        function resetGame() {
+            state.answeredCurrent = false;
+            document.getElementById("score-display").innerText = "0 / 60";
+            document.getElementById("progress-bar").style.width = "0%";
+            state.score = 0;
+            state.currentIndex = 0;
+            state.exitTicket = '';
+            document.getElementById('exit-input').value = '';
+            setScreen('screen-welcome');
+            updateGuide("مرحباً بك مجدداً! جاهز للتحدي وتحقيق نتيجة كاملة؟");
+        }
+
+        // Initialize user interaction for Web Audio API
+        window.addEventListener('click', function initAudioOnce() {
+            try { initAudio(); } catch(e) {}
+            window.removeEventListener('click', initAudioOnce);
+        });
+    </script>
+</body>
+</html>
