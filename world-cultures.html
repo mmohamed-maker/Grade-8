@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدي عادات الشعوب - برنامج IB MYP</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Tajawal -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 50%, #fef3c7 100%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        }
+
+        .robot-bounce {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        .chat-bubble {
+            position: relative;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .chat-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: 30px;
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: #ffffff transparent;
+            display: block;
+            width: 0;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .drag-item {
+            cursor: grab;
+            transition: all 0.2s ease;
+        }
+        .drag-item:active {
+            cursor: grabbing;
+            transform: scale(1.02);
+        }
+
+        /* Pulse highlight */
+        .pulse-btn {
+            animation: pulse-ring 2s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-certificate, #printable-certificate * {
+                visibility: visible;
+            }
+            #printable-certificate {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased flex flex-col justify-between min-h-screen p-3 md:p-6">
+<nav class="max-w-5xl mx-auto p-3"><a href="./" class="font-bold text-indigo-800">العودة إلى مكتبة الألعاب</a></nav>
+
+    <!-- Header / Navbar -->
+    <header class="max-w-5xl mx-auto w-full mb-4">
+        <div class="glass-card rounded-2xl p-4 flex flex-wrap justify-between items-center gap-4">
+            <!-- App Logo & Title -->
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center text-white text-2xl shadow-md shadow-emerald-200">
+                    <i class="fa-solid font-bold fa-globe-asia"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-extrabold text-emerald-800">تحدي عادات الشعوب</h1>
+                    <p class="text-xs md:text-sm font-medium text-emerald-600">برنامج IB MYP - اكتساب اللغة العربية (الصف الثامن)</p>
+                </div>
+            </div>
+
+            <!-- Score & Progress -->
+            <div class="flex items-center gap-4">
+                <div class="bg-amber-100 border border-amber-300 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-star text-amber-500 text-lg"></i>
+                    <div class="text-right">
+                        <span class="text-xs text-amber-700 font-bold block">النقاط</span>
+                        <span id="score-display" class="text-lg font-black text-amber-900">0</span>
+                    </div>
+                </div>
+
+                <!-- Avatar Selection Indicator -->
+                <div id="user-badge" class="bg-indigo-50 border border-indigo-200 px-3 py-2 rounded-xl flex items-center gap-2">
+                    <span id="avatar-icon" class="text-xl">🌟</span>
+                    <span id="avatar-name" class="text-sm font-bold text-indigo-800">المستكشف</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-5xl mx-auto w-full flex-1 flex flex-col justify-center">
+
+        <!-- Robot Assistant Bar -->
+        <div class="mb-6 flex items-end gap-3 md:gap-4 max-w-3xl mx-auto w-full">
+            <!-- Robot Avatar -->
+            <div class="relative group cursor-pointer" onclick="playRobotSound()">
+                <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-tr from-sky-400 to-indigo-500 rounded-2xl flex items-center justify-center text-white text-3xl md:text-4xl shadow-lg border-2 border-white robot-bounce">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <span class="absolute -top-1 -right-1 bg-emerald-500 text-white text-xs px-2 py-0.5 rounded-full font-bold shadow">زكي</span>
+            </div>
+
+            <!-- Speech Bubble -->
+            <div class="flex-1 chat-bubble p-4 border border-sky-100">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs font-extrabold text-sky-600 uppercase tracking-wider flex items-center gap-1">
+                        <i class="fa-solid fa-comment-dots"></i> المساعد زكي يقول:
+                    </span>
+                    <button onclick="speakCurrentHint()" class="text-slate-400 hover:text-sky-600 transition text-sm" title="استمع إلى النص">
+                        <i class="fa-solid fa-volume-high"></i>
+                    </button>
+                </div>
+                <p id="robot-text" class="text-sm md:text-base font-medium text-slate-700 leading-relaxed">
+                    مرحباً بك يا بطل! أنا "زكي"، مرشدك في هذه الرحلة الممتعة لاستكشاف عادات الشعوب وثقافاتهم. هل أنت مستعد للتحدي؟
+                </p>
+            </div>
+        </div>
+
+        <!-- Progress Steps Indicator -->
+        <div class="max-w-2xl mx-auto w-full mb-6">
+            <div class="flex justify-between items-center text-xs font-bold text-slate-500 mb-2 px-1">
+                <span id="step-1-label" class="text-emerald-600">المستوى 1: خبير الثقافات</span>
+                <span id="step-2-label">المستوى 2: مكتشف الخطأ</span>
+                <span id="step-3-label">المستوى 3: مهندس النصوص</span>
+            </div>
+            <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden p-0.5 shadow-inner">
+                <div id="main-progress-bar" class="bg-gradient-to-r from-emerald-400 to-sky-500 h-full rounded-full transition-all duration-500" style="width: 10%;"></div>
+            </div>
+        </div>
+
+        <!-- SCREEN 0: WELCOME & AVATAR SELECTION -->
+        <section id="screen-welcome" class="glass-card rounded-3xl p-6 md:p-8 text-center max-w-2xl mx-auto w-full shadow-xl">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                <i class="fa-solid fa-compass"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2">أهلاً بك في تحدي عادات الشعوب!</h2>
+            <p class="text-slate-600 mb-6 text-sm md:text-base leading-relaxed">
+                ستسافر اليوم عبر العالم لتعلم عادات وتقاليد مختلفة. تجمع النقاط والأوسمة كلما حللت الألغاز بشكل صحيح!
+            </p>
+
+            <div class="mb-6">
+                <label class="block text-sm font-bold text-slate-700 mb-3">اختر رمزك المستعار للبدء:</label>
+                <div class="flex justify-center gap-3 md:gap-4 flex-wrap">
+                    <button onclick="selectAvatar('🚀', 'المستكشف')" class="avatar-btn border-2 border-emerald-500 bg-emerald-50 p-3 rounded-2xl hover:scale-105 transition flex flex-col items-center min-w-[80px]">
+                        <span class="text-3xl mb-1">🚀</span>
+                        <span class="text-xs font-bold text-slate-700">المستكشف</span>
+                    </button>
+                    <button onclick="selectAvatar('🎨', 'الفنان')" class="avatar-btn border-2 border-transparent bg-slate-100 p-3 rounded-2xl hover:scale-105 transition flex flex-col items-center min-w-[80px]">
+                        <span class="text-3xl mb-1">🎨</span>
+                        <span class="text-xs font-bold text-slate-700">الفنان</span>
+                    </button>
+                    <button onclick="selectAvatar('📚', 'المفكر')" class="avatar-btn border-2 border-transparent bg-slate-100 p-3 rounded-2xl hover:scale-105 transition flex flex-col items-center min-w-[80px]">
+                        <span class="text-3xl mb-1">📚</span>
+                        <span class="text-xs font-bold text-slate-700">المفكر</span>
+                    </button>
+                    <button onclick="selectAvatar('🌍', 'الرحالة')" class="avatar-btn border-2 border-transparent bg-slate-100 p-3 rounded-2xl hover:scale-105 transition flex flex-col items-center min-w-[80px]">
+                        <span class="text-3xl mb-1">🌍</span>
+                        <span class="text-xs font-bold text-slate-700">الرحالة</span>
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="startLevel1()" class="pulse-btn bg-emerald-600 hover:bg-emerald-700 text-white text-lg font-bold py-3.5 px-8 rounded-2xl shadow-lg shadow-emerald-200 transition duration-200 w-full md:w-auto">
+                ابدأ المغامرة الآن <i class="fa-solid fa-arrow-left mr-2"></i>
+            </button>
+        </section>
+
+        <!-- LEVEL 1: MULTIPLE CHOICE (5 QUESTIONS) -->
+        <section id="screen-level1" class="hidden glass-card rounded-3xl p-6 md:p-8 max-w-2xl mx-auto w-full shadow-xl">
+            <div class="flex justify-between items-center mb-4">
+                <span class="bg-emerald-100 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full">المستوى الأول: خبير الثقافات</span>
+                <span id="l1-question-counter" class="text-xs font-bold text-slate-500">السؤال 1 من 5</span>
+            </div>
+
+            <h3 id="l1-question-title" class="text-lg md:text-xl font-bold text-slate-800 mb-6 leading-snug">
+                <!-- Question content dynamically loaded -->
+            </h3>
+
+            <div id="l1-options-container" class="space-y-3 mb-6">
+                <!-- Options dynamically loaded -->
+            </div>
+
+            <div id="l1-feedback" class="hidden p-4 rounded-2xl mb-4 text-sm font-medium transition-all">
+                <!-- Feedback loaded here -->
+            </div>
+
+            <div class="flex justify-between items-center pt-2">
+                <button onclick="resetCurrentLevel()" class="text-slate-400 hover:text-slate-600 text-xs font-bold">
+                    <i class="fa-solid fa-rotate-right ml-1"></i> إعادة المحاولة
+                </button>
+                <button id="l1-next-btn" onclick="nextL1Question()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-xl transition">
+                    السؤال التالي <i class="fa-solid fa-arrow-left mr-1"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- LEVEL 2: ERROR DETECTIVE (CORRECT THE FALSE CLAIM) -->
+        <section id="screen-level2" class="hidden glass-card rounded-3xl p-6 md:p-8 max-w-2xl mx-auto w-full shadow-xl">
+            <div class="flex justify-between items-center mb-4">
+                <span class="bg-sky-100 text-sky-800 text-xs font-extrabold px-3 py-1 rounded-full">المستوى الثاني: مكتشف الخطأ</span>
+                <span id="l2-counter" class="text-xs font-bold text-slate-500">التحدي 1 من 3</span>
+            </div>
+
+            <p class="text-xs font-bold text-slate-500 mb-2">اقرأ النص التالي واكتشف الكلمة الخاطئة بالضغط عليها:</p>
+
+            <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl mb-6 shadow-inner">
+                <p id="l2-text-content" class="text-base md:text-lg font-medium leading-loose text-slate-800">
+                    <!-- Dynamic text with selectable clickable words -->
+                </p>
+            </div>
+
+            <!-- Correction popup/choice zone -->
+            <div id="l2-correction-zone" class="hidden bg-sky-50 border border-sky-200 p-4 rounded-2xl mb-6">
+                <p class="text-xs font-bold text-sky-800 mb-2">ممتاز! اختر التصحّيح الصحيح للكلمة المحددة:</p>
+                <div id="l2-options" class="flex flex-wrap gap-2">
+                    <!-- Correction choices dynamically inserted -->
+                </div>
+            </div>
+
+            <div id="l2-feedback" class="hidden p-4 rounded-2xl mb-4 text-sm font-medium"></div>
+
+            <div class="flex justify-between items-center pt-2">
+                <button onclick="resetCurrentLevel()" class="text-slate-400 hover:text-slate-600 text-xs font-bold">
+                    <i class="fa-solid fa-rotate-right ml-1"></i> إعادة المحاولة
+                </button>
+                <button id="l2-next-btn" onclick="nextL2Question()" class="hidden bg-sky-600 hover:bg-sky-700 text-white font-bold py-2.5 px-6 rounded-xl transition">
+                    التالي <i class="fa-solid fa-arrow-left mr-1"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- LEVEL 3: SENTENCE ORDERING (PARAGRAPH BUILDER) -->
+        <section id="screen-level3" class="hidden glass-card rounded-3xl p-6 md:p-8 max-w-2xl mx-auto w-full shadow-xl">
+            <div class="flex justify-between items-center mb-4">
+                <span class="bg-indigo-100 text-indigo-800 text-xs font-extrabold px-3 py-1 rounded-full">المستوى الثالث: مهندس النصوص</span>
+                <span id="l3-counter" class="text-xs font-bold text-slate-500">المهمة 1 من 2</span>
+            </div>
+
+            <h3 id="l3-topic-title" class="text-base font-bold text-slate-800 mb-2">
+                رتب الجمل التالية لتكوين فقرة مترابطة عن: <span class="text-indigo-600" id="l3-topic-name">تقديم الشاي المغربي</span>
+            </h3>
+            <p class="text-xs text-slate-500 mb-4">انقر على الجمل بترتيبها الصحيح من الأول إلى الأخير:</p>
+
+            <!-- Pool of Available Sentences -->
+            <div class="mb-4">
+                <h4 class="text-xs font-bold text-slate-600 mb-2">الجمل المتاحة:</h4>
+                <div id="l3-sentence-pool" class="space-y-2">
+                    <!-- Sentences loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- Ordered Slots Box -->
+            <div class="bg-slate-100 p-4 rounded-2xl border-2 border-dashed border-slate-300 min-h-[140px]">
+                <h4 class="text-xs font-bold text-slate-600 mb-2">ترتيبك للفقرة:</h4>
+                <div id="l3-ordered-list" class="space-y-2">
+                    <!-- User arranged sentences drop here -->
+                </div>
+            </div>
+
+            <div id="l3-feedback" class="hidden p-4 rounded-2xl my-4 text-sm font-medium"></div>
+
+            <div class="flex justify-between items-center pt-4">
+                <button onclick="resetL3Current()" class="text-slate-400 hover:text-slate-600 text-xs font-bold">
+                    <i class="fa-solid fa-rotate-right ml-1"></i> إعادة ترتيب الجمل
+                </button>
+                <button id="l3-check-btn" onclick="checkL3Order()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl transition">
+                    تحقق من الترتيب <i class="fa-solid fa-check mr-1"></i>
+                </button>
+                <button id="l3-next-btn" onclick="nextL3Question()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-xl transition">
+                    المتابعة لتذكرة الخروج <i class="fa-solid fa-arrow-left mr-1"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- EXIT TICKET & FINAL SUMMARY -->
+        <section id="screen-exit" class="hidden glass-card rounded-3xl p-6 md:p-8 max-w-2xl mx-auto w-full shadow-xl">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-2 shadow-inner">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h2 class="text-2xl font-extrabold text-slate-800">مبارك! أكملت جميع التحديات بنجاح</h2>
+                <p class="text-xs md:text-sm text-slate-600 mt-1">حزت على وسام <span class="font-bold text-indigo-600" id="final-badge-title">خبير عادات الشعوب</span></p>
+            </div>
+
+            <!-- Exit Ticket Form -->
+            <div class="bg-emerald-50/60 border border-emerald-200 p-5 rounded-2xl mb-6">
+                <h3 class="text-sm font-extrabold text-emerald-900 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-ticket text-emerald-600"></i> تذكرة الخروج (سؤال تأملي - IB MYP):
+                </h3>
+                <label for="reflection-input" class="block text-xs md:text-sm text-slate-700 mb-2 leading-relaxed">
+                    ما أمتع عادة عرفتها اليوم؟ وكيف تشبه أو تختلف عن عادات مجتمعك؟ (اكتب 2-3 جمل بالعربية):
+                </label>
+                <textarea id="reflection-input" rows="3" class="w-full p-3 rounded-xl border border-emerald-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm text-slate-800" placeholder="مثال: أمتع عادة هي تقديم الشاي في المغرب. تشبه عادتنا في إكرام الضيف ولكن..."></textarea>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="generateCertificate()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-award"></i> عرض بطاقة الإنجاز
+                </button>
+                <button onclick="restartGame()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-rotate-right"></i> البدء من جديد
+                </button>
+            </div>
+        </section>
+
+        <!-- PRINTABLE CERTIFICATE CARD (HIDDEN UNTIL GENERATED) -->
+        <div id="printable-certificate" class="hidden glass-card rounded-3xl p-8 max-w-2xl mx-auto w-full border-4 border-amber-400 text-center relative overflow-hidden my-4">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-amber-200/50 rounded-full blur-2xl"></div>
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-emerald-200/50 rounded-full blur-2xl"></div>
+
+            <div class="border-2 border-dashed border-amber-300 p-6 rounded-2xl bg-white/80">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs font-bold text-slate-400">IB MYP Arabic Language Acquisition</span>
+                    <span class="text-xs font-bold text-emerald-600">الصف الثامن</span>
+                </div>
+
+                <i class="fa-solid fa-award text-5xl text-amber-500 mb-2"></i>
+                <h2 class="text-2xl font-black text-slate-800 mb-1">بطاقة تميّز: تحدي عادات الشعوب</h2>
+                <p class="text-xs text-slate-500 mb-4">شهادة إنجاز وتفوق في اكتساب اللغة العربية</p>
+
+                <div class="my-4 p-4 bg-amber-50 rounded-xl border border-amber-200">
+                    <p class="text-sm text-slate-600">تُمنح هذه البطاقة للمستكشف البطل:</p>
+                    <p class="text-xl font-black text-indigo-700 my-1"><span id="cert-avatar">🚀</span> <span id="cert-name">المستكشف</span></p>
+                    <p class="text-xs text-amber-800 font-bold">مجموع النقاط: <span id="cert-score">0</span> نقطة</p>
+                </div>
+
+                <div class="text-right bg-slate-50 p-4 rounded-xl border border-slate-200 mb-4">
+                    <h4 class="text-xs font-bold text-slate-700 mb-1"><i class="fa-solid fa-pen-nib text-emerald-600"></i> التأمل الشخصي (تذكرة الخروج):</h4>
+                    <p id="cert-reflection" class="text-xs text-slate-600 italic leading-relaxed">...</p>
+                </div>
+
+                <div class="flex justify-between items-center text-xs text-slate-400 pt-2 border-t border-slate-200">
+                    <span>التاريخ: <span id="cert-date"></span></span>
+                    <span>المرشد: روبوت زكي 🤖</span>
+                </div>
+            </div>
+
+            <div class="mt-4 flex gap-3 print:hidden">
+                <button onclick="window.print()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition">
+                    <i class="fa-solid fa-print ml-1"></i> طباعة / حفظ PDF
+                </button>
+                <button onclick="closeCertificate()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 px-4 rounded-xl text-sm transition">
+                    إغلاق
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-5xl mx-auto w-full mt-6 text-center text-xs text-slate-500">
+        <p>تطبيق تعليمي تفاعلي لتعزيز مفاهيم التفاهم العالمي والتنوع الثقافي في برنامج السنوات المتوسطة (MYP)</p>
+    </footer>
+
+    <!-- AUDIO & GAME LOGIC SCRIPT -->
+    <script>
+        // --- SOUND EFFECTS USING WEB AUDIO API ---
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+        }
+
+        function playBeep(freq = 440, type = 'sine', duration = 0.15) {
+            try {
+                initAudio();
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log('Audio disabled/not supported');
+            }
+        }
+
+        function playSuccessSound() {
+            playBeep(523.25, 'triangle', 0.1); // C5
+            setTimeout(() => playBeep(659.25, 'triangle', 0.1), 100); // E5
+            setTimeout(() => playBeep(783.99, 'triangle', 0.2), 200); // G5
+        }
+
+        function playErrorSound() {
+            playBeep(220, 'sawtooth', 0.15);
+            setTimeout(() => playBeep(180, 'sawtooth', 0.25), 120);
+        }
+
+        function playRobotSound() {
+            playBeep(800, 'square', 0.05);
+            setTimeout(() => playBeep(1200, 'square', 0.05), 60);
+        }
+
+        // --- GAME STATE ---
+        let state = {
+            score: 0,
+            avatarIcon: '🚀',
+            avatarName: 'المستكشف',
+            currentLevel: 1,
+            
+            // Level 1 state
+            l1Index: 0,
+            l1Questions: [
+                {
+                    q: "في المغرب، يُقدم الشاي الأخضر بالنعناع كرمز لـ:",
+                    options: ["السرعة في العمل", "كرم الضيافة والترحيب", "الاستعداد للنوم", "ممارسة الرياضة"],
+                    correct: 1,
+                    hint: "تذكر يا صديقي، أهل المغرب معروفون بفتح بيوتهم وترحيبهم بالحفاوة بالضيوف!"
+                },
+                {
+                    q: "في اليابان، عند تقديم التحية أو الشكر للآخرين، يتم:",
+                    options: ["المصافحة بالأيدي بقوة", "الانحناء الخفيف احتراماً", "التصفيق باليدين", "القفز عالياً"],
+                    correct: 1,
+                    hint: "اليابانيون يعبرون عن الاحترام والتقدير بانحناءة خفيفة للجسم!"
+                },
+                {
+                    q: "في دولة الإمارات العربية المتحدة، تُعتبر القهوة العربية والتمور رمزاً أساسياً لـ:",
+                    options: ["الضيافة والأصالة العربية", "وجبة العشاء فقط", "الاحتفال بالمهرجانات الرياضية", "ألعاب الأطفال"],
+                    correct: 0,
+                    hint: "القهوة العربية في الخليج هي أول ما يقدّم للضيف مع التمر الطيب!"
+                },
+                {
+                    q: "في الهند، تُستخدم بعض البهارات مثل \"الكركم\" ليس فقط في الطعام بل أيضاً في:",
+                    options: ["صناعة السيارات", "مناسبات الزفاف والأفراح للبركة", "طلاء المنازل", "التزلج على الجليد"],
+                    correct: 1,
+                    hint: "الكركم له لون أصفر جميل ويُستخدم في تقاليد الاحتفالات الهندية!"
+                },
+                {
+                    q: "في إيطاليا، تُعتبر الوجبات العائلية فرصة مهمة لـ:",
+                    options: ["الأكل بسرعة والتسوق", "التجمع والتواصل بين أفراد العائلة", "مشاهدة التلفاز بالصمت", "النوم المباشر"],
+                    correct: 1,
+                    hint: "العائلة في إيطاليا تحب الجلوس معاً والتحدث لفترات طويلة على مائدة الطعام!"
+                }
+            ],
+
+            // Level 2 state
+            l2Index: 0,
+            l2Questions: [
+                {
+                    words: ["في", "المكسيك،", "يحتفل", "الناس", "بالمهرجانات", "بارتداء", "الملابس", "الرمادية", "والغناء."],
+                    wrongIndex: 7, // "الرمادية"
+                    correctOptions: ["الملونة", "السوداء", "الشفافة"],
+                    correctAnswer: "الملونة",
+                    hint: "المهرجانات المكسيكية مشهورة بالألوان المبهجة والمشعة، وليست الرمادية!"
+                },
+                {
+                    words: ["في", "الصين،", "يُعتبر", "اللون", "الأحمر", "رمزاً", "للحزن والخوف", "في", "رأس", "السنة."],
+                    wrongIndex: 6, // "للحزن"
+                    correctOptions: ["للحظ والسرور", "للبرد", "للغضب"],
+                    correctAnswer: "للحظ والسرور",
+                    hint: "في الثقافة الصينية، اللون الأحمر يجلب البهجة والسعادة!"
+                },
+                {
+                    words: ["في", "السعودية،", "يُعتبر", "الزي", "التقليدي", "للرجال", "هو", "القميص والقبعة الرياضية."],
+                    wrongIndex: 7, // "القميص"
+                    correctOptions: ["الكيمونو", "الثوب والمشلح", "السترة الشتوية"],
+                    correctAnswer: "الثوب والمشلح",
+                    hint: "الرجال في الخليج يرتدون الثوب الأنيق والغترة أو الشماغ!"
+                }
+            ],
+
+            // Level 3 state
+            l3Index: 0,
+            l3Questions: [
+                {
+                    title: "تقاليد الشاي المغربي (أتأي)",
+                    sentences: [
+                        { id: 1, text: "أولاً، يُسخن الماء ويُوضع الشاي الأخضر والنعناع الطازج في الإبريق." },
+                        { id: 2, text: "ثانياً، يُضاف السكر حسب الرغبة ويُترك ليغلي قليلاً." },
+                        { id: 3, text: "ثالثاً، يُصب الشاي من ارتفاع عالٍ لتتكون الرغوة الجميلة." },
+                        { id: 4, text: "أخيراً، يُقدم الشاي ساخناً للضيوف مع الحلويات المغربية." }
+                    ]
+                },
+                {
+                    title: "استقبال الضيوف في الثقافة العربية",
+                    sentences: [
+                        { id: 1, text: "يبدأ الاستقبال بالترحاب والابتسامة وقول 'أهلاً وسهلاً'." },
+                        { id: 2, text: "ثم يُدعَى الضيوف للجلوس في أفضل مكان في المجلس." },
+                        { id: 3, text: "بعد ذلك، تُقدم القهوة العربية الدافئة مع التمر." },
+                        { id: 4, text: "في النهاية، يُعطر المكان بالبخور الفاخر تكريماً للضيوف." }
+                    ]
+                }
+            ],
+            l3UserSelection: []
+        };
+
+        // --- AVATAR SELECTION ---
+        function selectAvatar(icon, name) {
+            state.avatarIcon = icon;
+            state.avatarName = name;
+            document.getElementById('avatar-icon').innerText = icon;
+            document.getElementById('avatar-name').innerText = name;
+            
+            // Highlight selected button UI
+            const btns = document.querySelectorAll('.avatar-btn');
+            btns.forEach(btn => {
+                if(btn.innerText.includes(name)) {
+                    btn.classList.add('border-emerald-500', 'bg-emerald-50');
+                    btn.classList.remove('border-transparent', 'bg-slate-100');
+                } else {
+                    btn.classList.remove('border-emerald-500', 'bg-emerald-50');
+                    btn.classList.add('border-transparent', 'bg-slate-100');
+                }
+            });
+            playRobotSound();
+        }
+
+        function updateRobotText(text) {
+            document.getElementById('robot-text').innerText = text;
+        }
+
+        function speakCurrentHint() {
+            const text = document.getElementById('robot-text').innerText;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const msg = new SpeechSynthesisUtterance(text);
+                msg.lang = 'ar-SA';
+                msg.rate = 0.9;
+                window.speechSynthesis.speak(msg);
+            }
+        }
+
+        function addScore(pts) {
+            state.score += pts;
+            document.getElementById('score-display').innerText = state.score;
+        }
+
+        function setProgressBar(percent) {
+            document.getElementById('main-progress-bar').style.width = `${percent}%`;
+        }
+
+        // --- NAVIGATION BETWEEN SCREENS ---
+        function showScreen(screenId) {
+            const screens = ['screen-welcome', 'screen-level1', 'screen-level2', 'screen-level3', 'screen-exit'];
+            screens.forEach(id => {
+                const el = document.getElementById(id);
+                if (id === screenId) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+        }
+
+        // --- LEVEL 1 LOGIC ---
+        function startLevel1() {
+            showScreen('screen-level1');
+            state.currentLevel = 1;
+            state.l1Index = 0;
+            setProgressBar(20);
+            renderL1Question();
+        }
+
+        function renderL1Question() {
+            state.l1Locked = false;
+            const qData = state.l1Questions[state.l1Index];
+            document.getElementById('l1-question-counter').innerText = `السؤال ${state.l1Index + 1} من ${state.l1Questions.length}`;
+            document.getElementById('l1-question-title').innerText = qData.q;
+            
+            updateRobotText(qData.hint);
+
+            const optionsContainer = document.getElementById('l1-options-container');
+            optionsContainer.innerHTML = '';
+
+            const feedbackEl = document.getElementById('l1-feedback');
+            feedbackEl.classList.add('hidden');
+            document.getElementById('l1-next-btn').classList.add('hidden');
+
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-right p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/50 transition font-medium text-slate-700 flex items-center justify-between group";
+                btn.innerHTML = `
+                    <span>${opt}</span>
+                    <span class="w-6 h-6 rounded-full border border-slate-300 flex items-center justify-center text-xs group-hover:border-emerald-500">
+                        ${String.fromCharCode(65 + idx)}
+                    </span>
+                `;
+                btn.onclick = () => checkL1Answer(idx, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkL1Answer(selectedIdx, btnElement) {
+            if(state.currentLevel !== 1 || state.l1Locked) return;
+            state.l1Locked = true;
+            const qData = state.l1Questions[state.l1Index];
+            const feedbackEl = document.getElementById('l1-feedback');
+            const allBtns = document.querySelectorAll('#l1-options-container button');
+            
+            // Disable all buttons
+            allBtns.forEach(b => b.disabled = true);
+
+            if (selectedIdx === qData.correct) {
+                playSuccessSound();
+                btnElement.classList.remove('border-slate-200', 'bg-white');
+                btnElement.classList.add('border-emerald-500', 'bg-emerald-100', 'text-emerald-900');
+                
+                feedbackEl.className = "p-4 rounded-2xl mb-4 text-sm font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check ml-1"></i> إجابة صحيحة وممتازة! (+10 نقاط)`;
+                
+                addScore(10);
+                updateRobotText("أحسنت صنعاً! إجابة دقيقة تدل على معرفتك العميقة بقيم الثقافة.");
+            } else {
+                playErrorSound();
+                btnElement.classList.remove('border-slate-200', 'bg-white');
+                btnElement.classList.add('border-rose-400', 'bg-rose-100', 'text-rose-900');
+
+                // Highlight correct one
+                allBtns[qData.correct].classList.add('border-emerald-500', 'bg-emerald-50');
+
+                feedbackEl.className = "p-4 rounded-2xl mb-4 text-sm font-bold bg-rose-100 text-rose-800 border border-rose-300";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark ml-1"></i> محاولة جيدة! الإجابة الصحيحة هي: (${qData.options[qData.correct]})`;
+                
+                updateRobotText("لا بأس يا بطل، التعلم يأتي من المحاولة! تذكر المعلومة الصحيحة للسؤال القادم.");
+            }
+
+            feedbackEl.classList.remove('hidden');
+            document.getElementById('l1-next-btn').classList.remove('hidden');
+        }
+
+        function nextL1Question() {
+            if(!state.l1Locked || state.currentLevel !== 1) return;
+            state.l1Index++;
+            if (state.l1Index < state.l1Questions.length) {
+                setProgressBar(20 + (state.l1Index * 5));
+                renderL1Question();
+            } else {
+                // Move to Level 2
+                startLevel2();
+            }
+        }
+
+        // --- LEVEL 2 LOGIC ---
+        function startLevel2() {
+            showScreen('screen-level2');
+            state.currentLevel = 2;
+            state.l2Index = 0;
+            setProgressBar(50);
+            renderL2Question();
+        }
+
+        function renderL2Question() {
+            state.l2Locked = false;
+            selectedWrongWordSpan = null;
+            const qData = state.l2Questions[state.l2Index];
+            document.getElementById('l2-counter').innerText = `التحدي ${state.l2Index + 1} من ${state.l2Questions.length}`;
+            updateRobotText(qData.hint);
+
+            const textContainer = document.getElementById('l2-text-content');
+            textContainer.innerHTML = '';
+
+            document.getElementById('l2-correction-zone').classList.add('hidden');
+            document.getElementById('l2-feedback').classList.add('hidden');
+            document.getElementById('l2-next-btn').classList.add('hidden');
+
+            qData.words.forEach((word, idx) => {
+                const span = document.createElement('span');
+                span.innerText = word + ' ';
+                span.className = "inline-block px-1.5 py-0.5 rounded cursor-pointer hover:bg-sky-100 hover:text-sky-800 transition font-bold";
+                span.onclick = () => onL2WordClick(idx, span);
+                textContainer.appendChild(span);
+            });
+        }
+
+        let selectedWrongWordSpan = null;
+
+        function onL2WordClick(wordIdx, spanEl) {
+            if(state.currentLevel !== 2 || state.l2Locked) return;
+            const qData = state.l2Questions[state.l2Index];
+            const feedbackEl = document.getElementById('l2-feedback');
+
+            // Clear previous highlight
+            document.querySelectorAll('#l2-text-content span').forEach(s => s.classList.remove('bg-amber-200', 'text-amber-900', 'bg-rose-200'));
+
+            if (wordIdx === qData.wrongIndex) {
+                playSuccessSound();
+                spanEl.classList.add('bg-amber-200', 'text-amber-900');
+                selectedWrongWordSpan = spanEl;
+
+                updateRobotText("رائع! لقد اكتشفت المعلومة الخاطئة. الآن اختر الكلمة الصحيحة لتصحيح الجملة:");
+                
+                // Show correction options
+                const correctionZone = document.getElementById('l2-correction-zone');
+                const optionsDiv = document.getElementById('l2-options');
+                optionsDiv.innerHTML = '';
+
+                qData.correctOptions.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = "bg-white hover:bg-sky-600 hover:text-white border border-sky-300 px-4 py-2 rounded-xl text-sm font-bold text-sky-800 transition shadow-sm";
+                    btn.innerText = opt;
+                    btn.onclick = () => checkL2Correction(opt);
+                    optionsDiv.appendChild(btn);
+                });
+
+                correctionZone.classList.remove('hidden');
+                feedbackEl.classList.add('hidden');
+            } else {
+                playErrorSound();
+                spanEl.classList.add('bg-rose-200');
+                feedbackEl.className = "p-4 rounded-2xl mb-4 text-sm font-bold bg-amber-50 text-amber-800 border border-amber-300";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-lightbulb ml-1"></i> هذه الكلمة صحيحة بحسب ثقافة المنطقة. فكّر مجدداً!`;
+                feedbackEl.classList.remove('hidden');
+            }
+        }
+
+        function checkL2Correction(chosenOpt) {
+            if(state.currentLevel !== 2 || state.l2Locked || !selectedWrongWordSpan) return;
+            const qData = state.l2Questions[state.l2Index];
+            const feedbackEl = document.getElementById('l2-feedback');
+
+            if (chosenOpt === qData.correctAnswer) {
+                playSuccessSound();
+                state.l2Locked = true;
+                addScore(15);
+                
+                if (selectedWrongWordSpan) {
+                    selectedWrongWordSpan.innerText = chosenOpt + ' ';
+                    selectedWrongWordSpan.className = "inline-block px-1.5 py-0.5 rounded font-black text-emerald-700 bg-emerald-100";
+                }
+
+                document.getElementById('l2-correction-zone').classList.add('hidden');
+                
+                feedbackEl.className = "p-4 rounded-2xl mb-4 text-sm font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check ml-1"></i> تصحيح ممتاز! صرّحت بالمعلومة الصحيحة لثقافة الشعب (+15 نقطة).`;
+                feedbackEl.classList.remove('hidden');
+
+                updateRobotText("عمل دقيق جداً! قوة الملاحظة لديك ممتازة.");
+                document.getElementById('l2-next-btn').classList.remove('hidden');
+            } else {
+                playErrorSound();
+                feedbackEl.className = "p-4 rounded-2xl mb-4 text-sm font-bold bg-rose-100 text-rose-800 border border-rose-300";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark ml-1"></i> خيار غير دقيق، حاول اختيار كلمة أخرى أصح للفقرة.`;
+                feedbackEl.classList.remove('hidden');
+            }
+        }
+
+        function nextL2Question() {
+            if(!state.l2Locked || state.currentLevel !== 2) return;
+            state.l2Index++;
+            if (state.l2Index < state.l2Questions.length) {
+                setProgressBar(50 + (state.l2Index * 10));
+                renderL2Question();
+            } else {
+                startLevel3();
+            }
+        }
+
+        // --- LEVEL 3 LOGIC ---
+        function startLevel3() {
+            showScreen('screen-level3');
+            state.currentLevel = 3;
+            state.l3Index = 0;
+            setProgressBar(75);
+            renderL3Question();
+        }
+
+        function renderL3Question() {
+            state.l3Locked = false;
+            const qData = state.l3Questions[state.l3Index];
+            document.getElementById('l3-counter').innerText = `المهمة ${state.l3Index + 1} من ${state.l3Questions.length}`;
+            document.getElementById('l3-topic-name').innerText = qData.title;
+
+            updateRobotText("رتب الجمل بالترتيب المنطقي للحدث بالضغط على الجمل بالترتيب.");
+
+            state.l3UserSelection = [];
+            
+            // Shuffle sentences for display
+            const shuffled = [...qData.sentences];
+            for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
+            if(shuffled.every((v,i)=>v.id===qData.sentences[i].id)){[shuffled[0],shuffled[1]]=[shuffled[1],shuffled[0]];}
+
+            const poolEl = document.getElementById('l3-sentence-pool');
+            poolEl.innerHTML = '';
+
+            shuffled.forEach(s => {
+                const div = document.createElement('div');
+                div.id = `l3-item-${s.id}`;
+                div.className = "drag-item bg-white p-3 rounded-xl border border-slate-200 shadow-sm text-sm font-medium text-slate-700 hover:border-indigo-400 flex items-center justify-between";
+                div.innerHTML = `
+                    <span>${s.text}</span>
+                    <button onclick="selectL3Sentence(${s.id})" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1 rounded-lg text-xs font-bold">
+                        اختيار <i class="fa-solid fa-plus mr-1"></i>
+                    </button>
+                `;
+                poolEl.appendChild(div);
+            });
+
+            document.getElementById('l3-ordered-list').innerHTML = `<p class="text-xs text-slate-400 text-center py-4">انقر على الجمل أعلاه لإضافتها هنا بالترتيب الصحيح...</p>`;
+            document.getElementById('l3-feedback').classList.add('hidden');
+            document.getElementById('l3-check-btn').classList.remove('hidden');
+            document.getElementById('l3-next-btn').classList.add('hidden');
+        }
+
+        function selectL3Sentence(id) {
+            if(state.currentLevel !== 3 || state.l3Locked) return;
+            const qData = state.l3Questions[state.l3Index];
+            const sentenceObj = qData.sentences.find(s => s.id === id);
+
+            if (state.l3UserSelection.some(s => s.id === id)) return; // Already selected
+
+            state.l3UserSelection.push(sentenceObj);
+            
+            // Hide from pool
+            document.getElementById(`l3-item-${id}`).classList.add('opacity-40', 'pointer-events-none');
+
+            // Render in order list
+            renderL3OrderedList();
+            playBeep(600, 'sine', 0.08);
+        }
+
+        function renderL3OrderedList() {
+            const listEl = document.getElementById('l3-ordered-list');
+            if (state.l3UserSelection.length === 0) {
+                listEl.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">انقر على الجمل أعلاه لإضافتها هنا بالترتيب الصحيح...</p>`;
+                return;
+            }
+
+            listEl.innerHTML = '';
+            state.l3UserSelection.forEach((s, idx) => {
+                const div = document.createElement('div');
+                div.className = "bg-indigo-50/80 border border-indigo-200 p-3 rounded-xl text-sm font-medium text-indigo-900 flex items-center justify-between";
+                div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 h-5 bg-indigo-600 text-white rounded-full flex items-center justify-center text-xs font-bold">${idx + 1}</span>
+                        <span>${s.text}</span>
+                    </div>
+                    <button aria-label="إزالة الجملة من الترتيب" onclick="removeL3Sentence(${s.id})" class="text-rose-500 hover:text-rose-700 text-xs">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                `;
+                listEl.appendChild(div);
+            });
+        }
+
+        function removeL3Sentence(id) {
+            if(state.currentLevel !== 3 || state.l3Locked) return;
+            state.l3UserSelection = state.l3UserSelection.filter(s => s.id !== id);
+            document.getElementById(`l3-item-${id}`).classList.remove('opacity-40', 'pointer-events-none');
+            renderL3OrderedList();
+            playBeep(300, 'sine', 0.08);
+        }
+
+        function resetL3Current() {
+            if(state.currentLevel !== 3 || state.l3Locked) return;
+            renderL3Question();
+        }
+
+        function checkL3Order() {
+            if(state.currentLevel !== 3 || state.l3Locked) return;
+            const qData = state.l3Questions[state.l3Index];
+            const feedbackEl = document.getElementById('l3-feedback');
+
+            if (state.l3UserSelection.length < qData.sentences.length) {
+                feedbackEl.className = "p-4 rounded-2xl my-4 text-sm font-bold bg-amber-100 text-amber-800 border border-amber-300";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-exclamation-triangle ml-1"></i> يرجى ترتيب جميع الجمل أولاً قبل التحقق!`;
+                feedbackEl.classList.remove('hidden');
+                return;
+            }
+
+            // Check if ids are sequentially 1, 2, 3, 4
+            let isCorrect = true;
+            for (let i = 0; i < qData.sentences.length; i++) {
+                if (state.l3UserSelection[i].id !== i + 1) {
+                    isCorrect = false;
+                    break;
+                }
+            }
+
+            if (isCorrect) {
+                playSuccessSound();
+                state.l3Locked = true;
+                addScore(20);
+                feedbackEl.className = "p-4 rounded-2xl my-4 text-sm font-bold bg-emerald-100 text-emerald-800 border border-emerald-300";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check ml-1"></i> ممتاز جداً! الفقرة أصبحت متسلسلة ومترابطة المعنى (+20 نقطة).`;
+                feedbackEl.classList.remove('hidden');
+
+                updateRobotText("يا لك من مهندس نصوص بارع! تسلسل الأفكار لديك رائع وسلس.");
+                
+                document.getElementById('l3-check-btn').classList.add('hidden');
+                document.getElementById('l3-next-btn').classList.remove('hidden');
+            } else {
+                playErrorSound();
+                feedbackEl.className = "p-4 rounded-2xl my-4 text-sm font-bold bg-rose-100 text-rose-800 border border-rose-300";
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark ml-1"></i> الترتيب يحتاج تعديلاً. اقرأ كلمات الربط (أولاً، ثانياً، أخيراً) وانتبه للتسلسل.`;
+                feedbackEl.classList.remove('hidden');
+
+                updateRobotText("انتبه لروابط الجمل الزمانية لمساعدتك في بناء الترتيب الصحيح.");
+            }
+        }
+
+        function nextL3Question() {
+            if(!state.l3Locked || state.currentLevel !== 3) return;
+            state.l3Index++;
+            if (state.l3Index < state.l3Questions.length) {
+                setProgressBar(85);
+                renderL3Question();
+            } else {
+                setProgressBar(100);
+                showExitTicket();
+            }
+        }
+
+        // --- EXIT TICKET & FINAL CERTIFICATE ---
+        function showExitTicket() {
+            state.currentLevel = 4;
+            showScreen('screen-exit');
+            updateRobotText("أهنئك على الوصول للمرحلة الختامية! أملأ تذكرة الخروج التأملية لإنهاء التحدي بامتياز.");
+        }
+
+        function generateCertificate() {
+            if(state.currentLevel !== 4) return;
+            const reflectionText = document.getElementById('reflection-input').value.trim();
+            if (!reflectionText) {
+                alert("يرجى كتابة جملة أو جملتين في سؤال التفكير والتأمل قبل الانتقال للبطاقة!");
+                return;
+            }
+
+            document.getElementById('cert-avatar').innerText = state.avatarIcon;
+            document.getElementById('cert-name').innerText = state.avatarName;
+            document.getElementById('cert-score').innerText = `${state.score} من ${state.l1Questions.length*10 + state.l2Questions.length*15 + state.l3Questions.length*20}`;
+            document.getElementById('cert-reflection').innerText = `"${reflectionText}"`;
+            
+            const today = new Date();
+            document.getElementById('cert-date').innerText = today.toLocaleDateString('ar-EG');
+
+            document.getElementById('printable-certificate').classList.remove('hidden');
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            
+            playSuccessSound();
+        }
+
+        function closeCertificate() {
+            document.getElementById('printable-certificate').classList.add('hidden');
+        }
+
+        function restartGame() {
+            state.currentLevel = 0;
+            state.l1Locked = state.l2Locked = state.l3Locked = false;
+            setProgressBar(0);
+            state.score = 0;
+            document.getElementById('score-display').innerText = '0';
+            document.getElementById('reflection-input').value = '';
+            closeCertificate();
+            showScreen('screen-welcome');
+            updateRobotText("مرحباً بك مجدداً! جاهز لخوض التحدي مرة أخرى لتحقيق نتيجة أفضل؟");
+        }
+
+        function resetCurrentLevel() { restartGame(); }
+
+        // Initialize sound on user interaction
+        window.addEventListener('click', function initOnce() {
+            initAudio();
+            window.removeEventListener('click', initOnce);
+        });
+    </script>
+</body>
+</html>
