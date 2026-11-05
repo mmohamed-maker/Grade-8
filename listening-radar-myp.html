@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رادار المستمع الذكي - برنامج السنوات المتوسطة (MYP)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo & Tajawal for optimal Arabic readability -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti for celebrations -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --font-main: 'Cairo', 'Tajawal', sans-serif;
+        }
+        body {
+            font-family: var(--font-main);
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #020617);
+            color: #f8fafc;
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        /* Radar Sweep Animation */
+        .radar-box {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid #38bdf8;
+            background: radial-gradient(circle, rgba(56,189,248,0.15) 0%, rgba(15,23,42,0.8) 100%);
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+            overflow: hidden;
+        }
+        .radar-box::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: conic-gradient(from 0deg, transparent 70%, rgba(56, 189, 248, 0.75) 100%);
+            transform-origin: 0 0;
+            animation: radar-spin 3s linear infinite;
+        }
+        .radar-grid {
+            position: absolute;
+            inset: 15%;
+            border-radius: 50%;
+            border: 1px dashed rgba(56, 189, 248, 0.4);
+        }
+        @keyframes radar-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Game Buttons 3D Style */
+        .btn-3d-green {
+            background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+            box-shadow: 0 8px 0 #14532d, 0 15px 20px rgba(0,0,0,0.35);
+            transition: all 0.15s ease;
+        }
+        .btn-3d-green:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #14532d, 0 5px 10px rgba(0,0,0,0.3);
+        }
+
+        .btn-3d-red {
+            background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 8px 0 #7f1d1d, 0 15px 20px rgba(0,0,0,0.35);
+            transition: all 0.15s ease;
+        }
+        .btn-3d-red:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #7f1d1d, 0 5px 10px rgba(0,0,0,0.3);
+        }
+
+        .btn-3d-blue {
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+            box-shadow: 0 6px 0 #0c4a6e, 0 12px 15px rgba(0,0,0,0.3);
+            transition: all 0.15s ease;
+        }
+        .btn-3d-blue:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #0c4a6e, 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .btn-3d-gold {
+            background: linear-gradient(180deg, #facc15 0%, #eab308 100%);
+            box-shadow: 0 6px 0 #854d0e, 0 12px 15px rgba(0,0,0,0.3);
+            color: #0f172a;
+            transition: all 0.15s ease;
+        }
+        .btn-3d-gold:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #854d0e, 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        /* Audio Wave Bars */
+        .wave-bar {
+            width: 6px;
+            background: #38bdf8;
+            border-radius: 999px;
+            transition: height 0.2s ease;
+        }
+        .playing .wave-bar {
+            animation: sound-wave 0.7s infinite ease-in-out alternate;
+        }
+        .playing .wave-bar:nth-child(1) { animation-delay: 0.0s; }
+        .playing .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+        .playing .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+        .playing .wave-bar:nth-child(4) { animation-delay: 0.1s; }
+        .playing .wave-bar:nth-child(5) { animation-delay: 0.25s; }
+        .playing .wave-bar:nth-child(6) { animation-delay: 0.4s; }
+
+        @keyframes sound-wave {
+            0% { height: 8px; background: #38bdf8; }
+            100% { height: 34px; background: #facc15; }
+        }
+
+        /* Smooth Card Appear */
+        .fade-in-up {
+            animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Pulse Glow */
+        .glow-gold {
+            box-shadow: 0 0 25px rgba(250, 204, 21, 0.55);
+        }
+    </style>
+</head>
+<body class="flex flex-col justify-between min-h-screen">
+
+    <!-- TOP NAVIGATION & SCOREBOARD BAR -->
+    <header class="w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-700/80 px-4 py-3 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            
+            <!-- Brand & Radar Icon -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="goToStage(0)">
+                <div class="radar-box !w-12 !h-12 flex items-center justify-center shrink-0">
+                    <div class="radar-grid"></div>
+                    <span class="text-xl relative z-10">🎧</span>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-black text-sky-400 tracking-wide">رادار المستمع الذكي</h1>
+                    <p class="text-xs md:text-sm text-slate-300 font-semibold">برنامج السنوات المتوسطة (MYP) - المعيار (أ)</p>
+                </div>
+            </div>
+
+            <!-- Stage Navigation Pills -->
+            <nav class="flex items-center gap-1.5 md:gap-2 bg-slate-800/90 p-1.5 rounded-2xl border border-slate-700">
+                <button onclick="goToStage(0)" id="nav-0" class="stage-nav-btn px-3 py-1.5 rounded-xl text-xs md:text-sm font-bold transition-all bg-sky-500 text-slate-950">
+                    🏠 البداية
+                </button>
+                <button onclick="goToStage(1)" id="nav-1" class="stage-nav-btn px-3 py-1.5 rounded-xl text-xs md:text-sm font-bold transition-all text-slate-300 hover:bg-slate-700">
+                    1️⃣ فحص الرادار
+                </button>
+                <button onclick="goToStage(2)" id="nav-2" class="stage-nav-btn px-3 py-1.5 rounded-xl text-xs md:text-sm font-bold transition-all text-slate-300 hover:bg-slate-700">
+                    2️⃣ تحدي الـ 8 درجات
+                </button>
+                <button onclick="goToStage(3)" id="nav-3" class="stage-nav-btn px-3 py-1.5 rounded-xl text-xs md:text-sm font-bold transition-all text-slate-300 hover:bg-slate-700">
+                    3️⃣ تذكرة الخروج
+                </button>
+            </nav>
+
+            <!-- Live Scoreboard & Audio Controls -->
+            <div class="flex items-center gap-3">
+                <!-- Whole Class Score -->
+                <div id="whole-class-board" class="flex items-center gap-2 bg-emerald-950/80 border border-emerald-500/40 px-3.5 py-1.5 rounded-2xl">
+                    <span class="text-lg">🌟</span>
+                    <span class="text-xs md:text-sm font-bold text-emerald-200">نقاط الصف:</span>
+                    <span id="class-score" class="text-lg md:text-xl font-black text-emerald-400">0</span>
+                    <button onclick="addClassPoints(10)" title="إضافة نقاط تشجيعية" class="bg-emerald-600 hover:bg-emerald-500 text-white w-6 h-6 rounded-lg text-xs font-black flex items-center justify-center">+</button>
+                </div>
+
+                <!-- Two Teams Scoreboard (Hidden by default until chosen) -->
+                <div id="teams-board" class="hidden items-center gap-2">
+                    <!-- Team 1: Falcons -->
+                    <div class="flex items-center gap-2 bg-sky-950/90 border border-sky-500/50 px-3 py-1 rounded-2xl">
+                        <span class="text-base">🦅</span>
+                        <span class="text-xs font-bold text-sky-200">الصقور:</span>
+                        <span id="team1-score" class="text-lg font-black text-sky-400">0</span>
+                        <button onclick="addTeamPoints(1, 10)" class="bg-sky-600 hover:bg-sky-500 text-white w-6 h-6 rounded-lg text-xs font-black">+</button>
+                    </div>
+                    <!-- Team 2: Stars -->
+                    <div class="flex items-center gap-2 bg-amber-950/90 border border-amber-500/50 px-3 py-1 rounded-2xl">
+                        <span class="text-base">⭐</span>
+                        <span class="text-xs font-bold text-amber-200">النجوم:</span>
+                        <span id="team2-score" class="text-lg font-black text-amber-400">0</span>
+                        <button onclick="addTeamPoints(2, 10)" class="bg-amber-600 hover:bg-amber-500 text-white w-6 h-6 rounded-lg text-xs font-black">+</button>
+                    </div>
+                </div>
+
+                <!-- Sound Toggle Button -->
+                <button onclick="toggleMute()" id="mute-btn" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 p-2.5 rounded-xl transition" title="كتم/تشغيل المؤثرات الصوتية">
+                    <i id="mute-icon" class="fas fa-volume-up text-lg text-sky-400"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 flex items-center justify-center p-4 md:p-8 max-w-6xl w-full mx-auto">
+
+        <!-- ==========================================
+             STAGE 0: WELCOME & DASHBOARD SCREEN
+             ========================================== -->
+        <section id="stage-0" class="w-full fade-in-up">
+            <div class="bg-slate-900/85 border-2 border-sky-500/40 rounded-3xl p-6 md:p-10 shadow-2xl text-center relative overflow-hidden">
+                
+                <!-- Decorative Glow -->
+                <div class="absolute -top-24 -left-24 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -right-24 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <!-- Center Animated Radar -->
+                <div class="flex justify-center mb-5">
+                    <div class="radar-box flex items-center justify-center">
+                        <div class="radar-grid"></div>
+                        <span class="text-4xl relative z-10">📡</span>
+                    </div>
+                </div>
+
+                <h2 class="text-3xl md:text-5xl font-black text-white mb-3 leading-tight">
+                    مرحباً بكم في <span class="text-sky-400">رادار المستمع الذكي!</span> 🎧
+                </h2>
+                <p class="text-lg md:text-2xl text-slate-300 font-medium max-w-3xl mx-auto mb-8">
+                    تحدي مهارة الاستماع وفهم تقييم المعيار (أ) في برنامج السنوات المتوسطة <span class="text-amber-400 font-bold">(MYP)</span> بكلمات سهلة وممتعة!
+                </p>
+
+                <!-- Visual Guide for Student Cards -->
+                <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 mb-8">
+                    <h3 class="text-lg md:text-xl font-extrabold text-amber-300 mb-4 flex items-center justify-center gap-2">
+                        <span>✋</span> جهّز بطاقاتك أو إشارات يدك قبل البدء:
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-right">
+                        <!-- Green Card -->
+                        <div class="bg-emerald-950/60 border-2 border-emerald-500/50 rounded-2xl p-4 flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-2xl bg-emerald-500 flex items-center justify-center text-3xl shrink-0 shadow-lg">
+                                👍
+                            </div>
+                            <div>
+                                <div class="text-emerald-400 font-black text-lg">البطاقة الخضراء 🟢</div>
+                                <div class="text-slate-200 text-sm md:text-base font-semibold">تصرف صحيح للاستماع الجيد</div>
+                            </div>
+                        </div>
+                        <!-- Red Card -->
+                        <div class="bg-rose-950/60 border-2 border-rose-500/50 rounded-2xl p-4 flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-2xl bg-rose-500 flex items-center justify-center text-3xl shrink-0 shadow-lg">
+                                👎
+                            </div>
+                            <div>
+                                <div class="text-rose-400 font-black text-lg">البطاقة الحمراء 🔴</div>
+                                <div class="text-slate-200 text-sm md:text-base font-semibold">تصرف خاطئ يضيع التركيز</div>
+                            </div>
+                        </div>
+                        <!-- Star Card -->
+                        <div class="bg-amber-950/60 border-2 border-amber-400/50 rounded-2xl p-4 flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-2xl bg-amber-400 flex items-center justify-center text-3xl shrink-0 shadow-lg">
+                                ⭐
+                            </div>
+                            <div>
+                                <div class="text-amber-300 font-black text-lg">بطاقة النجمة ⭐</div>
+                                <div class="text-slate-200 text-sm md:text-base font-semibold">إبداء الرأي والدرجة الكاملة (8/8)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mode Selector -->
+                <div class="mb-8">
+                    <p class="text-slate-300 font-bold mb-3 text-base md:text-lg">اختر نظام اللعب داخل الصف:</p>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <button onclick="setGameMode('class')" id="mode-class-btn" class="px-6 py-3 rounded-2xl font-extrabold text-base md:text-lg border-2 border-sky-400 bg-sky-500/20 text-white flex items-center gap-2 transition-all">
+                            <span>🌟</span> وضع الصف الكامل (تعاوني)
+                        </button>
+                        <button onclick="setGameMode('teams')" id="mode-teams-btn" class="px-6 py-3 rounded-2xl font-extrabold text-base md:text-lg border-2 border-slate-700 bg-slate-800/70 text-slate-300 flex items-center gap-2 hover:border-amber-400 transition-all">
+                            <span>⚔️</span> تحدي الفريقين (🦅 الصقور ضد النجوم ⭐)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Start Action Button -->
+                <button onclick="goToStage(1)" class="btn-3d-gold px-10 py-5 rounded-2xl font-black text-2xl md:text-3xl inline-flex items-center gap-4">
+                    <span>ابدأ تشغيل الرادار الآن!</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             STAGE 1: RADAR CHECK (5 INTERACTIVE QUESTIONS)
+             ========================================== -->
+        <section id="stage-1" class="w-full hidden fade-in-up">
+            <div class="bg-slate-900/90 border-2 border-sky-500/40 rounded-3xl p-6 md:p-8 shadow-2xl">
+                
+                <!-- Stage Header & Question Progress -->
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
+                    <div>
+                        <span class="bg-sky-500/20 text-sky-300 border border-sky-400/30 px-3 py-1 rounded-xl text-sm font-black">
+                            المرحلة الأولى: فحص الرادار 📡
+                        </span>
+                        <h2 class="text-2xl md:text-3xl font-black text-white mt-2">شروط وآداب الاستماع الجيد</h2>
+                    </div>
+
+                    <!-- Progress Dots -->
+                    <div class="flex items-center gap-2" id="q-progress-dots">
+                        <!-- Dynamically rendered -->
+                    </div>
+                </div>
+
+                <!-- Question Display Card -->
+                <div class="bg-slate-800/90 border-2 border-slate-700 rounded-3xl p-6 md:p-10 text-center relative mb-6">
+                    
+                    <!-- 5-Second Countdown Timer Widget -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+                        <span id="q-counter-badge" class="bg-slate-700 text-amber-300 px-4 py-1.5 rounded-xl font-extrabold text-base md:text-lg">
+                            الموقف 1 من 5
+                        </span>
+
+                        <div class="flex items-center gap-2">
+                            <button onclick="speakCurrentRadarQuestion()" class="bg-slate-700 hover:bg-slate-600 text-sky-300 px-4 py-2 rounded-xl font-bold text-sm md:text-base flex items-center gap-2 transition">
+                                <i class="fas fa-volume-up"></i> استمع للموقف
+                            </button>
+                            <button onclick="startFiveSecTimer()" id="timer-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-5 py-2 rounded-xl font-black text-base md:text-lg flex items-center gap-2 transition shadow-lg">
+                                <span>⏱️ عداد 5 ثوانٍ للبطاقات</span>
+                                <span id="timer-display" class="bg-slate-900 text-amber-300 px-2.5 py-0.5 rounded-lg text-base">5</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Expressive Emoji & Big Statement -->
+                    <div id="q-emoji" class="text-6xl md:text-7xl mb-5 transform transition-transform duration-300 hover:scale-110">
+                        📝
+                    </div>
+                    <p id="q-text" class="text-2xl md:text-4xl font-black text-white leading-relaxed max-w-4xl mx-auto">
+                        "أقرأ الأسئلة الموجودة في الورقة قبل أن يشغل المعلم الصوت."
+                    </p>
+                </div>
+
+                <!-- Huge Green / Red Decision Buttons -->
+                <div id="q-action-buttons" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <button onclick="checkRadarAnswer(true)" class="btn-3d-green py-6 px-8 rounded-3xl font-black text-2xl md:text-4xl text-white flex items-center justify-center gap-4">
+                        <span class="text-4xl md:text-5xl">🟢</span>
+                        <span>تصرف صحيح 👍</span>
+                    </button>
+                    <button onclick="checkRadarAnswer(false)" class="btn-3d-red py-6 px-8 rounded-3xl font-black text-2xl md:text-4xl text-white flex items-center justify-center gap-4">
+                        <span class="text-4xl md:text-5xl">🔴</span>
+                        <span>تصرف خاطئ 👎</span>
+                    </button>
+                </div>
+
+                <!-- Immediate Feedback Box (Hidden until answered) -->
+                <div id="q-feedback-box" class="hidden mt-6 rounded-3xl p-6 border-2 text-center fade-in-up">
+                    <div id="q-feedback-title" class="text-2xl md:text-3xl font-black mb-2"></div>
+                    <p id="q-feedback-desc" class="text-xl md:text-2xl font-bold text-slate-100 mb-6"></p>
+                    
+                    <div class="flex flex-wrap items-center justify-center gap-4">
+                        <!-- Quick Award Team Buttons (Shown in Teams Mode) -->
+                        <div id="feedback-team-awards" class="hidden items-center gap-3">
+                            <button onclick="awardTeamFromFeedback(1, 10, this)" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-2.5 rounded-xl font-bold text-base flex items-center gap-2">
+                                🦅 +10 للصقور
+                            </button>
+                            <button onclick="awardTeamFromFeedback(2, 10, this)" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2.5 rounded-xl font-bold text-base flex items-center gap-2">
+                                ⭐ +10 للنجوم
+                            </button>
+                        </div>
+
+                        <button onclick="nextRadarQuestion()" id="next-q-btn" class="btn-3d-blue px-8 py-3.5 rounded-2xl font-black text-xl text-white flex items-center gap-3">
+                            <span>الموقف التالي</span>
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==========================================
+             STAGE 2: THE 8-POINT MYP CHALLENGE (CRITERION A)
+             ========================================== -->
+        <section id="stage-2" class="w-full hidden fade-in-up">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- RIGHT COLUMN: MYP 8-POINT METER (4 Cols on Desktop) -->
+                <div class="lg:col-span-4 bg-slate-900/90 border-2 border-amber-400/40 rounded-3xl p-6 shadow-2xl text-center sticky top-24">
+                    <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 px-3 py-1 rounded-xl text-xs font-black">
+                        معيار التقييم (أ) في MYP
+                    </span>
+                    <h3 class="text-2xl font-black text-white mt-2 mb-1">عداد الدرجات الذكي</h3>
+                    <p class="text-sm text-slate-300 mb-5">اجمع 8 من 8 بخطوات بسيطة!</p>
+
+                    <!-- Big Score Readout -->
+                    <div id="myp-score-badge" class="w-32 h-32 mx-auto rounded-full bg-slate-800 border-4 border-sky-400 flex flex-col items-center justify-center mb-6 shadow-inner transition-all duration-500">
+                        <span id="myp-current-num" class="text-5xl font-black text-amber-400">0</span>
+                        <span class="text-sm font-bold text-slate-300">من 8 درجات</span>
+                    </div>
+
+                    <!-- Visual Level Progress Steps -->
+                    <div class="space-y-3 text-right">
+                        <!-- Band 6-8 -->
+                        <div id="meter-band-3" class="p-3.5 rounded-2xl border-2 border-slate-700 bg-slate-800/50 transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">⭐</span>
+                                <div>
+                                    <div class="font-black text-sm md:text-base text-slate-200">الدرجات (6 - 8)</div>
+                                    <div class="text-xs text-slate-400">الربط وإبداء الرأي البسيط</div>
+                                </div>
+                            </div>
+                            <span id="check-band-3" class="text-slate-600 text-xl"><i class="fas fa-lock"></i></span>
+                        </div>
+
+                        <!-- Band 3-5 -->
+                        <div id="meter-band-2" class="p-3.5 rounded-2xl border-2 border-slate-700 bg-slate-800/50 transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🔍</span>
+                                <div>
+                                    <div class="font-black text-sm md:text-base text-slate-200">الدرجات (3 - 5)</div>
+                                    <div class="text-xs text-slate-400">نبرة الصوت وهدف المتحدث</div>
+                                </div>
+                            </div>
+                            <span id="check-band-2" class="text-slate-600 text-xl"><i class="fas fa-lock"></i></span>
+                        </div>
+
+                        <!-- Band 1-2 -->
+                        <div id="meter-band-1" class="p-3.5 rounded-2xl border-2 border-sky-500/60 bg-sky-950/40 transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🎯</span>
+                                <div>
+                                    <div class="font-black text-sm md:text-base text-white">الدرجات (1 - 2)</div>
+                                    <div class="text-xs text-sky-300">المعلومات الواضحة والمباشرة</div>
+                                </div>
+                            </div>
+                            <span id="check-band-1" class="text-sky-400 text-xl"><i class="fas fa-unlock"></i></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LEFT COLUMN: AUDIO SCRIPT & 3 CHALLENGE LEVELS (8 Cols on Desktop) -->
+                <div class="lg:col-span-8 space-y-6">
+                    
+                    <!-- Audio Script Simulation Card -->
+                    <div class="bg-slate-900/90 border-2 border-sky-500/50 rounded-3xl p-6 shadow-xl">
+                        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="text-2xl">🎙️</span>
+                                <span class="font-black text-sky-300 text-base md:text-lg">النص المسموع للتدريب (يمثله المعلم بصوت متعب):</span>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <!-- Play Audio TTS Button -->
+                                <button onclick="playListeningClip()" id="tts-play-btn" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-4 py-2 rounded-xl font-black text-sm md:text-base flex items-center gap-2 transition shadow">
+                                    <i class="fas fa-play"></i>
+                                    <span>تشغيل الصوت الآلي</span>
+                                </button>
+                                <!-- Toggle Text Visibility for pure listening practice -->
+                                <button onclick="toggleScriptVisibility()" id="toggle-script-btn" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 px-3 py-2 rounded-xl font-bold text-xs md:text-sm flex items-center gap-1.5 transition">
+                                    <i class="fas fa-eye-slash"></i>
+                                    <span>إخفاء النص للتركيز السمعي</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Animated Sound Wave Bar -->
+                        <div id="audio-wave-container" class="flex items-center justify-center gap-2 h-10 mb-3 bg-slate-950/70 rounded-xl px-4">
+                            <div class="wave-bar h-3"></div>
+                            <div class="wave-bar h-5"></div>
+                            <div class="wave-bar h-4"></div>
+                            <div class="wave-bar h-6"></div>
+                            <div class="wave-bar h-3"></div>
+                            <div class="wave-bar h-5"></div>
+                            <span class="text-xs text-slate-400 mr-3 font-bold">استمع بتركيز إلى الكلمات ونبرة الصوت...</span>
+                        </div>
+
+                        <!-- Script Text Box -->
+                        <div id="script-text-box" class="bg-slate-800/90 border border-slate-700 rounded-2xl p-5 text-center transition-all">
+                            <p class="text-2xl md:text-3xl font-black text-amber-300 leading-relaxed">
+                                "آهٍ يا رأسي.. الساعة الآن العاشرة ليلاً، وأنا ما زلت في مكتبي بالمدرسة أصحح الدفاتر لأنني أريد أن يفرح طلابي بدرجاتهم غداً!"
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- LEVEL TABS NAVIGATION -->
+                    <div class="grid grid-cols-3 gap-3">
+                        <button onclick="switchMypTab(1)" id="myp-tab-1" class="py-3 px-4 rounded-2xl font-black text-sm md:text-lg border-2 border-sky-400 bg-sky-500 text-slate-950 transition">
+                            1️⃣ المستوى الأول (1-2)
+                        </button>
+                        <button onclick="switchMypTab(2)" id="myp-tab-2" class="py-3 px-4 rounded-2xl font-black text-sm md:text-lg border-2 border-slate-700 bg-slate-800 text-slate-300 hover:border-sky-400 transition">
+                            2️⃣ المستوى الثاني (3-5)
+                        </button>
+                        <button onclick="switchMypTab(3)" id="myp-tab-3" class="py-3 px-4 rounded-2xl font-black text-sm md:text-lg border-2 border-slate-700 bg-slate-800 text-slate-300 hover:border-amber-400 transition">
+                            3️⃣ المستوى الثالث (6-8) ⭐
+                        </button>
+                    </div>
+
+                    <!-- ==========================================
+                         SUB-STEP 1: DIRECT INFO (1-2 POINTS)
+                         ========================================== -->
+                    <div id="myp-panel-1" class="bg-slate-900/90 border-2 border-sky-500/40 rounded-3xl p-6 md:p-8 shadow-xl fade-in-up">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="text-3xl">🎯</span>
+                            <div>
+                                <h4 class="text-xl md:text-2xl font-black text-sky-400">تحدي الدرجات (1 - 2): المعلومات المباشرة</h4>
+                                <p class="text-slate-300 text-sm md:text-base">ماذا سمعت بوضوح في الجملة؟</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-2xl p-5 my-5 border border-slate-700">
+                            <p class="text-2xl md:text-3xl font-black text-white text-center">
+                                ❓ أين يجلس المتحدث؟ ومتى؟
+                            </p>
+                        </div>
+
+                        <div class="space-y-3" id="myp-q1-options">
+                            <button onclick="solveMypLevel1(false, this)" class="w-full text-right p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 border-2 border-slate-700 font-bold text-lg md:text-xl text-slate-200 transition flex items-center justify-between">
+                                <span>أ) في البيت، الساعة الثامنة مساءً.</span>
+                                <span class="text-2xl">🏠</span>
+                            </button>
+                            <button onclick="solveMypLevel1(true, this)" class="w-full text-right p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 border-2 border-slate-700 font-bold text-lg md:text-xl text-slate-200 transition flex items-center justify-between">
+                                <span>ب) في مكتبه بالمدرسة، الساعة العاشرة ليلاً.</span>
+                                <span class="text-2xl">🏫</span>
+                            </button>
+                            <button onclick="solveMypLevel1(false, this)" class="w-full text-right p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 border-2 border-slate-700 font-bold text-lg md:text-xl text-slate-200 transition flex items-center justify-between">
+                                <span>ج) في الحديقة، في الصباح الباكر.</span>
+                                <span class="text-2xl">🌳</span>
+                            </button>
+                        </div>
+
+                        <div id="myp-fb-1" class="hidden mt-5 p-4 rounded-2xl bg-emerald-950/80 border-2 border-emerald-500 text-center">
+                            <p class="text-xl font-black text-emerald-300 mb-3">🎉 أحسنتم! إجابة مباشرة وصحيحة، حصلتم على أول درجتين (2 / 8)!</p>
+                            <button onclick="switchMypTab(2)" class="btn-3d-blue px-6 py-2.5 rounded-xl font-black text-lg text-white">
+                                انتقل إلى تحدي الدرجات (3 - 5) ⬅️
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ==========================================
+                         SUB-STEP 2: IMPLICIT & TONE (3-5 POINTS)
+                         ========================================== -->
+                    <div id="myp-panel-2" class="hidden bg-slate-900/90 border-2 border-sky-500/40 rounded-3xl p-6 md:p-8 shadow-xl fade-in-up">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="text-3xl">🔍</span>
+                            <div>
+                                <h4 class="text-xl md:text-2xl font-black text-sky-400">تحدي الدرجات (3 - 5): ما بين السطور ونبرة الصوت</h4>
+                                <p class="text-slate-300 text-sm md:text-base">كيف كان صوت المتحدث؟ وما هو هدفه؟</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 rounded-2xl p-5 my-5 border border-slate-700">
+                            <p class="text-2xl md:text-3xl font-black text-white text-center">
+                                ❓ من نبرة الصوت، كيف يشعر المتحدث؟ وما هو هدفه من السهر؟
+                            </p>
+                        </div>
+
+                        <div class="space-y-3" id="myp-q2-options">
+                            <button onclick="solveMypLevel2(true, this)" class="w-full text-right p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 border-2 border-slate-700 font-bold text-lg md:text-xl text-slate-200 transition flex items-center justify-between">
+                                <span>أ) يشعر بالتعب، وهدفه أن يفرح طلابه بدرجاتهم.</span>
+                                <span class="text-2xl">😓❤️</span>
+                            </button>
+                            <button onclick="solveMypLevel2(false, this)" class="w-full text-right p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 border-2 border-slate-700 font-bold text-lg md:text-xl text-slate-200 transition flex items-center justify-between">
+                                <span>ب) يشعر بالغضب الشديد، وهدفه معاقبة الطلاب.</span>
+                                <span class="text-2xl">😡</span>
+                            </button>
+                            <button onclick="solveMypLevel2(false, this)" class="w-full text-right p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 border-2 border-slate-700 font-bold text-lg md:text-xl text-slate-200 transition flex items-center justify-between">
+                                <span>ج) يشعر بالنشاط، وهدفه اللعب والتسلية.</span>
+                                <span class="text-2xl">🎮</span>
+                            </button>
+                        </div>
+
+                        <div id="myp-fb-2" class="hidden mt-5 p-4 rounded-2xl bg-emerald-950/80 border-2 border-emerald-500 text-center">
+                            <p class="text-xl font-black text-emerald-300 mb-3">👏 رائع جداً! لأنكم انتبهتم لنبرة الصوت والهدف، ارتفعت درجتكم إلى (5 / 8)!</p>
+                            <button onclick="switchMypTab(3)" class="btn-3d-gold px-6 py-2.5 rounded-xl font-black text-lg">
+                                انتقل إلى تحدي النجمة (6 - 8) ⭐⬅️
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ==========================================
+                         SUB-STEP 3: PERSONAL OPINION & 8/8 STAR
+                         ========================================== -->
+                    <div id="myp-panel-3" class="hidden bg-slate-900/90 border-2 border-amber-400/60 rounded-3xl p-6 md:p-8 shadow-xl fade-in-up">
+                        <div class="flex items-center justify-between flex-wrap gap-3 mb-3">
+                            <div class="flex items-center gap-3">
+                                <span class="text-4xl">⭐</span>
+                                <div>
+                                    <h4 class="text-xl md:text-2xl font-black text-amber-300">تحدي الدرجات (6 - 8): الربط وإبداء الرأي البسيط</h4>
+                                    <p class="text-slate-300 text-sm md:text-base">ارفع بطاقة النجمة ⭐ وشاركنا رأيك بكلماتك البسيطة!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-950/40 rounded-2xl p-5 my-5 border-2 border-amber-400/40">
+                            <p class="text-2xl md:text-3xl font-black text-white text-center">
+                                🌟 ما رأيك في هذا المعلم؟ وبماذا تنصحه في جملة بسيطة؟
+                            </p>
+                        </div>
+
+                        <p class="text-sm md:text-base font-bold text-slate-300 mb-3 text-center">
+                            (اضغط على إجابات الطلاب الرائعة لإضاءتها على السبورة):
+                        </p>
+
+                        <!-- Clickable Student Idea Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+                            <div onclick="toggleIdeaCard(this)" class="cursor-pointer p-4 rounded-2xl bg-slate-800 border-2 border-slate-700 hover:border-amber-400 transition text-center">
+                                <div class="text-3xl mb-2">💖</div>
+                                <p class="font-bold text-base md:text-lg text-slate-100">"معلم طيب ومجتهد يحب طلابه كثيراً."</p>
+                            </div>
+                            <div onclick="toggleIdeaCard(this)" class="cursor-pointer p-4 rounded-2xl bg-slate-800 border-2 border-slate-700 hover:border-amber-400 transition text-center">
+                                <div class="text-3xl mb-2">🛌</div>
+                                <p class="font-bold text-base md:text-lg text-slate-100">"أنصحه أن يرتاح وينام حتى لا يتعب."</p>
+                            </div>
+                            <div onclick="toggleIdeaCard(this)" class="cursor-pointer p-4 rounded-2xl bg-slate-800 border-2 border-slate-700 hover:border-amber-400 transition text-center">
+                                <div class="text-3xl mb-2">🙏</div>
+                                <p class="font-bold text-base md:text-lg text-slate-100">"أقول له: شكراً يا معلمي على تعبك من أجلنا."</p>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button onclick="unlockFullEightPoints()" id="award-8-btn" class="btn-3d-gold px-8 py-4 rounded-2xl font-black text-xl md:text-2xl inline-flex items-center gap-3">
+                                <span>🌟 منح الطلاب الدرجة الكاملة (8 / 8)!</span>
+                            </button>
+                        </div>
+
+                        <div id="myp-fb-3" class="hidden mt-6 p-5 rounded-2xl bg-amber-500/20 border-2 border-amber-400 text-center">
+                            <h5 class="text-2xl md:text-3xl font-black text-amber-300 mb-2">🏆 مبارك! وصلتم إلى (8 من 8) في معيار الاستماع!</h5>
+                            <p class="text-lg text-white font-bold mb-4">هل رأيتم كم هو سهل؟ جملة بسيطة تعبر عن فهمكم ورأيكم تمنحكم الدرجة الكاملة!</p>
+                            <button onclick="goToStage(3)" class="btn-3d-green px-8 py-3 rounded-2xl font-black text-xl text-white inline-flex items-center gap-2">
+                                <span>المحطة الأخيرة: تذكرة الخروج 🎟️</span>
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             STAGE 3: EXIT TICKET & FINAL CELEBRATION
+             ========================================== -->
+        <section id="stage-3" class="w-full hidden fade-in-up">
+            <div class="bg-slate-900/90 border-2 border-emerald-500/40 rounded-3xl p-6 md:p-10 shadow-2xl text-center">
+                
+                <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-4 py-1.5 rounded-xl text-sm font-black">
+                    المرحلة الثالثة والأخيرة 🎟️
+                </span>
+                <h2 class="text-3xl md:text-4xl font-black text-white mt-3 mb-2">تذكرة الخروج السريعة (Exit Ticket)</h2>
+                <p class="text-lg text-slate-300 mb-8 max-w-2xl mx-auto">
+                    اضغط على زر "اختيار بطاقة عشوائية" أو اختر بطاقة مباشرة ليكمل الطالب الجملة شفهياً في 10 ثوانٍ!
+                </p>
+
+                <!-- Random Spinner Button -->
+                <div class="mb-8">
+                    <button onclick="spinExitTicket()" class="btn-3d-gold px-8 py-4 rounded-2xl font-black text-xl md:text-2xl inline-flex items-center gap-3">
+                        <i class="fas fa-random"></i>
+                        <span>🎲 اختيار بطاقة عشوائية للطالب</span>
+                    </button>
+                </div>
+
+                <!-- 3 Exit Ticket Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 text-right">
+                    <!-- Ticket 1 -->
+                    <div id="exit-card-0" onclick="highlightExitTicket(0)" class="cursor-pointer bg-slate-800/90 border-2 border-slate-700 rounded-3xl p-6 transition-all duration-300 hover:border-sky-400">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="bg-sky-500/20 text-sky-300 px-3 py-1 rounded-xl font-black text-sm">البطاقة الأولى 1️⃣</span>
+                            <span class="text-3xl">🧘‍♂️</span>
+                        </div>
+                        <p class="text-xl md:text-2xl font-black text-white leading-relaxed">
+                            "أهم شرط للاستماع الجيد بالنسبة لي هو <span class="text-sky-400">...................</span>"
+                        </p>
+                        <p class="text-xs text-slate-400 mt-4 font-bold">مثال: الهدوء / النظر للمتحدث / قراءة الأسئلة أولاً</p>
+                    </div>
+
+                    <!-- Ticket 2 -->
+                    <div id="exit-card-1" onclick="highlightExitTicket(1)" class="cursor-pointer bg-slate-800/90 border-2 border-slate-700 rounded-3xl p-6 transition-all duration-300 hover:border-amber-400">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="bg-amber-500/20 text-amber-300 px-3 py-1 rounded-xl font-black text-sm">البطاقة الثانية 2️⃣</span>
+                            <span class="text-3xl">⭐</span>
+                        </div>
+                        <p class="text-xl md:text-2xl font-black text-white leading-relaxed">
+                            "لكي أحصل على 8 من 8 في الاستماع، سأركز على <span class="text-amber-400">...................</span>"
+                        </p>
+                        <p class="text-xs text-slate-400 mt-4 font-bold">مثال: نبرة الصوت / هدف المتحدث / إبداء رأيي</p>
+                    </div>
+
+                    <!-- Ticket 3 -->
+                    <div id="exit-card-2" onclick="highlightExitTicket(2)" class="cursor-pointer bg-slate-800/90 border-2 border-slate-700 rounded-3xl p-6 transition-all duration-300 hover:border-emerald-400">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-xl font-black text-sm">البطاقة الثالثة 3️⃣</span>
+                            <span class="text-3xl">💡</span>
+                        </div>
+                        <p class="text-xl md:text-2xl font-black text-white leading-relaxed">
+                            "إذا سمعت كلمة صعبة أثناء الاستماع، لن أتوقف بل سأفعل <span class="text-emerald-400">...................</span>"
+                        </p>
+                        <p class="text-xs text-slate-400 mt-4 font-bold">مثال: أكمل الاستماع وأفهم من باقي الكلام والصور</p>
+                    </div>
+                </div>
+
+                <!-- Final Trophy Celebration Banner -->
+                <div class="bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-950 border-2 border-amber-400/60 rounded-3xl p-6 md:p-8 shadow-xl">
+                    <div class="text-5xl mb-3">🏆🎉</div>
+                    <h3 id="final-winner-title" class="text-2xl md:text-4xl font-black text-amber-300 mb-2">
+                        أنتم أبطال الاستماع في برنامج السنوات المتوسطة (MYP)!
+                    </h3>
+                    <p class="text-slate-300 text-lg mb-6">
+                        أصبحتم الآن جاهزين لخوض أي تقييم استماع بثقة وهدوء وذكاء!
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <button onclick="triggerBigCelebration()" class="btn-3d-green px-8 py-3.5 rounded-2xl font-black text-xl text-white flex items-center gap-2">
+                            <span>🎊 احتفال الأبطال</span>
+                        </button>
+                        <button onclick="resetEntireGame()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 px-6 py-3.5 rounded-2xl font-bold text-lg flex items-center gap-2 transition">
+                            <i class="fas fa-redo"></i>
+                            <span>إعادة اللعبة من جديد</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-4 text-xs md:text-sm text-slate-400 border-t border-slate-800/80 bg-slate-950/60">
+        مصمم خصيصاً لطلاب برنامج السنوات المتوسطة (MYP) - مهارة الاستماع (المعيار أ) 🎧
+    </footer>
+
+    <!-- ==========================================
+         JAVASCRIPT LOGIC & WEB AUDIO SYNTHESIZER
+         ========================================== -->
+    <script>
+        /* --- 1. GAME STATE & DATA --- */
+        let currentStage = 0;
+        let gameMode = 'class'; // 'class' or 'teams'
+        let classScore = 0;
+        let team1Score = 0;
+        let team2Score = 0;
+        let isMuted = false;
+
+        // Stage 1 Questions Data
+        const radarQuestions = [
+            {
+                emoji: "📝👀",
+                text: "أقرأ الأسئلة الموجودة في الورقة قبل أن يشغل المعلم الصوت.",
+                isCorrect: true,
+                feedback: "ممتاز! قراءة الأسئلة أولاً تجعلك تعرف عن ماذا تبحث بالضبط أثناء الاستماع."
+            },
+            {
+                emoji: "🛑😕",
+                text: "سمعت كلمة صعبة لا أعرفها، فتركت القلم وتوقفت عن الاستماع!",
+                isCorrect: false,
+                feedback: "خطأ! لا تتوقف أبداً، أكمل الاستماع وستفهم المعنى العام من باقي القصة."
+            },
+            {
+                emoji: "🗣️📢",
+                text: "أثناء تشغيل الفيديو، سألت صديقي بصوت عالٍ: ماذا قال؟",
+                isCorrect: false,
+                feedback: "خطأ! المقاطعة والكلام أثناء التسجيل يضيع التركيز عليك وعلى أصدقائك."
+            },
+            {
+                emoji: "✍️📒",
+                text: "أكتب كلمات صغيرة وسريعة (كلمات مفتاحية) في دفتري وأنا أستمع.",
+                isCorrect: true,
+                feedback: "رائع! تدوين الملاحظات الصغيرة بهدوء يذكرك بالإجابة الصحيحة لاحقاً."
+            },
+            {
+                emoji: "😊😠",
+                text: "أنظر إلى وجه المتحدث في الفيديو لأفهم هل هو سعيد أم غاضب.",
+                isCorrect: true,
+                feedback: "ذكي جداً! ملامح الوجه ونبرة الصوت تعطينا نصف الإجابة في تقييم الاستماع."
+            }
+        ];
+
+        let currentQIndex = 0;
+        let answeredQuestions = [false, false, false, false, false];
+        let countdownInterval = null;
+
+        // Stage 2 MYP State
+        let mypPoints = 0;
+        let scriptVisible = true;
+
+        /* --- 2. WEB AUDIO API SOUND EFFECTS (NO EXTERNAL FILES NEEDED) --- */
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioCtx();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playTone(freq, type, duration, delay = 0, vol = 0.15) {
+            if (isMuted) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+
+                gain.gain.setValueAtTime(vol, audioCtx.currentTime + delay);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(audioCtx.currentTime + delay);
+                osc.stop(audioCtx.currentTime + delay + duration);
+            } catch (e) {
+                // Ignore audio errors if blocked
+            }
+        }
+
+        function sfxCorrect() {
+            playTone(523.25, 'sine', 0.15, 0, 0.2);    // C5
+            playTone(659.25, 'sine', 0.15, 0.12, 0.2); // E5
+            playTone(783.99, 'sine', 0.35, 0.24, 0.25);// G5
+        }
+
+        function sfxWrong() {
+            playTone(220, 'sawtooth', 0.2, 0, 0.15);
+            playTone(165, 'sawtooth', 0.35, 0.18, 0.15);
+        }
+
+        function sfxTick() {
+            playTone(880, 'triangle', 0.08, 0, 0.12);
+        }
+
+        function sfxFanfare() {
+            playTone(523.25, 'triangle', 0.15, 0, 0.2);
+            playTone(659.25, 'triangle', 0.15, 0.15, 0.2);
+            playTone(783.99, 'triangle', 0.15, 0.30, 0.2);
+            playTone(1046.50, 'triangle', 0.5, 0.45, 0.25);
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const icon = document.getElementById('mute-icon');
+            if (isMuted) {
+                icon.className = 'fas fa-volume-mute text-lg text-rose-400';
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            } else {
+                icon.className = 'fas fa-volume-up text-lg text-sky-400';
+                sfxTick();
+            }
+        }
+
+        /* --- 3. NAVIGATION & MODE SELECTION --- */
+        function setGameMode(mode) {
+            gameMode = mode;
+            const classBtn = document.getElementById('mode-class-btn');
+            const teamsBtn = document.getElementById('mode-teams-btn');
+            const wholeBoard = document.getElementById('whole-class-board');
+            const teamsBoard = document.getElementById('teams-board');
+
+            sfxTick();
+
+            if (mode === 'class') {
+                classBtn.className = "px-6 py-3 rounded-2xl font-extrabold text-base md:text-lg border-2 border-sky-400 bg-sky-500/20 text-white flex items-center gap-2 transition-all";
+                teamsBtn.className = "px-6 py-3 rounded-2xl font-extrabold text-base md:text-lg border-2 border-slate-700 bg-slate-800/70 text-slate-300 flex items-center gap-2 hover:border-amber-400 transition-all";
+                wholeBoard.classList.remove('hidden');
+                wholeBoard.classList.add('flex');
+                teamsBoard.classList.add('hidden');
+                teamsBoard.classList.remove('flex');
+            } else {
+                teamsBtn.className = "px-6 py-3 rounded-2xl font-extrabold text-base md:text-lg border-2 border-amber-400 bg-amber-500/20 text-white flex items-center gap-2 transition-all";
+                classBtn.className = "px-6 py-3 rounded-2xl font-extrabold text-base md:text-lg border-2 border-slate-700 bg-slate-800/70 text-slate-300 flex items-center gap-2 hover:border-sky-400 transition-all";
+                wholeBoard.classList.add('hidden');
+                wholeBoard.classList.remove('flex');
+                teamsBoard.classList.remove('hidden');
+                teamsBoard.classList.add('flex');
+            }
+            updateFinalBannerText();
+        }
+
+        function goToStage(stageNum) {
+            sfxTick();
+            clearInterval(countdownInterval);
+            currentStage = stageNum;
+
+            // Hide all stages
+            for (let i = 0; i <= 3; i++) {
+                document.getElementById(`stage-${i}`).classList.add('hidden');
+                const navBtn = document.getElementById(`nav-${i}`);
+                navBtn.className = "stage-nav-btn px-3 py-1.5 rounded-xl text-xs md:text-sm font-bold transition-all text-slate-300 hover:bg-slate-700";
+            }
+
+            // Show selected stage
+            document.getElementById(`stage-${stageNum}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${stageNum}`);
+            activeNav.className = "stage-nav-btn px-3 py-1.5 rounded-xl text-xs md:text-sm font-bold transition-all bg-sky-500 text-slate-950 shadow";
+
+            if (stageNum === 1) {
+                renderRadarQuestion();
+            } else if (stageNum === 3) {
+                updateFinalBannerText();
+            }
+        }
+
+        /* --- 4. SCOREBOARD HELPERS --- */
+        function addClassPoints(pts) {
+            classScore += pts;
+            document.getElementById('class-score').textContent = classScore;
+            sfxCorrect();
+        }
+
+        function addTeamPoints(team, pts) {
+            if (team === 1) {
+                team1Score += pts;
+                document.getElementById('team1-score').textContent = team1Score;
+            } else {
+                team2Score += pts;
+                document.getElementById('team2-score').textContent = team2Score;
+            }
+            sfxCorrect();
+            updateFinalBannerText();
+        }
+
+        function awardTeamFromFeedback(team, pts, btnEl) {
+            addTeamPoints(team, pts);
+            btnEl.disabled = true;
+            btnEl.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+        function updateFinalBannerText() {
+            const titleEl = document.getElementById('final-winner-title');
+            if (!titleEl) return;
+            if (gameMode === 'teams') {
+                if (team1Score > team2Score) {
+                    titleEl.textContent = `🏆 الفائز هو: فريق الصقور 🦅 (${team1Score} نقطة) - وأداء رائع من النجوم!`;
+                } else if (team2Score > team1Score) {
+                    titleEl.textContent = `🏆 الفائز هو: فريق النجوم ⭐ (${team2Score} نقطة) - وأداء رائع من الصقور!`;
+                } else {
+                    titleEl.textContent = `🤝 تعادل بطولي بين فريق الصقور 🦅 وفريق النجوم ⭐!`;
+                }
+            } else {
+                titleEl.textContent = `🌟 أنتم أبطال الاستماع في برنامج السنوات المتوسطة (MYP)!`;
+            }
+        }
+
+        /* --- 5. STAGE 1: RADAR QUESTIONS LOGIC --- */
+        function renderProgressDots() {
+            const container = document.getElementById('q-progress-dots');
+            container.innerHTML = '';
+            radarQuestions.forEach((_, idx) => {
+                const btn = document.createElement('button');
+                btn.onclick = () => { currentQIndex = idx; renderRadarQuestion(); };
+                let colorClass = 'bg-slate-700 text-slate-300';
+                if (idx === currentQIndex) {
+                    colorClass = 'bg-amber-400 text-slate-950 ring-4 ring-amber-400/30 font-black';
+                } else if (answeredQuestions[idx]) {
+                    colorClass = 'bg-emerald-500 text-white font-bold';
+                }
+                btn.className = `w-9 h-9 rounded-xl text-sm transition-all ${colorClass}`;
+                btn.textContent = idx + 1;
+                container.appendChild(btn);
+            });
+        }
+
+        function renderRadarQuestion() {
+            clearInterval(countdownInterval);
+            const q = radarQuestions[currentQIndex];
+
+            document.getElementById('q-counter-badge').textContent = `الموقف ${currentQIndex + 1} من ${radarQuestions.length}`;
+            document.getElementById('q-emoji').textContent = q.emoji;
+            document.getElementById('q-text').textContent = `"${q.text}"`;
+            document.getElementById('timer-display').textContent = '5';
+
+            // Reset buttons & feedback
+            document.getElementById('q-action-buttons').classList.remove('hidden');
+            document.getElementById('q-feedback-box').classList.add('hidden');
+
+            renderProgressDots();
+        }
+
+        function startFiveSecTimer() {
+            clearInterval(countdownInterval);
+            let timeLeft = 5;
+            const display = document.getElementById('timer-display');
+            display.textContent = timeLeft;
+            sfxTick();
+
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft > 0) {
+                    display.textContent = timeLeft;
+                    sfxTick();
+                } else {
+                    clearInterval(countdownInterval);
+                    display.textContent = "ارفع! ✋";
+                    playTone(660, 'sine', 0.3, 0, 0.2);
+                }
+            }, 1000);
+        }
+
+        function speakCurrentRadarQuestion() {
+            const q = radarQuestions[currentQIndex];
+            speakArabicText(q.text, 0.95);
+        }
+
+        function checkRadarAnswer(userChoseGreen) {
+            clearInterval(countdownInterval);
+            const q = radarQuestions[currentQIndex];
+            const isRight = (userChoseGreen === q.isCorrect);
+
+            answeredQuestions[currentQIndex] = true;
+            renderProgressDots();
+
+            const fbBox = document.getElementById('q-feedback-box');
+            const fbTitle = document.getElementById('q-feedback-title');
+            const fbDesc = document.getElementById('q-feedback-desc');
+            const nextBtn = document.getElementById('next-q-btn');
+            const teamAwards = document.getElementById('feedback-team-awards');
+
+            fbBox.classList.remove('hidden');
+
+            // Reset team award buttons inside feedback
+            const teamBtns = teamAwards.querySelectorAll('button');
+            teamBtns.forEach(b => {
+                b.disabled = false;
+                b.classList.remove('opacity-50', 'cursor-not-allowed');
+            });
+
+            if (gameMode === 'teams') {
+                teamAwards.classList.remove('hidden');
+                teamAwards.classList.add('flex');
+            } else {
+                teamAwards.classList.add('hidden');
+                teamAwards.classList.remove('flex');
+            }
+
+            if (isRight) {
+                sfxCorrect();
+                if (gameMode === 'class') addClassPoints(10);
+                fbBox.className = "mt-6 rounded-3xl p-6 border-2 border-emerald-500 bg-emerald-950/85 text-center fade-in-up";
+                fbTitle.className = "text-2xl md:text-3xl font-black mb-2 text-emerald-300";
+                fbTitle.textContent = "✅ إجابة صحيحة! راداركم يعمل بذكاء!";
+            } else {
+                sfxWrong();
+                fbBox.className = "mt-6 rounded-3xl p-6 border-2 border-rose-500 bg-rose-950/85 text-center fade-in-up";
+                fbTitle.className = "text-2xl md:text-3xl font-black mb-2 text-rose-300";
+                fbTitle.textContent = "💡 انتبه يا بطل! دعنا نصحح الإشارة:";
+            }
+
+            fbDesc.textContent = q.feedback;
+
+            if (currentQIndex < radarQuestions.length - 1) {
+                nextBtn.innerHTML = `<span>الموقف التالي (${currentQIndex + 2}/5)</span> <i class="fas fa-arrow-left"></i>`;
+            } else {
+                nextBtn.innerHTML = `<span>انتقل إلى المرحلة 2: تحدي الـ 8 درجات 🎯</span> <i class="fas fa-arrow-left"></i>`;
+            }
+        }
+
+        function nextRadarQuestion() {
+            if (currentQIndex < radarQuestions.length - 1) {
+                currentQIndex++;
+                renderRadarQuestion();
+            } else {
+                goToStage(2);
+            }
+        }
+
+        /* --- 6. STAGE 2: 8-POINT MYP CHALLENGE --- */
+        const scriptSentence = "آهٍ يا رأسي.. الساعة الآن العاشرة ليلاً، وأنا ما زلت في مكتبي بالمدرسة أصحح الدفاتر لأنني أريد أن يفرح طلابي بدرجاتهم غداً!";
+
+        function speakArabicText(text, rate = 0.85) {
+            if (isMuted) return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.lang = 'ar-SA';
+                utter.rate = rate;
+                utter.pitch = 0.9;
+
+                const waveBox = document.getElementById('audio-wave-container');
+                utter.onstart = () => { if (waveBox) waveBox.classList.add('playing'); };
+                utter.onend = () => { if (waveBox) waveBox.classList.remove('playing'); };
+                utter.onerror = () => { if (waveBox) waveBox.classList.remove('playing'); };
+
+                window.speechSynthesis.speak(utter);
+            }
+        }
+
+        function playListeningClip() {
+            const waveBox = document.getElementById('audio-wave-container');
+            if (waveBox) {
+                waveBox.classList.add('playing');
+                setTimeout(() => waveBox.classList.remove('playing'), 7000);
+            }
+            speakArabicText(scriptSentence, 0.82);
+        }
+
+        function toggleScriptVisibility() {
+            scriptVisible = !scriptVisible;
+            const box = document.getElementById('script-text-box');
+            const btn = document.getElementById('toggle-script-btn');
+            if (scriptVisible) {
+                box.innerHTML = `<p class="text-2xl md:text-3xl font-black text-amber-300 leading-relaxed">"${scriptSentence}"</p>`;
+                btn.innerHTML = `<i class="fas fa-eye-slash"></i> <span>إخفاء النص للتركيز السمعي</span>`;
+            } else {
+                box.innerHTML = `<p class="text-xl md:text-2xl font-bold text-slate-400 py-2">🎧 النص مخفي الآن.. استمعوا إلى صوت المعلم بتركيز!</p>`;
+                btn.innerHTML = `<i class="fas fa-eye"></i> <span>إظهار النص المكتوب</span>`;
+            }
+        }
+
+        function switchMypTab(tabNum) {
+            sfxTick();
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`myp-panel-${i}`).classList.add('hidden');
+                const tBtn = document.getElementById(`myp-tab-${i}`);
+                tBtn.className = "py-3 px-4 rounded-2xl font-black text-sm md:text-lg border-2 border-slate-700 bg-slate-800 text-slate-300 transition";
+            }
+            document.getElementById(`myp-panel-${tabNum}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`myp-tab-${tabNum}`);
+            if (tabNum === 3) {
+                activeBtn.className = "py-3 px-4 rounded-2xl font-black text-sm md:text-lg border-2 border-amber-400 bg-amber-400 text-slate-950 transition shadow-lg";
+            } else {
+                activeBtn.className = "py-3 px-4 rounded-2xl font-black text-sm md:text-lg border-2 border-sky-400 bg-sky-500 text-slate-950 transition shadow-lg";
+            }
+        }
+
+        function updateMypMeter(newScore) {
+            if (newScore > mypPoints) {
+                mypPoints = newScore;
+            }
+            const numEl = document.getElementById('myp-current-num');
+            const badgeEl = document.getElementById('myp-score-badge');
+            numEl.textContent = mypPoints;
+
+            // Band 1 (2 pts)
+            if (mypPoints >= 2) {
+                document.getElementById('meter-band-1').className = "p-3.5 rounded-2xl border-2 border-emerald-500 bg-emerald-950/60 transition-all flex items-center justify-between";
+                document.getElementById('check-band-1').innerHTML = `<i class="fas fa-check-circle text-emerald-400 text-2xl"></i>`;
+                document.getElementById('check-band-2').innerHTML = `<i class="fas fa-unlock text-sky-400"></i>`;
+            }
+            // Band 2 (5 pts)
+            if (mypPoints >= 5) {
+                document.getElementById('meter-band-2').className = "p-3.5 rounded-2xl border-2 border-emerald-500 bg-emerald-950/60 transition-all flex items-center justify-between";
+                document.getElementById('check-band-2').innerHTML = `<i class="fas fa-check-circle text-emerald-400 text-2xl"></i>`;
+                document.getElementById('check-band-3').innerHTML = `<i class="fas fa-unlock text-amber-400"></i>`;
+            }
+            // Band 3 (8 pts)
+            if (mypPoints >= 8) {
+                document.getElementById('meter-band-3').className = "p-3.5 rounded-2xl border-2 border-amber-400 bg-amber-500/20 glow-gold transition-all flex items-center justify-between";
+                document.getElementById('check-band-3').innerHTML = `<i class="fas fa-star text-amber-400 text-2xl"></i>`;
+                badgeEl.className = "w-32 h-32 mx-auto rounded-full bg-amber-500/20 border-4 border-amber-400 glow-gold flex flex-col items-center justify-center mb-6 transition-all duration-500 scale-110";
+            }
+        }
+
+        function solveMypLevel1(isCorrect, btnEl) {
+            if (isCorrect) {
+                sfxCorrect();
+                btnEl.className = "w-full text-right p-4 rounded-2xl bg-emerald-600 border-2 border-emerald-300 font-black text-lg md:text-xl text-white transition flex items-center justify-between";
+                document.getElementById('myp-fb-1').classList.remove('hidden');
+                updateMypMeter(2);
+                if (gameMode === 'class') addClassPoints(10);
+            } else {
+                sfxWrong();
+                btnEl.className = "w-full text-right p-4 rounded-2xl bg-rose-900/60 border-2 border-rose-500 font-bold text-lg md:text-xl text-rose-200 transition flex items-center justify-between opacity-75";
+            }
+        }
+
+        function solveMypLevel2(isCorrect, btnEl) {
+            if (isCorrect) {
+                sfxCorrect();
+                btnEl.className = "w-full text-right p-4 rounded-2xl bg-emerald-600 border-2 border-emerald-300 font-black text-lg md:text-xl text-white transition flex items-center justify-between";
+                document.getElementById('myp-fb-2').classList.remove('hidden');
+                updateMypMeter(5);
+                if (gameMode === 'class') addClassPoints(15);
+            } else {
+                sfxWrong();
+                btnEl.className = "w-full text-right p-4 rounded-2xl bg-rose-900/60 border-2 border-rose-500 font-bold text-lg md:text-xl text-rose-200 transition flex items-center justify-between opacity-75";
+            }
+        }
+
+        function toggleIdeaCard(cardEl) {
+            sfxTick();
+            cardEl.classList.toggle('border-amber-400');
+            cardEl.classList.toggle('bg-amber-950/50');
+            cardEl.classList.toggle('scale-105');
+        }
+
+        function unlockFullEightPoints() {
+            sfxFanfare();
+            updateMypMeter(8);
+            if (gameMode === 'class') addClassPoints(25);
+            document.getElementById('myp-fb-3').classList.remove('hidden');
+            triggerConfettiBurst();
+        }
+
+        /* --- 7. STAGE 3: EXIT TICKET & CELEBRATION --- */
+        function highlightExitTicket(idx) {
+            sfxTick();
+            for (let i = 0; i < 3; i++) {
+                const c = document.getElementById(`exit-card-${i}`);
+                c.className = "cursor-pointer bg-slate-800/90 border-2 border-slate-700 rounded-3xl p-6 transition-all duration-300 opacity-60 scale-95";
+            }
+            const chosen = document.getElementById(`exit-card-${idx}`);
+            chosen.className = "cursor-pointer bg-slate-800 border-4 border-amber-400 glow-gold rounded-3xl p-6 transition-all duration-300 scale-105";
+        }
+
+        function spinExitTicket() {
+            let count = 0;
+            const totalSpins = 12;
+            const spinTimer = setInterval(() => {
+                const currentIdx = count % 3;
+                highlightExitTicket(currentIdx);
+                count++;
+                if (count >= totalSpins) {
+                    clearInterval(spinTimer);
+                    const finalChoice = Math.floor(Math.random() * 3);
+                    highlightExitTicket(finalChoice);
+                    sfxCorrect();
+                }
+            }, 110);
+        }
+
+        function triggerConfettiBurst() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 110,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        function triggerBigCelebration() {
+            sfxFanfare();
+            triggerConfettiBurst();
+            setTimeout(triggerConfettiBurst, 400);
+        }
+
+        function resetEntireGame() {
+            sfxTick();
+            currentQIndex = 0;
+            answeredQuestions = [false, false, false, false, false];
+            mypPoints = 0;
+            classScore = 0;
+            team1Score = 0;
+            team2Score = 0;
+
+            document.getElementById('class-score').textContent = '0';
+            document.getElementById('team1-score').textContent = '0';
+            document.getElementById('team2-score').textContent = '0';
+            document.getElementById('myp-current-num').textContent = '0';
+
+            document.getElementById('myp-fb-1').classList.add('hidden');
+            document.getElementById('myp-fb-2').classList.add('hidden');
+            document.getElementById('myp-fb-3').classList.add('hidden');
+
+            goToStage(0);
+        }
+    </script>
+</body>
+</html>
