@@ -25,7 +25,7 @@ jobs:
           python-version: '3.12'
       - name: Install text-to-speech client
         run: python -m pip install --disable-pip-version-check 'edge-tts>=7,<9'
-      - name: Generate six Arabic audio clips
+      - name: Generate fully vowelled Arabic audio clips
         run: python scripts/generate_arabic_audio.py
       - name: Commit generated MP3 files
         run: |
@@ -34,5 +34,14 @@ jobs:
           git add assets/audio/*.mp3
           if ! git diff --cached --quiet; then
             git commit -m "Generate Arabic neural speech MP3 for listening activities"
-            git push
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then
+                exit 0
+              fi
+              sleep $((attempt * 2))
+            done
+            echo "Failed to publish audio after retries" >&2
+            exit 1
           fi
