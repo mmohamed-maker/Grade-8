@@ -459,7 +459,7 @@
                                 <!-- Play Audio TTS Button -->
                                 <button onclick="playListeningClip()" id="tts-play-btn" class="bg-sky-500 hover:bg-sky-400 text-slate-950 px-4 py-2 rounded-xl font-black text-sm md:text-base flex items-center gap-2 transition shadow">
                                     <i class="fas fa-play"></i>
-                                    <span>تشغيل الصوت الآلي</span>
+                                    <span>تشغيل الصوت العربي المُحسَّن</span>
                                 </button>
                                 <!-- Toggle Text Visibility for pure listening practice -->
                                 <button onclick="toggleScriptVisibility()" id="toggle-script-btn" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 px-3 py-2 rounded-xl font-bold text-xs md:text-sm flex items-center gap-1.5 transition">
@@ -479,6 +479,8 @@
                             <div class="wave-bar h-5"></div>
                             <span class="text-xs text-slate-400 mr-3 font-bold">استمع بتركيز إلى الكلمات ونبرة الصوت...</span>
                         </div>
+
+                        <p id="audio-status" role="status" aria-live="polite" class="text-xs text-slate-400 mb-3 text-center">صوت عربي محسَّن – Microsoft Hamed (ar-SA)</p>
 
                         <!-- Script Text Box -->
                         <div id="script-text-box" class="bg-slate-800/90 border border-slate-700 rounded-2xl p-5 text-center transition-all">
@@ -850,7 +852,7 @@
             const icon = document.getElementById('mute-icon');
             if (isMuted) {
                 icon.className = 'fas fa-volume-mute text-lg text-rose-400';
-                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                stopNarration();
             } else {
                 icon.className = 'fas fa-volume-up text-lg text-sky-400';
                 sfxTick();
@@ -886,6 +888,7 @@
         }
 
         function goToStage(stageNum) {
+            stopNarration();
             sfxTick();
             clearInterval(countdownInterval);
             currentStage = stageNum;
@@ -970,6 +973,7 @@
         }
 
         function renderRadarQuestion() {
+            stopNarration();
             clearInterval(countdownInterval);
             const q = radarQuestions[currentQIndex];
 
@@ -1007,7 +1011,8 @@
 
         function speakCurrentRadarQuestion() {
             const q = radarQuestions[currentQIndex];
-            speakArabicText(q.text, 0.95);
+            const clip = 'radar-' + String(currentQIndex + 1).padStart(2, '0') + '.mp3';
+            playArabicNarration(clip, q.text, 0.95);
         }
 
         function checkRadarAnswer(userChoseGreen) {
@@ -1075,31 +1080,88 @@
         /* --- 6. STAGE 2: 8-POINT MYP CHALLENGE --- */
         const scriptSentence = "آهٍ يا رأسي.. الساعة الآن العاشرة ليلاً، وأنا ما زلت في مكتبي بالمدرسة أصحح الدفاتر لأنني أريد أن يفرح طلابي بدرجاتهم غداً!";
 
-        function speakArabicText(text, rate = 0.85) {
-            if (isMuted) return;
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utter = new SpeechSynthesisUtterance(text);
-                utter.lang = 'ar-SA';
-                utter.rate = rate;
-                utter.pitch = 0.9;
+        // Pre-generated Microsoft Arabic Neural MP3s hosted with GitHub Pages.
+        // This ensures all students hear the same high-quality speech, regardless of OS.
+        let activeNarration = null;
+        let speechRequestId = 0;
+        const neuralAudioBase = './assets/audio/';
 
-                const waveBox = document.getElementById('audio-wave-container');
-                utter.onstart = () => { if (waveBox) waveBox.classList.add('playing'); };
-                utter.onend = () => { if (waveBox) waveBox.classList.remove('playing'); };
-                utter.onerror = () => { if (waveBox) waveBox.classList.remove('playing'); };
+        function setAudioStatus(message) {
+            const label = document.getElementById('audio-status');
+            if (label) label.textContent = message;
+        }
 
-                window.speechSynthesis.speak(utter);
+        function stopNarration() {
+            speechRequestId++;
+            if (activeNarration) {
+                activeNarration.pause();
+                activeNarration.removeAttribute('src');
+                activeNarration.load();
+                activeNarration = null;
             }
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            const waveBox = document.getElementById('audio-wave-container');
+            if (waveBox) waveBox.classList.remove('playing');
+        }
+
+        function speakArabicText(text, rate = 0.85, requestId = speechRequestId) {
+            // Browser TTS is only a last resort, never the primary source.
+            if (isMuted || !('speechSynthesis' in window) || requestId !== speechRequestId) return;
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            const candidates = window.speechSynthesis.getVoices().filter(v => /^ar([-_]|$)/i.test(v.lang));
+            const selected = candidates.find(v => /neural|microsoft/i.test(v.name))
+                || candidates.find(v => /^ar-SA/i.test(v.lang))
+                || candidates.find(v => /^ar-EG/i.test(v.lang))
+                || candidates[0];
+            if (selected) utter.voice = selected;
+            utter.lang = selected ? selected.lang : 'ar-SA';
+            utter.rate = rate;
+            utter.pitch = 1;
+            const waveBox = document.getElementById('audio-wave-container');
+            utter.onstart = () => { if (requestId === speechRequestId && waveBox) waveBox.classList.add('playing'); };
+            utter.onend = () => { if (requestId === speechRequestId && waveBox) waveBox.classList.remove('playing'); };
+            utter.onerror = () => { if (requestId === speechRequestId && waveBox) waveBox.classList.remove('playing'); };
+            window.speechSynthesis.speak(utter);
+        }
+
+        function playArabicNarration(fileName, fallbackText, rate = 0.85) {
+            if (isMuted) {
+                setAudioStatus('الصوت مكتوم. ألغِ الكتم أولًا.');
+                return;
+            }
+            stopNarration();
+            const requestId = speechRequestId;
+            const waveBox = document.getElementById('audio-wave-container');
+            const audio = new Audio(neuralAudioBase + fileName);
+            audio.preload = 'auto';
+            activeNarration = audio;
+            let fallbackUsed = false;
+            const fallback = () => {
+                if (fallbackUsed || requestId !== speechRequestId || isMuted) return;
+                fallbackUsed = true;
+                activeNarration = null;
+                if (waveBox) waveBox.classList.remove('playing');
+                setAudioStatus('تعذَّر تحميل التسجيل المُحسَّن؛ يعمل صوت الجهاز الاحتياطي.');
+                speakArabicText(fallbackText, rate, requestId);
+            };
+            audio.onplaying = () => {
+                if (requestId !== speechRequestId) return;
+                if (waveBox) waveBox.classList.add('playing');
+                setAudioStatus('صوت عربي عصبي مُسجَّل مسبقًا – Microsoft Hamed (ar-SA).');
+            };
+            audio.onended = () => {
+                if (requestId !== speechRequestId) return;
+                activeNarration = null;
+                if (waveBox) waveBox.classList.remove('playing');
+            };
+            audio.onerror = fallback;
+            const result = audio.play();
+            if (result && typeof result.catch === 'function') result.catch(fallback);
         }
 
         function playListeningClip() {
-            const waveBox = document.getElementById('audio-wave-container');
-            if (waveBox) {
-                waveBox.classList.add('playing');
-                setTimeout(() => waveBox.classList.remove('playing'), 7000);
-            }
-            speakArabicText(scriptSentence, 0.82);
+            playArabicNarration('listening-main.mp3', scriptSentence, 0.82);
         }
 
         function toggleScriptVisibility() {
