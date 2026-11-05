@@ -15,7 +15,8 @@ OUT = Path("assets/audio")
 # Vocalize internal letters and leave pausal word endings without case-vowels.
 # Preserve commas, colons, and final punctuation to support natural stopping.
 TEXTS = {
-    "listening-main.mp3": "آه، يَا رَأْسِي! السَّاعَةُ الْآنَ الْعَاشِرَةُ لَيْلَا، وَأَنَا مَا زِلْتُ فِي مَكْتَبِي بِالْمَدْرَسَةِ أُصَحِّحُ الدَّفَاتِر، لِأَنَّنِي أُرِيدُ أَنْ يَفْرَحَ طُلَّابِي بِدَرَجَاتِهِمْ غَدَا!",
+    # Pause words end without a final case-vowel. Internal letters remain vowelled.
+    "listening-main.mp3": "آه، يَا رَأْسِي! السَّاعَةُ الْآنَ الْعَاشِرَةُ مِنَ اللَّيْل، وَأَنَا مَا زِلْتُ فِي مَكْتَبِي بِالْمَدْرَسَةِ أُصَحِّحُ الدَّفَاتِر، لِأَنَّنِي أُرِيدُ أَنْ يَفْرَحَ طُلَّابِي بِدَرَجَاتِهِمْ فِي الْغَد!",
     "radar-01.mp3": "أَقْرَأُ الْأَسْئِلَةَ الْمَوْجُودَةَ فِي الْوَرَقَةِ قَبْلَ أَنْ يُشَغِّلَ الْمُعَلِّمُ الصَّوْت.",
     "radar-02.mp3": "سَمِعْتُ كَلِمَةً صَعْبَةً لَا أَعْرِفُهَا، فَتَرَكْتُ الْقَلَمَ وَتَوَقَّفْتُ عَنِ الِاسْتِمَاع!",
     "radar-03.mp3": "أَثْنَاءَ تَشْغِيلِ الْفِيدْيُو، سَأَلْتُ صَدِيقِي بِصَوْتٍ عَال: مَاذَا قَال؟",
@@ -27,7 +28,7 @@ async def main():
     OUT.mkdir(parents=True, exist_ok=True)
     for filename, text in TEXTS.items():
         # An utterance-ending or comma-ending must not carry a final short-vowel/tanween.
-        if re.search(r"[\\u064B-\\u065F](?=[،,:؛.!؟])", text):
+        if re.search(r"[\u064B-\u065F](?=[،,:؛.!؟])", text):
             raise ValueError(f"Diacritic immediately before a pause in {filename}")
         filepath = OUT / filename
         for attempt in range(3):
