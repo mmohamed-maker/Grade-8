@@ -536,6 +536,8 @@ function selectAnswer(idx, btn) {
 }
 
 nextBtn.addEventListener('click', () => {
+  if (!answered) return;
+  answered = false;
   current++;
   if (current < questions.length) {
     loadQuestion();
