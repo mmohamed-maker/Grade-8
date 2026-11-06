@@ -5,7 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>تذكرة الخروج التفاعلية | اليومان ٥–٦: نص الاستماع الأول «قصة الجسر: المصالحة والتعاون الأخوي»</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js">
+let voiceAudio = null;
+let voiceRequestId = 0;
+function stopVoiceAudio() {
+ voiceRequestId += 1;
+ if (voiceAudio) {
+  voiceAudio.pause();
+  voiceAudio.removeAttribute('src');
+  voiceAudio.load();
+  voiceAudio = null;
+ }
+}
+document.getElementById('narrateQuestion').addEventListener('click', () => {
+ stopVoiceAudio();
+ const id = voiceRequestId;
+ const audio = new Audio('../assets/audio/course-games/u3_c17_bridge_listening_quiz-q' + (current + 1) + '.mp3');
+ voiceAudio = audio;
+ const status = document.getElementById('narrationStatus');
+ status.textContent = 'جارٍ تشغيل الصوت العربي...';
+ audio.addEventListener('playing', () => {
+  if (id === voiceRequestId) status.textContent = 'يُقرأ السؤال والاختيارات الآن.';
+ });
+ audio.addEventListener('ended', () => {
+  if (id === voiceRequestId) { voiceAudio = null; status.textContent = 'انتهى التسجيل الصوتي.'; }
+ });
+ audio.addEventListener('error', () => {
+  if (id === voiceRequestId) { voiceAudio = null; status.textContent = 'تعذّر تحميل التسجيل؛ يمكنك قراءة السؤال والاختيارات.'; }
+ });
+ const result = audio.play();
+ if (result && typeof result.catch === 'function') result.catch(() => {
+  if (id === voiceRequestId) status.textContent = 'لم يبدأ التشغيل. أعد الضغط على زر الاستماع.';
+ });
+});
+document.getElementById('stopNarration').addEventListener('click', () => {
+ stopVoiceAudio();
+ document.getElementById('narrationStatus').textContent = 'توقف التسجيل الصوتي.';
+});
+window.addEventListener('pagehide', stopVoiceAudio);
+
+</script>
 <style>
   :root {
     --ink: #1E1B2E;
@@ -297,6 +336,7 @@ body{font-family:'Cairo','Tajawal',Tahoma,Arial,sans-serif;line-height:1.95}.sta
   <div class="seal-row" id="sealRow"></div>
   <div class="card">
     <div class="quiz-body" id="quizBody">
+<div class="narration-controls" style="margin:0 0 17px;text-align:center"><button type="button" id="narrateQuestion" class="sound-btn" style="min-height:45px;margin:3px">استمع إلى السؤال والاختيارات</button><button type="button" id="stopNarration" class="sound-btn" style="min-height:45px;margin:3px">إيقاف القراءة</button><p id="narrationStatus" role="status" aria-live="polite" style="font-size:13px;margin:10px 0;color:#e0e6ee">يقرأ التسجيل السؤال والاختيارات، وليس النص المسموع الأصلي للدرس.</p></div>
       <div class="q-header">
         <span class="q-tag" id="qTag">السؤال ١ من ٤</span>
         <span class="score-pill" id="scorePill">النقاط: ٠</span>
@@ -443,6 +483,7 @@ function buildSeals() {
 }
 
 function loadQuestion() {
+  stopVoiceAudio();
   answered = false;
   const item = questions[current];
   qTag.textContent = `السؤال ${current + 1} من ${questions.length}`;
@@ -504,6 +545,7 @@ nextBtn.addEventListener('click', () => {
 });
 
 function showResults() {
+  stopVoiceAudio();
   quizBody.classList.add('hide');
   resultBox.classList.add('show');
   scoreLine.textContent = `درجتك في تذكرة الخروج: ${score} من ${questions.length}`;
@@ -536,6 +578,7 @@ function showResults() {
 }
 
 retryBtn.addEventListener('click', () => {
+  stopVoiceAudio();
   current = 0;
   score = 0;
   results.length = 0;
