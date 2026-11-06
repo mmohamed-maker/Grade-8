@@ -550,8 +550,6 @@ retryBtn.addEventListener('click', () => {
   loadQuestion();
 });
 
-loadQuestion();
-
 let voiceAudio = null;
 let voiceRequestId = 0;
 function stopVoiceAudio() {
@@ -590,7 +588,7 @@ document.getElementById('stopNarration').addEventListener('click', () => {
 });
 window.addEventListener('pagehide', stopVoiceAudio);
 
-
+loadQuestion();
 </script>
 </body>
 </html>
