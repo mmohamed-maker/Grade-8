@@ -1,0 +1,54 @@
+name: Generate Unit 2 Exit Ticket Arabic Audio
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'unit2-exit-data.json'
+      - 'scripts/gen_unit2_exit_audio.py'
+      - '.github/workflows/generate-unit2-exit-audio.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: grade8-unit2-exit-audio
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Arabic voice client
+        run: python -m pip install --disable-pip-version-check 'edge-tts>=7,<9'
+      - name: Generate 12 prerecorded Arabic clips
+        run: python scripts/gen_unit2_exit_audio.py
+      - name: Commit Arabic voice files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/audio/unit2-exit-*.mp3
+          if git diff --cached --quiet; then
+            echo "Audio already matches source"
+            exit 0
+          fi
+          git commit -m "Generate 12 diacritized Arabic Neural clips for unit two exit tickets"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((attempt * 2))
+          done
+          echo "Audio push failed after retry" >&2
+          exit 1
