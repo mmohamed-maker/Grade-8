@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تذكرة الخروج التفاعلية | النشاط الأول: مفاهيم الوحدة الثانية (الانتماء، الروابط، الاستدلال، وجملة البحث)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --ink: #1E1B2E;
+    --parchment: #FBF8F1;
+    --seal-gold: #D9A441;
+    --seal-gold-dark: #9E741E;
+    --theme-main: #1E6B52;
+    --theme-dark: #14362B;
+    --alert-coral: #D9573B;
+    --card-shadow: 0 14px 32px rgba(0, 0, 0, 0.35);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(217, 164, 65, 0.14), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(46, 125, 119, 0.18), transparent 45%),
+      linear-gradient(160deg, #0f172a 0%, var(--ink) 100%);
+    font-family: 'Tajawal', 'Arial', sans-serif;
+    color: var(--parchment);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px 50px;
+  }
+  .stage {
+    width: 100%;
+    max-width: 680px;
+  }
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .unit-badge {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(217, 164, 65, 0.4);
+    color: var(--seal-gold);
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .sound-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 12.5px;
+    cursor: pointer;
+  }
+  .masthead {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .masthead .crest {
+    font-size: 46px;
+    display: inline-block;
+    margin-bottom: 4px;
+  }
+  .masthead h1 {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+    margin: 0 0 6px;
+    color: var(--seal-gold);
+    line-height: 1.4;
+  }
+  .masthead p {
+    margin: 0;
+    font-size: 14.5px;
+    color: #E2DAC6;
+    line-height: 1.6;
+  }
+  .seal-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 18px 0 20px;
+  }
+  .seal-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #5A527A;
+    background: rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #B8B0D0;
+    transition: all 0.3s ease;
+  }
+  .seal-dot.active {
+    border-color: var(--seal-gold);
+    color: var(--seal-gold);
+    transform: scale(1.12);
+  }
+  .seal-dot.filled {
+    background: #16a34a;
+    border-color: #14532d;
+    color: #fff;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.25);
+  }
+  .seal-dot.wrong {
+    background: var(--alert-coral);
+    border-color: #8F3A24;
+    color: #fff;
+    box-shadow: 0 0 0 3px rgba(217, 87, 59, 0.25);
+  }
+  .card {
+    background: var(--parchment);
+    color: var(--ink);
+    border-radius: 20px;
+    padding: 26px 24px 24px;
+    box-shadow: var(--card-shadow);
+    border: 3px solid var(--seal-gold);
+    position: relative;
+    overflow: hidden;
+  }
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .q-tag {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 13.5px;
+    color: #fff;
+    background: var(--theme-main);
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 20px;
+  }
+  .score-pill {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--theme-main);
+    background: rgba(0, 0, 0, 0.06);
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .q-text {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    line-height: 1.65;
+    margin: 0 0 20px;
+    color: #1a162b;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+  .opt-btn {
+    text-align: right;
+    font-family: 'Tajawal', 'Arial', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid #D5CBB8;
+    background: #FFFFFF;
+    color: var(--ink);
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+    line-height: 1.55;
+  }
+  .opt-btn:hover:not(:disabled) {
+    border-color: var(--theme-main);
+    background: #F4EFE3;
+    transform: translateX(-4px);
+  }
+  .opt-btn:disabled { cursor: default; }
+  .opt-btn.correct {
+    background: #DCFCE7;
+    border-color: #15803D;
+    color: #14532D;
+    font-weight: 700;
+  }
+  .opt-btn.incorrect {
+    background: #FEE2E2;
+    border-color: #B91C1C;
+    color: #7F1D1D;
+    font-weight: 700;
+  }
+  .feedback {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-size: 15px;
+    line-height: 1.7;
+    display: none;
+    animation: rise 0.25s ease;
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .feedback.show { display: block; }
+  .feedback.good { background: #DCFCE7; border: 1.5px solid #15803D; color: #14532D; }
+  .feedback.bad { background: #FEE2E2; border: 1.5px solid #B91C1C; color: #7F1D1D; }
+  .feedback strong { font-family: 'Cairo', sans-serif; }
+  .next-btn {
+    margin-top: 18px;
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    background: var(--theme-main);
+    color: #fff;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+    transition: opacity 0.2s;
+  }
+  .next-btn.show { display: block; }
+  .next-btn:hover { opacity: 0.92; }
+  .result {
+    text-align: center;
+    display: none;
+    padding: 10px 6px;
+  }
+  .result.show { display: block; }
+  .result .medal { font-size: 60px; margin-bottom: 8px; }
+  .result h2 {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+    margin: 0 0 8px;
+    color: var(--theme-main);
+  }
+  .result .score-line {
+    font-family: 'Cairo', sans-serif;
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .result p.msg {
+    font-size: 15.5px;
+    line-height: 1.8;
+    color: #3B352C;
+    margin: 0 0 22px;
+  }
+  .retry-btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 12px;
+    background: var(--ink);
+    color: var(--seal-gold);
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 15.5px;
+    cursor: pointer;
+  }
+  .quiz-body { display: block; }
+  .quiz-body.hide { display: none; }
+
+body{font-family:'Cairo','Tajawal',Tahoma,Arial,sans-serif;line-height:1.95}.stage{max-width:850px}.q-text{font-family:'Cairo','Tajawal',sans-serif;font-size:clamp(20px,2.6vw,25px)!important;line-height:2.1!important}.opt-btn{font-size:clamp(17px,2vw,20px)!important;line-height:2!important;min-height:60px}.feedback{font-size:clamp(16px,1.8vw,19px)!important;line-height:1.95!important}button:focus-visible,a:focus-visible{outline:3px solid #ffce76;outline-offset:3px}.library-link{font-weight:bold;color:white;font-size:13px;text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="top-bar"><a class="library-link" href="./">مكتبة الوحدة</a>
+    <span class="unit-badge">الصف الثامن (MYP 3) | الوحدة الثانية: الانتماء — الدورة الثامنة (٣ نوفمبر – ١٠ نوفمبر ٢٠٢٦)</span>
+    <button class="sound-btn" id="soundToggle" type="button">المؤثرات: مفعّلة</button>
+  </div>
+  <div class="masthead">
+    <span class="crest">🧭</span>
+    <h1>تذكرة الخروج التفاعلية</h1>
+    <p>النشاط الأول: مفاهيم الوحدة الثانية (الانتماء، الروابط، الاستدلال، وجملة البحث)</p>
+  </div>
+  <div class="seal-row" id="sealRow"></div>
+  <div class="card">
+    <div class="quiz-body" id="quizBody">
+      <div class="q-header">
+        <span class="q-tag" id="qTag">السؤال ١ من ٤</span>
+        <span class="score-pill" id="scorePill">النقاط: ٠</span>
+      </div>
+      <p class="q-text" id="qText"></p>
+      <div class="options" id="optionsBox"></div>
+      <div class="feedback" id="feedbackBox" role="status" aria-live="polite"></div>
+      <button class="next-btn" id="nextBtn" type="button">السؤال التالي ←</button>
+    </div>
+    <div class="result" id="resultBox">
+      <div class="medal" id="medalEmoji">🏆</div>
+      <h2 id="resultTitle">أحسنت!</h2>
+      <div class="score-line" id="scoreLine"></div>
+      <p class="msg" id="resultMsg"></p>
+      <button class="retry-btn" id="retryBtn" type="button">إعادة المحاولة من جديد ↻</button>
+    </div>
+  </div>
+</div>
+<script>
+const questions = [
+  {
+    "q": "ما المفهوم الرئيس للوحدة الثانية «الِانْتِمَاء» في برنامج السنوات المتوسطة؟",
+    "options": [
+      "الروابط (Connections)",
+      "الإبداع (Creativity)",
+      "التواصل (Communication)",
+      "الأنظمة (Systems)"
+    ],
+    "correct": 0,
+    "feedback": "المفهوم الرئيس للوحدة الثانية هو «الروابط»، إذ نستكشف من خلاله علاقة الفرد بأرضه ووطنه وتاريخه."
+  },
+  {
+    "q": "ما المفهوم ذو الصلة الذي يركز على استخلاص الأدلة والبراهين لإثبات انتماء الفرد لأرضه؟",
+    "options": [
+      "الجمهور",
+      "الاستدلال",
+      "النوع الأدبي",
+      "السياق"
+    ],
+    "correct": 1,
+    "feedback": "«الاستدلال» هو المفهوم ذو الصلة، لأننا نستدل بالسلوكيات والمعالم والشواهد على عمق الِانْتِمَاء للوطن."
+  },
+  {
+    "q": "أي عبارة مما يلي تمثل جملة البحث والاستقصاء المعتمدة للوحدة الثانية؟",
+    "options": [
+      "يعزز التعاون الروابط بين الجمهور.",
+      "الغرض من ارتباط الفرد بأرضه الاستدلال على انتمائه.",
+      "نتعرف على ثقافة الشعوب بالاطلاع على أنظمتها وأعرافها.",
+      "يتواصل الأديب مع الجمهور لمحاربة اللامساواة."
+    ],
+    "correct": 1,
+    "feedback": "جملة البحث والاستقصاء للوحدة الثانية هي: «الغرض من ارتباط الفرد بأرضه الاستدلال على انتمائه»."
+  },
+  {
+    "q": "أي سؤال من الأسئلة الآتية يُصنَّف ضمن «أسئلة الجدل والنقاش» (هل – إلى أي مدى)؟",
+    "options": [
+      "ما أبرز المعالم التاريخية في مملكة البحرين؟",
+      "كيف يعبر المواطن عن اعتزازه بهويته الوطنية؟",
+      "هل الِانْتِمَاء للوطن مجرد مشاعر عاطفية أم التزام ومسؤولية عملية؟",
+      "ماذا تعني كلمة التُّرَاث في المعجم اللغوي؟"
+    ],
+    "correct": 2,
+    "feedback": "السؤال المبدوء بـ «هل» أو «إلى أي مدى» والذي يحتمل وجهات نظر متعددة وحججاً عقلية هو سؤال جدلي."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+let soundEnabled = true;
+const results = [];
+
+const sealRow = document.getElementById('sealRow');
+const qTag = document.getElementById('qTag');
+const scorePill = document.getElementById('scorePill');
+const qText = document.getElementById('qText');
+const optionsBox = document.getElementById('optionsBox');
+const feedbackBox = document.getElementById('feedbackBox');
+const nextBtn = document.getElementById('nextBtn');
+const quizBody = document.getElementById('quizBody');
+const resultBox = document.getElementById('resultBox');
+const scoreLine = document.getElementById('scoreLine');
+const resultMsg = document.getElementById('resultMsg');
+const resultTitle = document.getElementById('resultTitle');
+const medalEmoji = document.getElementById('medalEmoji');
+const retryBtn = document.getElementById('retryBtn');
+const soundToggle = document.getElementById('soundToggle');
+
+let audioCtx = null;
+function playTone(type) {
+  if (!soundEnabled) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    if (type === 'correct') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, now);
+      osc.frequency.setValueAtTime(659.25, now + 0.1);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+      osc.start(now);
+      osc.stop(now + 0.35);
+    } else if (type === 'wrong') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.setValueAtTime(180, now + 0.12);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+      osc.start(now);
+      osc.stop(now + 0.35);
+    } else if (type === 'win') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.setValueAtTime(554.37, now + 0.12);
+      osc.frequency.setValueAtTime(659.25, now + 0.24);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+      osc.start(now);
+      osc.stop(now + 0.55);
+    }
+  } catch (e) {}
+}
+
+soundToggle.addEventListener('click', () => {
+  soundEnabled = !soundEnabled;
+  soundToggle.textContent = soundEnabled ? 'المؤثرات: مفعّلة' : 'المؤثرات: متوقفة';
+});
+
+function buildSeals() {
+  sealRow.innerHTML = '';
+  for (let i = 0; i < questions.length; i++) {
+    const d = document.createElement('div');
+    d.className = 'seal-dot';
+    d.textContent = i + 1;
+    if (i === current && results[i] === undefined) d.classList.add('active');
+    if (results[i] === true) { d.classList.add('filled'); d.textContent = '✓'; }
+    if (results[i] === false) { d.classList.add('wrong'); d.textContent = '✗'; }
+    sealRow.appendChild(d);
+  }
+}
+
+function loadQuestion() {
+  answered = false;
+  const item = questions[current];
+  qTag.textContent = `السؤال ${current + 1} من ${questions.length}`;
+  scorePill.textContent = `النقاط: ${score} / ${questions.length}`;
+  qText.textContent = item.q;
+  optionsBox.innerHTML = '';
+  feedbackBox.className = 'feedback';
+  feedbackBox.textContent = '';
+  nextBtn.classList.remove('show');
+
+  item.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'opt-btn';
+    btn.textContent = opt;
+    btn.addEventListener('click', () => selectAnswer(idx, btn));
+    optionsBox.appendChild(btn);
+  });
+  buildSeals();
+}
+
+function selectAnswer(idx, btn) {
+  if (answered) return;
+  answered = true;
+  const item = questions[current];
+  const allBtns = optionsBox.querySelectorAll('.opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  const isCorrect = idx === item.correct;
+  results[current] = isCorrect;
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    score++;
+    playTone('correct');
+    feedbackBox.classList.add('good');
+    feedbackBox.innerHTML = `<strong>إجابة صحيحة! أحسنت 🌟</strong><br>${item.feedback}`;
+  } else {
+    btn.classList.add('incorrect');
+    allBtns[item.correct].classList.add('correct');
+    playTone('wrong');
+    feedbackBox.classList.add('bad');
+    feedbackBox.innerHTML = `<strong>ملحوظة تصحيحية 💡</strong><br>${item.feedback}`;
+  }
+  scorePill.textContent = `النقاط: ${score} / ${questions.length}`;
+  feedbackBox.classList.add('show');
+  nextBtn.classList.add('show');
+  nextBtn.textContent = (current === questions.length - 1) ? 'عرض النتيجة النهائية 🏁' : 'السؤال التالي ←';
+  buildSeals();
+}
+
+nextBtn.addEventListener('click', () => {
+  current++;
+  if (current < questions.length) {
+    loadQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  quizBody.classList.add('hide');
+  resultBox.classList.add('show');
+  scoreLine.textContent = `درجتك في تذكرة الخروج: ${score} من ${questions.length}`;
+  playTone('win');
+
+  let title, msg, medal;
+  if (score === questions.length) {
+    medal = '🏆';
+    title = 'إتقان تام ومتميز!';
+    msg = 'أحسنت! استوعبت جميع أهداف الدرس ومفاهيمه بدقة عالية. أنت مستعد تماماً للخطوة القادمة!';
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
+    }
+  } else if (score >= 3) {
+    medal = '🥇';
+    title = 'أداء رائع جداً!';
+    msg = 'فهم ممتاز لمحاور الدرس الأساسية، راجع الملحوظة التصحيحية للسؤال الذي فاتك لتصل إلى العلامة الكاملة.';
+  } else if (score === 2) {
+    medal = '🌱';
+    title = 'بداية جيدة!';
+    msg = 'لديك إلمام بنصف محاور الدرس، راجع القواعد والأفكار الرئيسة ثم أعد المحاولة لتثبيت الفهم.';
+  } else {
+    medal = '📘';
+    title = 'فرصة للمراجعة والتعلم';
+    msg = 'لا بأس، اقرأ التغذية الراجعة لكل سؤال بتمعن واستعن بمعلمك ثم أعد المحاولة من جديد.';
+  }
+  medalEmoji.textContent = medal;
+  resultTitle.textContent = title;
+  resultMsg.textContent = msg;
+}
+
+retryBtn.addEventListener('click', () => {
+  current = 0;
+  score = 0;
+  results.length = 0;
+  quizBody.classList.remove('hide');
+  resultBox.classList.remove('show');
+  loadQuestion();
+});
+
+loadQuestion();
+</script>
+</body>
+</html>
