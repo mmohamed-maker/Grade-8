@@ -5,46 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>تذكرة الخروج التفاعلية | النشاط الثالث: نص الاستماع «ميمونة في الصين – مباشرة من المصنع»</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js">
-let voiceAudio = null;
-let voiceRequestId = 0;
-function stopVoiceAudio() {
- voiceRequestId += 1;
- if (voiceAudio) {
-  voiceAudio.pause();
-  voiceAudio.removeAttribute('src');
-  voiceAudio.load();
-  voiceAudio = null;
- }
-}
-document.getElementById('narrateQuestion').addEventListener('click', () => {
- stopVoiceAudio();
- const id = voiceRequestId;
- const audio = new Audio('../assets/audio/course-games/u2_c9_maymouna_listening_quiz-q' + (current + 1) + '.mp3');
- voiceAudio = audio;
- const status = document.getElementById('narrationStatus');
- status.textContent = 'جارٍ تشغيل الصوت العربي...';
- audio.addEventListener('playing', () => {
-  if (id === voiceRequestId) status.textContent = 'يُقرأ السؤال والاختيارات الآن.';
- });
- audio.addEventListener('ended', () => {
-  if (id === voiceRequestId) { voiceAudio = null; status.textContent = 'انتهى التسجيل الصوتي.'; }
- });
- audio.addEventListener('error', () => {
-  if (id === voiceRequestId) { voiceAudio = null; status.textContent = 'تعذّر تحميل التسجيل؛ يمكنك قراءة السؤال والاختيارات.'; }
- });
- const result = audio.play();
- if (result && typeof result.catch === 'function') result.catch(() => {
-  if (id === voiceRequestId) status.textContent = 'لم يبدأ التشغيل. أعد الضغط على زر الاستماع.';
- });
-});
-document.getElementById('stopNarration').addEventListener('click', () => {
- stopVoiceAudio();
- document.getElementById('narrationStatus').textContent = 'توقف التسجيل الصوتي.';
-});
-window.addEventListener('pagehide', stopVoiceAudio);
-
-</script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
   :root {
     --ink: #1E1B2E;
@@ -590,6 +551,46 @@ retryBtn.addEventListener('click', () => {
 });
 
 loadQuestion();
+
+let voiceAudio = null;
+let voiceRequestId = 0;
+function stopVoiceAudio() {
+ voiceRequestId += 1;
+ if (voiceAudio) {
+  voiceAudio.pause();
+  voiceAudio.removeAttribute('src');
+  voiceAudio.load();
+  voiceAudio = null;
+ }
+}
+document.getElementById('narrateQuestion').addEventListener('click', () => {
+ stopVoiceAudio();
+ const id = voiceRequestId;
+ const audio = new Audio('../assets/audio/course-games/u2_c9_maymouna_listening_quiz-q' + (current + 1) + '.mp3');
+ voiceAudio = audio;
+ const status = document.getElementById('narrationStatus');
+ status.textContent = 'جارٍ تشغيل الصوت العربي...';
+ audio.addEventListener('playing', () => {
+  if (id === voiceRequestId) status.textContent = 'يُقرأ السؤال والاختيارات الآن.';
+ });
+ audio.addEventListener('ended', () => {
+  if (id === voiceRequestId) { voiceAudio = null; status.textContent = 'انتهى التسجيل الصوتي.'; }
+ });
+ audio.addEventListener('error', () => {
+  if (id === voiceRequestId) { voiceAudio = null; status.textContent = 'تعذّر تحميل التسجيل؛ يمكنك قراءة السؤال والاختيارات.'; }
+ });
+ const result = audio.play();
+ if (result && typeof result.catch === 'function') result.catch(() => {
+  if (id === voiceRequestId) status.textContent = 'لم يبدأ التشغيل. أعد الضغط على زر الاستماع.';
+ });
+});
+document.getElementById('stopNarration').addEventListener('click', () => {
+ stopVoiceAudio();
+ document.getElementById('narrationStatus').textContent = 'توقف التسجيل الصوتي.';
+});
+window.addEventListener('pagehide', stopVoiceAudio);
+
+
 </script>
 </body>
 </html>
