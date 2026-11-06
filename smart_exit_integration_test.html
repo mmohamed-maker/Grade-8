@@ -1,382 +1,208 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تَذْكِرَةُ الْخُرُوجِ – الصَّفُّ الثَّامِنُ | MYP</title>
-    <style>
-        :root {
-            --primary-color: #6366f1;
-            --secondary-color: #4f46e5;
-            --accent-color: #f59e0b;
-            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            --card-bg: #ffffff;
-            --text-color: #1e293b;
-        }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background: var(--bg-gradient);
-            color: var(--text-color);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background: var(--card-bg);
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            padding: 30px;
-            margin-top: 20px;
-            text-align: center;
-        }
-        h1 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-        p.subtitle {
-            color: #64748b;
-            margin-bottom: 30px;
-            font-size: 16px;
-        }
-        .card {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            text-align: right;
-        }
-        .question-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #334155;
-            margin-bottom: 15px;
-        }
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .option-btn {
-            background: #ffffff;
-            border: 2px solid #cbd5e1;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: right;
-        }
-        .option-btn:hover {
-            border-color: var(--primary-color);
-            background: #eef2ff;
-        }
-        .option-btn.correct {
-            background: #dcfce7 !important;
-            border-color: #22c55e !important;
-            color: #166534;
-            font-weight: bold;
-        }
-        .option-btn.incorrect {
-            background: #fee2e2 !important;
-            border-color: #ef4444 !important;
-            color: #991b1b;
-        }
-        .btn-main {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 15px;
-        }
-        .btn-main:hover {
-            background: var(--secondary-color);
-        }
-        #result-box {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 10px;
-            background: #f0fdf4;
-            border: 2px solid #22c55e;
-            color: #166534;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        :root { --primary-color:#3659bd; --secondary-color:#243e8d; --accent-color:#be7900; --text-color:#152440; }
-        body { background:linear-gradient(135deg,#f7f9ff,#e9eefb); line-height:1.8; }
-        .container { max-width:880px; padding:clamp(18px,4vw,34px); }
-        h1 {font-size:clamp(1.65rem,4vw,2.2rem);font-weight:800;}
-        .kicker {display:inline-block;background:#e8eeff;color:#24478e;padding:5px 14px;border-radius:99px;font-size:14px;font-weight:700;margin-bottom:14px;}
-        .card {background:#f8faff;padding:clamp(15px,3vw,26px);}
-        .question-title {font-size:clamp(18px,2.6vw,22px);line-height:2.05;}
-        .option-btn {line-height:2;min-height:65px;display:flex;gap:10px;align-items:baseline;transition:background .14s,border-color .14s;}
-        .option-btn:focus-visible,.btn-main:focus-visible,.btn-secondary:focus-visible {outline:3px solid #d58817;outline-offset:3px;}
-        .option-btn[disabled] {cursor:default;opacity:1;}
-        .letter {font-weight:900;color:#294c9b;flex:none;}
-        .toolbar {display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;margin:16px 0 24px;}
-        .btn-secondary {border:1px solid #bac8e9;background:#fff;color:#213d83;padding:11px 16px;border-radius:12px;cursor:pointer;font-size:15px;font-weight:700;}
-        .btn-secondary:hover{background:#eef3ff}
-        .btn-main {background:#3157b8;font-weight:800;}
-        .btn-main:disabled {opacity:.5;cursor:not-allowed}
-        .progress-wrap {display:flex;justify-content:space-between;gap:8px;align-items:center;margin:10px 0 8px;color:#3d4b62;font-size:14px;font-weight:700;}
-        .progress-track {height:10px;background:#e4eafb;border-radius:20px;overflow:hidden;margin-bottom:22px;}
-        .progress-fill {height:100%;width:0;background:linear-gradient(90deg,#34a977,#3659bd);transition:width .3s;}
-        .feedback {display:none;background:#ebfbf2;border:1px solid #90dbb0;border-radius:14px;padding:18px;text-align:right;font-size:16px;line-height:2;margin-top:16px;}
-        .feedback.bad {background:#fff6ed;border-color:#ffcc9e}
-        #result-box {text-align:center;display:none}
-        #result-score {font-size:clamp(34px,6vw,53px);margin:12px 0;display:block;font-weight:900;color:#1b6544;}
-        .small {font-size:13px;color:#53647e;line-height:1.9;}
-        .note {background:#f7f9fd;border:1px solid #e0e6f2;border-radius:14px;padding:14px;margin-top:22px;text-align:right;}
-        .success-heading {font-size:23px;font-weight:800}
-        .badge {font-size:14px;padding:5px 10px;border-radius:10px;background:#e8eeff;color:#25458b}
-        .action-row {display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-        @media print {
-           body{background:white;padding:0}
-           .container{box-shadow:none;margin:0}
-           #quiz-container,.toolbar,.note,.no-print{display:none!important}
-           #result-box{display:block!important;border:1px solid #888!important}
-        }
-
-    </style>
-</head>
-<body>
-
-    <main class="container" aria-labelledby="activity-title">
-      <span class="kicker">الصَّفُّ الثَّامِنُ · الْوَحْدَةُ الثَّانِيَةُ: الِانْتِمَاء</span>
-      <h1 id="activity-title">تَذْكِرَةُ الْخُرُوجِ التَّفَاعُلِيَّة</h1>
-      <p class="subtitle">مُرَاجَعَةٌ سَرِيعَةٌ لِاسْتِرَاتِيجِيَّاتِ الِاسْتِمَاعِ فِي بَرْنَامَجِ السَّنَوَاتِ الْمُتَوَسِّطَةِ (MYP).</p>
-      <div class="progress-wrap"><span id="progress-label">السُّؤَالُ ١ مِنْ ٣</span><span id="current-score">٠ / ٣ إِجَابَاتٍ صَحِيحَة</span></div>
-      <div class="progress-track" role="progressbar" aria-label="تَقَدُّمُ النَّشَاط" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0" id="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
-      <section id="quiz-container">
-         <div class="card">
-           <div class="question-title" id="q-title"></div>
-           <div class="toolbar">
-             <button class="btn-secondary" id="play-audio" type="button" aria-label="اسْتَمِعْ إِلَى السُّؤَالِ وَالْخِيَارَات">اسْتَمِعْ إِلَى السُّؤَالِ وَالْخِيَارَات</button>
-             <button class="btn-secondary" id="stop-audio" type="button">إِيقَافُ الصَّوْت</button>
-           </div>
-           <p class="small" id="audio-status" role="status" aria-live="polite">صَوْتٌ عَرَبِيٌّ مُحَسَّنٌ مُسَجَّلٌ مُسْبَقًا؛ التَّشْغِيلُ اخْتِيَارِيّ.</p>
-           <div class="options" id="options-container" role="group" aria-label="الْإِجَابَاتُ الْمُتَاحَة"></div>
-           <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
-         </div>
-         <button class="btn-main" id="next-btn" type="button" hidden>السُّؤَالُ التَّالِي</button>
-      </section>
-      <section id="result-box" aria-live="polite" aria-labelledby="result-heading">
-        <h2 class="success-heading" id="result-heading">أَكْمَلْتَ تَذْكِرَةَ الْخُرُوج</h2>
-        <span id="result-score" dir="ltr">0 / 3</span>
-        <p id="result-description"></p>
-        <div class="action-row">
-          <button class="btn-main" id="restart-btn" type="button">إِعَادَةُ التَّحَدِّي</button>
-          <button class="btn-secondary no-print" id="print-btn" type="button">طِبَاعَةُ النَّتِيجَة</button>
-        </div>
-      </section>
-      <aside class="note small">
-        <strong>تَنْبِيهٌ تَرْبَوِيّ:</strong> هَذَا تَدْرِيبٌ تَكْوِينِيٌّ عَلَى اسْتِرَاتِيجِيَّاتِ الِاسْتِمَاعِ، وَلَيْسَ تَقْيِيمًا رَسْمِيًّا لِلْمِعْيَارِ (أ) مِنْ ٨ دَرَجَات. نَتِيجَتُكَ مِنْ ٣ أَسْئِلَةٍ فَقَط، وَلَا تُرْسَلُ تِلْقَائِيًّا إِلَى Schoology. يُمْكِنُكَ تَسْلِيمُ صُورَةٍ لِلنَّتِيجَةِ حَسَبَ تَوْجِيهَاتِ الْمُعَلِّم.
-      </aside>
-    </main>
-
+<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="منصة ست تذاكر خروج تفاعلية للوحدة الثانية، الصف الثامن، اكتساب اللغة العربية">
+<title>مَنْصَّةُ تَذَاكِرِ الْخُرُوجِ - الصَّفُّ الثَّامِنُ</title><style>
+:root{--ink:#14233e;--blue:#325bb2;--line:#dce5f5;--muted:#5b6e89;--green:#147452;--red:#a03244}
+*{box-sizing:border-box}
+body{margin:0;direction:rtl;font-family:Tahoma,"Segoe UI",Arial,sans-serif;color:var(--ink);background:linear-gradient(135deg,#f3f7ff,#e8effc);line-height:1.95}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid #d18a11;outline-offset:3px}
+button:disabled{cursor:default;opacity:.55}
+.wrapper{max-width:1050px;padding:18px;margin:0 auto}
+header{padding:27px 34px;border-radius:22px 22px 0 0;background:#1c376b;color:white}
+header h1{font-size:clamp(23px,4vw,36px);margin:7px 0 2px}
+header p{margin:5px 0;color:#d9e6ff;font-size:15px}
+main{background:#fff;border:1px solid #dde6f4;border-radius:0 0 22px 22px;padding:clamp(18px,4vw,34px)}
+h2{margin:0 0 14px;font-size:22px}
+.eyebrow{font-size:13px;color:#c5d7f5}
+.lesson-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:24px}
+.lesson-tab{text-align:right;min-height:95px;border:2px solid #dfE6f3;background:#f7f9fe;border-radius:14px;padding:11px 14px;color:#293e61;line-height:1.8}
+.lesson-tab.active{background:#eaf0ff;border-color:#355cb0}
+.lesson-tab strong{font-size:15px;display:block}
+.lesson-tab small{display:block;color:#607591;font-size:12px}
+.lesson-tab.complete small{color:#08775e}
+.lesson-number{display:inline-block;color:#2d57aa;background:#e0eaff;width:25px;height:25px;border-radius:50%;text-align:center;line-height:25px;margin-left:8px;font-weight:800}
+.panel{border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.panel-head{background:#f6f9ff;padding:18px 22px;border-bottom:1px solid var(--line)}
+.panel-head h2{margin:0;font-size:clamp(20px,3vw,26px)}
+.meta{font-size:13px;color:var(--muted)}
+.track{background:#e0e9f6;border-radius:99px;height:10px;overflow:hidden;margin:13px 0 7px}
+.fill{width:0;height:100%;background:linear-gradient(90deg,#315ab2,#1eab7b);transition:width .2s}
+.panel-body{padding:clamp(18px,3vw,27px)}
+#question-text{font-size:clamp(18px,2.6vw,23px);margin:8px 0 13px;line-height:2.05}
+#question-counter{font-size:14px;color:#315aab;font-weight:800}
+.choices{display:grid;gap:10px}
+.choice{display:flex;gap:11px;align-items:baseline;width:100%;border:2px solid #d9e3f2;border-radius:12px;background:#fff;text-align:right;min-height:62px;padding:12px 14px;font-size:clamp(16px,2vw,18px);color:#1a2a47;line-height:2}
+.choice:hover:not(:disabled){border-color:#6b92d1;background:#f5f8ff}
+.choice:disabled{opacity:1}
+.choice.correct{background:#eaf9f2;border-color:#319773;color:#17513e}
+.choice.wrong{background:#fff0f2;border-color:#dc7782;color:#842b37}
+.choice .letter{color:#3158ac;font-weight:800}
+.audio-bar,.navigation,.actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.audio-bar{margin:8px 0 10px}
+.audio-status{font-size:13px;color:#60738d;min-height:20px;margin:0 0 12px}
+.action{background:var(--blue);color:white;border:none;border-radius:12px;padding:10px 17px;font-size:15px;font-weight:800}
+.action.secondary{background:white;color:#254b93;border:1px solid #b9cbe7}
+.action.tertiary{background:#f2f5fa;color:#48617f;border:1px solid #d3dfef}
+.navigation{justify-content:space-between;margin-top:18px}
+#feedback{margin-top:16px;border-radius:12px;padding:12px 16px;border:1px solid #a7dec4;background:#effaf5}
+#feedback.wrong{background:#fff5ec;border-color:#f0c4a8}
+.result{text-align:center;padding:32px 15px}
+.result h3{font-size:25px;margin:0}
+.score{font-size:clamp(38px,6vw,58px);color:#176e51;font-weight:900}
+.actions{justify-content:center;margin-top:16px}
+.notice{background:#f6f9ff;border:1px solid #dee6f5;border-radius:14px;padding:14px 17px;margin-top:22px;font-size:13px;color:#526784}
+footer{text-align:center;font-size:12px;color:#677b97;margin-top:20px}
+[hidden]{display:none!important}
+@media(max-width:750px){.lesson-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.lesson-grid{grid-template-columns:1fr}.navigation{align-items:stretch}.navigation button{flex:1}}
+@media print{body{background:#fff}.wrapper{margin:0;padding:0}header,.lesson-grid,.audio-bar,.audio-status,.navigation,.notice,footer,.actions,.section-title,#question-screen{display:none!important}main{padding:0}.panel{border:0}#result-screen{display:block!important}}
+</style></head>
+<body><div class="wrapper"><header>
+<div class="eyebrow">اكْتِسَابُ اللُّغَةِ الْعَرَبِيَّةِ · الصَّفُّ الثَّامِن · MYP</div>
+<h1>مَنْصَّةُ تَذَاكِرِ الْخُرُوجِ التَّفَاعُلِيَّة</h1>
+<p>سِتُّ تَذَاكِرَ مُسْتَقِلَّةٍ لِلدُّرُوسِ السِّتَّةِ لِلْوَحْدَةِ الثَّانِيَة. اِخْتَرِ الدَّرْسَ مِنَ الْقَائِمَة.</p></header>
+<main><h2 class="section-title">اخْتَرْ إِحْدَى تَذَاكِرِ الْخُرُوج</h2>
+<nav class="lesson-grid" id="lessons" aria-label="دُرُوسُ الْوَحْدَةِ الثَّانِيَة"></nav>
+<section class="panel" aria-labelledby="lesson-title">
+<div class="panel-head"><h2 id="lesson-title"></h2><div class="meta" id="lesson-score"></div>
+<div id="progress" class="track" role="progressbar" aria-label="تَقَدُّمُ التَّذْكِرَة" aria-valuemin="0" aria-valuemax="2" aria-valuenow="0"><div id="fill" class="fill"></div></div>
+<div class="meta" id="lesson-progress"></div></div>
+<div class="panel-body" id="question-screen"><div id="question-counter"></div>
+<h3 id="question-text"></h3>
+<div class="audio-bar"><button id="play" class="action secondary" type="button">اسْتَمِعْ إِلَى السُّؤَالِ وَالْخِيَارَات</button><button id="stop" class="action tertiary" type="button">إِيقَافُ الصَّوْت</button></div>
+<p id="audio-status" class="audio-status" role="status" aria-live="polite"></p>
+<div id="options" class="choices" role="group" aria-label="الْإِجَابَاتُ الْمُتَاحَة"></div>
+<div id="feedback" role="status" aria-live="polite" hidden></div>
+<div class="navigation"><div class="actions"><button id="previous" type="button" class="action secondary">السُّؤَالُ السَّابِق</button><button id="next" type="button" class="action" disabled>السُّؤَالُ التَّالِي</button></div><button id="reset-current" type="button" class="action tertiary">إِعَادَةُ تَذْكِرَةِ هَذَا الدَّرْس</button></div>
+</div>
+<div id="result-screen" class="result" hidden><h3>اِكْتَمَلَتْ تَذْكِرَةُ الْخُرُوج</h3>
+<div class="score" id="final-score"></div><p id="result-caption"></p>
+<div class="actions"><button class="action" id="reset-result" type="button">إِعَادَةُ الْمُحَاوَلَة</button><button class="action secondary" id="print" type="button">طِبَاعَةُ النَّتِيجَة</button></div></div></section>
+<div class="notice"><strong>مُلَاحَظَةٌ لِلْمُعَلِّم:</strong> هَذِهِ تَذَاكِرُ خُرُوجٍ تَكْوِينِيَّةٌ عَنْ مَفَاهِيمِ الْقِرَاءَةِ وَالِاسْتِمَاعِ وَالْقَوَاعِد، وَلَيْسَتْ اخْتِبَارَ مِعْيَارِ الِاسْتِمَاعِ (أ) أَوِ الْقِرَاءَةِ (ب) الرَّسْمِيَّ. كُلُّ تَذْكِرَةٍ بِأَرْبَعِ نِقَاط، وَالنَّتَائِجُ لَا تُرْسَلُ تِلْقَائِيًّا إِلَى Schoology. اِحْفَظْ صُورَةَ النَّتِيجَةِ قَبْلَ الْمُغَادَرَة.</div>
+<footer>إِعْدَادٌ وَتَطْوِيرٌ: مَحْمُود مُحَمَّد · الْوَحْدَةُ الثَّانِيَةُ «الِانْتِمَاء»</footer>
+</main></div>
+<script id="quiz-data" type="application/json">[{"title":"مَهَارَةُ الْقِرَاءَة: اِسْتِكْشَافُ الْمَعْنَى الضِّمْنِيّ","short":"الْمَعْنَى الضِّمْنِيّ","kind":"قِرَاءَة","questions":[{"q":"مَاذَا يُقْصَدُ بِالْمَعْنَى الضِّمْنِيِّ فِي النَّصّ؟","options":["الْمَعْنَى الْمُبَاشِرُ الْوَاضِحُ فِي السُّطُورِ الْأُولَى.","الْمَعْنَى غَيْرُ الْمُصَرَّحِ بِهِ صَرَاحَة، وَالَّذِي نَسْتَنْتِجُهُ مِنَ السِّيَاق.","عُنْوَانُ النَّصِّ فَقَط."],"correct":1},{"q":"كَيْفَ يَسْتَنْتِجُ الطَّالِبُ الْمَعْنَى الضِّمْنِيَّ أَثْنَاءَ الْقِرَاءَة؟","options":["مِنْ خِلَالِ تَجَاهُلِ الْكَلِمَاتِ الصَّعْبَةِ وَتَخَطِّيهَا.","مِنْ خِلَالِ رَبْطِ تَفَاصِيلِ النَّصِّ وَمَشَاعِرِ الشَّخْصِيَّاتِ بِبَعْضِهَا.","مِنْ خِلَالِ عَدِّ كَلِمَاتِ الْفِقْرَة."],"correct":1}]},{"title":"قَوَاعِدُ نَحْوِيَّة: إِنَّ وَأَخَوَاتُهَا وَتَأْثِيرُهَا فِي الْمَعْنَى","short":"إِنَّ وَأَخَوَاتُهَا","kind":"قَوَاعِد","questions":[{"q":"مَاذَا تَفْعَلُ «إِنَّ» وَأَخَوَاتُهَا بِالِاسْمِ الَّذِي يَأْتِي بَعْدَهَا؟","options":["تَنْصِبُه، وَيُسَمَّى اسْمَهَا.","تَرْفَعُه، وَيُسَمَّى خَبَرَهَا.","لَا تُؤَثِّرُ فِي إِعْرَابِه."],"correct":0},{"q":"فِي جُمْلَةِ «إِنَّ الْعِلْمَ نُورٌ»، مَا إِعْرَابُ كَلِمَةِ «نُورٌ»؟","options":["اسْمُ «إِنَّ» مَنْصُوب.","خَبَرُ «إِنَّ» مَرْفُوع، وَعَلَامَةُ رَفْعِهِ الضَّمَّة.","مُضَافٌ إِلَيْهِ مَجْرُور."],"correct":1}]},{"title":"مَهَارَةُ الِاسْتِمَاع: تَحْلِيلُ نَبْرَةِ الصَّوْتِ وَالْهَدَف","short":"نَبْرَةُ الصَّوْت","kind":"اسْتِمَاع","questions":[{"q":"كَيْفَ تُسَاعِدُنَا نَبْرَةُ صَوْتِ الْمُتَحَدِّثِ أَثْنَاءَ الِاسْتِمَاع؟","options":["فِي مَعْرِفَةِ حَالَتِهِ الشُّعُورِيَّة، مِثْلَ الْفَرَحِ وَالْحُزْنِ وَالْغَضَب، وَفَهْمِ هَدَفِه.","فِي مَعْرِفَةِ عَدَدِ حُرُوفِ الْكَلِمَاتِ الْمَسْمُوعَةِ فَقَط.","لَيْسَ لَهَا أَيُّ فَائِدَة."],"correct":0},{"q":"مَا التَّصَرُّفُ الصَّحِيحُ عِنْدَ سَمَاعِ تَسْجِيلٍ صَوْتِيٍّ لِأَوَّلِ مَرَّة؟","options":["الِانْشِغَالُ بِالْحَدِيثِ مَعَ الزَّمِيل.","التَّرْكِيزُ التَّامّ، وَتَدْوِينُ الْكَلِمَاتِ الْمِفْتَاحِيَّة.","أُغْلِقُ أُذُنَيَّ وَأَتَوَقَّفُ عَنِ الِاسْتِمَاع."],"correct":1}]},{"title":"مَهَارَةُ الْقِرَاءَة: تَطَوُّرُ الْفِكْرَةِ الرَّئِيسَة","short":"تَطَوُّرُ الْفِكْرَة","kind":"قِرَاءَة","questions":[{"q":"كَيْفَ تَتَطَوَّرُ الْفِكْرَةُ الرَّئِيسَةُ عَبْرَ فِقْرَاتِ النَّصّ؟","options":["تَبْقَى ثَابِتَةً دُونَ أَيِّ تَطَوُّر.","تَنْمُو وَتَتَّسِعُ مِنْ خِلَالِ إِضَافَةِ أَدِلَّةٍ وَتَفَاصِيلَ دَاعِمَة.","تَتَغَيَّرُ بِالْكَامِلِ لِتُصْبِحَ عَنْ مَوْضُوعٍ آخَر."],"correct":1},{"q":"تُسَاعِدُنَا الْكَلِمَاتُ الِانْتِقَالِيَّة، مِثْلَ «أَوَّلًا» وَ«عِلَاوَةً عَلَى ذَلِكَ» وَ«فِي الْخِتَام»، عَلَى مَاذَا؟","options":["فَهْمِ تَرَابُطِ الْأَفْكَارِ وَتَطَوُّرِهَا.","تَشْوِيشِ الْمَعْنَى وَإِطَالَةِ النَّصِّ بِغَيْرِ فَائِدَة.","حِفْظِ الْكَلِمَاتِ مِنْ غَيْرِ فَهْم."],"correct":0}]},{"title":"قَوَاعِدُ نَحْوِيَّة: كَانَ وَأَخَوَاتُهَا وَأَثَرُهَا الْإِعْرَابِيّ","short":"كَانَ وَأَخَوَاتُهَا","kind":"قَوَاعِد","questions":[{"q":"مَا عَمَلُ «كَانَ» وَأَخَوَاتِهَا فِي الْجُمْلَةِ الِاسْمِيَّة؟","options":["تَرْفَعُ الْمُبْتَدَأَ فَيُسَمَّى اسْمَهَا، وَتَنْصِبُ الْخَبَرَ فَيُسَمَّى خَبَرَهَا.","تَنْصِبُ الْمُبْتَدَأَ وَتَرْفَعُ الْخَبَر.","تَتْرُكُ الْجُمْلَةَ كَمَا هِيَ دُونَ تَغْيِير."],"correct":0},{"q":"فِي جُمْلَةِ «كَانَ الْجَوُّ جَمِيلًا»، مَا خَبَرُ «كَانَ»؟","options":["الْجَوّ، وَهُوَ مَرْفُوع.","جَمِيلًا، وَهُوَ مَنْصُوب.","كَان، وَهِيَ فِعْلٌ مَاضٍ نَاقِص."],"correct":1}]},{"title":"تَقْيِيمُ الْأَدَاءِ التَّكَامُلِيّ: قِرَاءَةٌ وَاسْتِمَاع","short":"تَقْيِيمٌ تَكَامُلِيّ","kind":"تَكَامُلِيّ","questions":[{"q":"عِنْدَ تَقْيِيمِ فَهْمِ النَّصِّ الْمَسْمُوعِ أَوِ الْمَقْرُوء، مَا الْمَطْلُوبُ مِنَ الطَّالِب؟","options":["إِظْهَارُ الْفَهْمِ الْمُبَاشِرِ وَغَيْرِ الْمُبَاشِر، وَرَبْطُ الْأَفْكَارِ بِدِقَّة.","كِتَابَةُ قِصَّةٍ طَوِيلَةٍ مِنْ تَأْلِيفِه.","حِفْظُ النَّصِّ حَرْفِيًّا دُونَ فَهْم."],"correct":0},{"q":"إِذَا وَاجَهَتْكَ كَلِمَةٌ صَعْبَةٌ فِي النَّصِّ الْمَسْمُوعِ أَوِ الْمَقْرُوء، فَمَا التَّصَرُّفُ الذَّكِيّ؟","options":["التَّوَقُّفُ عَنْ إِكْمَالِ الْمُهِمَّة.","اسْتِخْدَامُ السِّيَاقِ وَالدَّلَالَاتِ الْمُحِيطَةِ لِتَخْمِينِ مَعْنَاهَا.","سُؤَالُ الْمُعَلِّمِ عَنْ كُلِّ حَرْف."],"correct":1}]}]</script>
 <script>
-
-  "use strict";
-  const questions = [
-    {
-      title: "السُّؤَالُ الْأَوَّل: عِنْدَ الِاسْتِمَاعِ إِلَى نَصٍّ أَوْ قِصَّة، مَا التَّصَرُّفُ الصَّحِيحُ فِي الْبِدَايَة؟",
-      options: [
-        "أَقْرَأُ الْأَسْئِلَةَ الْمُرْفَقَةَ قَبْلَ الِاسْتِمَاعِ لِأَعْرِفَ مَا أَبْحَثُ عَنْه.",
-        "أَتَحَدَّثُ بِصَوْتٍ عَالٍ مَعَ زَمِيلِي أَثْنَاءَ الِاسْتِمَاع.",
-        "أُغْلِقُ دَفْتَرِي وَلَا أَهْتَمُّ بِتَدْوِينِ كَلِمَاتٍ مِفْتَاحِيَّة."
-      ],
-      correct: 0,
-      explanation: "قِرَاءَةُ الْأَسْئِلَةِ قَبْلَ الِاسْتِمَاعِ تُسَاعِدُكَ عَلَى تَحْدِيدِ الْمَعْلُومَاتِ الْمَطْلُوبَة."
-    },
-    {
-      title: "السُّؤَالُ الثَّانِي: كَيْفَ أَسْتَنْتِجُ مَشَاعِرَ الْمُتَحَدِّثِ وَهَدَفَهُ مِنَ النَّصِّ الْمَسْمُوع؟",
-      options: [
-        "أَحْفَظُ النَّصَّ مِنْ غَيْرِ أَنْ أَفْهَمَه.",
-        "أُنْصِتُ إِلَى نَبْرَةِ الصَّوْتِ وَأَسْتَنْتِجُ هَدَفَ الْمُتَحَدِّث.",
-        "أَكْتُبُ كَلِمَاتٍ طَوِيلَةً لَا عِلَاقَةَ لَهَا بِالْمَوْضُوع."
-      ],
-      correct: 1,
-      explanation: "نَبْرَةُ الصَّوْتِ وَسِيَاقُ الْكَلَامِ يُسَاعِدَانِ عَلَى فَهْمِ الْمَشَاعِرِ وَالْمَعْنَى غَيْرِ الْمُبَاشِر."
-    },
-    {
-      title: "السُّؤَالُ الثَّالِث: سَمِعْتُ كَلِمَةً جَدِيدَةً لَا أَعْرِفُ مَعْنَاهَا، فَمَاذَا أَفْعَل؟",
-      options: [
-        "أُغْلِقُ الْجِهَازَ وَأَتَوَقَّفُ عَنِ الِاسْتِمَاع.",
-        "أُقَاطِعُ الْمُعَلِّمَ وَأَطْلُبُ مِنْهُ تَرْجَمَتَهَا فِي الْحَال.",
-        "أُوَاصِلُ الِاسْتِمَاعَ وَأُحَاوِلُ أَنْ أَسْتَنْتِجَ الْمَعْنَى مِنَ السِّيَاقِ وَالصُّورَة."
-      ],
-      correct: 2,
-      explanation: "لَا تَتَوَقَّفْ عِنْدَ كَلِمَةٍ صَعْبَة؛ أَكْمِلِ الِاسْتِمَاعَ وَاسْتَفِدْ مِنَ السِّيَاقِ وَالصُّورَة."
-    }
-  ];
-  const quizLength = questions.length;
-  const digits = new Intl.NumberFormat("ar-EG", {useGrouping:false});
-  const el = id => document.getElementById(id);
-  let currentQuestion = 0;
-  let score = 0;
-  let answered = false;
-  let currentAudio = null;
-  let audioToken = 0;
-  const letters = ["أ", "ب", "ج"];
-
-  function stopAudio() {
-    audioToken += 1;
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio.removeAttribute("src");
-      currentAudio.load();
-      currentAudio = null;
-    }
-  }
-
-  function loadQuestion() {
-    stopAudio();
-    answered = false;
-    const q = questions[currentQuestion];
-    el("q-title").textContent = q.title;
-    const container = el("options-container");
-    container.replaceChildren();
-    q.options.forEach(function(option, index) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "option-btn";
-      const letter = document.createElement("span");
-      letter.className = "letter";
-      letter.textContent = letters[index] + ")";
-      const label = document.createElement("span");
-      label.textContent = option;
-      button.append(letter, label);
-      button.addEventListener("click", function() { selectOption(index); });
-      container.appendChild(button);
-    });
-    el("feedback").hidden = true;
-    el("feedback").style.display = "none";
-    el("feedback").className = "feedback";
-    el("feedback").textContent = "";
-    el("next-btn").hidden = true;
-    el("next-btn").style.display = "none";
-    el("next-btn").textContent = currentQuestion === quizLength - 1 ? "عَرْضُ النَّتِيجَة" : "السُّؤَالُ التَّالِي";
-    el("progress-label").textContent = "السُّؤَالُ " + digits.format(currentQuestion + 1) + " مِنْ " + digits.format(quizLength);
-    el("current-score").textContent = digits.format(score) + " / " + digits.format(quizLength) + " إِجَابَاتٍ صَحِيحَة";
-    el("progress-track").setAttribute("aria-valuenow", String(currentQuestion));
-    el("progress-track").setAttribute("aria-valuemax", String(quizLength));
-    el("progress-fill").style.width = (currentQuestion / quizLength * 100) + "%";
-    el("audio-status").textContent = "صَوْتٌ عَرَبِيٌّ مُحَسَّنٌ؛ يُمْكِنُكَ الِاسْتِمَاعُ أَوْ قِرَاءَةُ السُّؤَال.";
-  }
-
-  function selectOption(index) {
-    if (answered) return;
-    answered = true;
-    const q = questions[currentQuestion];
-    const buttons = Array.from(el("options-container").querySelectorAll("button"));
-    buttons.forEach(button => button.disabled = true);
-    const isCorrect = index === q.correct;
-    if (isCorrect) score += 1;
-    buttons[q.correct].classList.add("correct");
-    if (!isCorrect) buttons[index].classList.add("incorrect");
-    const feedback = el("feedback");
-    feedback.className = "feedback" + (isCorrect ? "" : " bad");
-    feedback.textContent = (isCorrect ? "إِجَابَةٌ صَحِيحَة. " : "إِجَابَةٌ غَيْرُ صَحِيحَة. ") + q.explanation;
-    feedback.hidden = false;
-    feedback.style.display = "block";
-    el("current-score").textContent = digits.format(score) + " / " + digits.format(quizLength) + " إِجَابَاتٍ صَحِيحَة";
-    el("next-btn").hidden = false;
-    el("next-btn").style.display = "inline-block";
-    el("next-btn").focus();
-  }
-
-  function nextQuestion() {
-    if (!answered) return;
-    stopAudio();
-    currentQuestion += 1;
-    if (currentQuestion < quizLength) {
-      loadQuestion();
-    } else {
-      showResult();
-    }
-  }
-
-  function showResult() {
-    stopAudio();
-    el("quiz-container").hidden = true;
-    el("quiz-container").style.display = "none";
-    el("result-box").hidden = false;
-    el("result-box").style.display = "block";
-    el("result-score").textContent = digits.format(score) + " / " + digits.format(quizLength);
-    el("result-description").textContent = score === quizLength
-      ? "أَحْسَنْتَ! أَجَبْتَ عَنْ جَمِيعِ الْأَسْئِلَةِ إِجَابَاتٍ صَحِيحَة."
-      : "أَكْمَلْتَ النَّشَاطَ. رَاجِعِ الْإِجَابَاتِ وَأَعِدِ التَّحَدِّي لِتَحْسِينِ النَّتِيجَة.";
-    el("progress-label").textContent = "اكْتَمَلَ النَّشَاط";
-    el("progress-track").setAttribute("aria-valuenow", String(quizLength));
-    el("progress-fill").style.width = "100%";
-    el("restart-btn").focus();
-  }
-
-  function restartGame() {
-    stopAudio();
-    currentQuestion = 0;
-    score = 0;
-    answered = false;
-    el("result-box").hidden = true;
-    el("result-box").style.display = "none";
-    el("quiz-container").hidden = false;
-    el("quiz-container").style.display = "block";
-    loadQuestion();
-  }
-
-  function playQuestionAudio() {
-    stopAudio();
-    const token = audioToken;
-    const fileName = "exit-ticket-0" + (currentQuestion + 1) + ".mp3";
-    const player = new Audio("./assets/audio/" + fileName);
-    currentAudio = player;
-    el("audio-status").textContent = "يَجْرِي تَشْغِيلُ السُّؤَالِ وَالْخِيَارَات...";
-    player.addEventListener("ended", function() {
-      if (token !== audioToken) return;
-      currentAudio = null;
-      el("audio-status").textContent = "انْتَهَى التَّسْجِيلُ الصَّوْتِيّ.";
-    });
-    player.addEventListener("error", function() {
-      if (token !== audioToken) return;
-      currentAudio = null;
-      el("audio-status").textContent = "تَعَذَّرَ تَشْغِيلُ الصَّوْتِ الْمُحَسَّن؛ أَكْمِلْ بِقِرَاءَةِ النَّصِّ الْمَكْتُوب.";
-    });
-    const attempt = player.play();
-    if (attempt && typeof attempt.catch === "function") {
-      attempt.catch(function() {
-        if (token !== audioToken) return;
-        el("audio-status").textContent = "لَمْ يَبْدَأِ الصَّوْتُ؛ تَأَكَّدْ مِنْ أَنَّ الْمُتَصَفِّحَ يَسْمَحُ بِالتَّشْغِيل.";
-      });
-    }
-  }
-
-  el("next-btn").addEventListener("click", nextQuestion);
-  el("play-audio").addEventListener("click", playQuestionAudio);
-  el("stop-audio").addEventListener("click", function() {
-    stopAudio();
-    el("audio-status").textContent = "تَمَّ إِيقَافُ الصَّوْت.";
-  });
-  el("restart-btn").addEventListener("click", restartGame);
-  el("print-btn").addEventListener("click", function() { window.print(); });
-  window.addEventListener("pagehide", stopAudio);
-  loadQuestion();
-
+"use strict";
+const lessons=JSON.parse(document.getElementById("quiz-data").textContent);
+const states=lessons.map(()=>({index:0,answers:[],finished:false}));
+const get=id=>document.getElementById(id);
+const n=value=>new Intl.NumberFormat("ar-EG",{useGrouping:false}).format(value);
+const letters=["أ","ب","ج"];
+let active=0,playing=null,soundRequest=0;
+function stopSound(){
+ soundRequest++;
+ if(playing){playing.pause();playing.removeAttribute("src");playing.load();playing=null;}
+}
+function score(i){
+ return states[i].answers.reduce((s,answer,qindex)=>s+(answer===lessons[i].questions[qindex].correct?2:0),0);
+}
+function tabView(){
+ const container=get("lessons");container.replaceChildren();
+ lessons.forEach((lesson,i)=>{
+  const button=document.createElement("button");
+  button.type="button";button.className="lesson-tab"+(i===active?" active":"")+(states[i].finished?" complete":"");
+  button.setAttribute("aria-pressed",String(i===active));
+  const headline=document.createElement("strong");
+  const badge=document.createElement("span");badge.className="lesson-number";badge.textContent=n(i+1);
+  const label=document.createElement("span");label.textContent=lesson.short;
+  headline.append(badge,label);
+  const hint=document.createElement("small");
+  hint.textContent=states[i].finished?"أُكْمِلَتْ: "+n(score(i))+" / "+n(4):"الْإِجَابَات: "+n(states[i].answers.length)+" / "+n(2);
+  button.append(headline,hint);
+  button.addEventListener("click",()=>chooseLesson(i));
+  container.appendChild(button);
+ });
+}
+function chooseLesson(i){
+ if(!Number.isInteger(i)||i<0||i>=lessons.length)return;
+ stopSound();active=i;render();
+}
+function render(){
+ const l=lessons[active],s=states[active];
+ tabView();
+ get("lesson-title").textContent=l.title;
+ get("lesson-score").textContent="الدَّرَجَةُ الْحَالِيَّة: "+n(score(active))+" / "+n(l.questions.length*2);
+ get("lesson-progress").textContent=s.finished?"اكْتَمَلَتِ التَّذْكِرَة":"السُّؤَالُ "+n(s.index+1)+" مِنْ "+n(l.questions.length);
+ get("progress").setAttribute("aria-valuemax",String(l.questions.length));
+ get("progress").setAttribute("aria-valuenow",String(s.answers.length));
+ get("fill").style.width=((s.finished?1:s.answers.length/l.questions.length)*100)+"%";
+ get("question-screen").hidden=s.finished;
+ get("result-screen").hidden=!s.finished;
+ if(s.finished){
+  get("final-score").textContent=n(score(active))+" / "+n(l.questions.length*2);
+  get("result-caption").textContent=score(active)===l.questions.length*2?
+    "أَحْسَنْتَ! جَمِيعُ إِجَابَاتِكَ صَحِيحَة.":
+    "أَكْمَلْتَ التَّذْكِرَة. رَاجِعِ الْإِجَابَاتِ وَأَعِدِ الْمُحَاوَلَةَ لِتَحْسِينِ نَتِيجَتِك.";
+  return;
+ }
+ const q=l.questions[s.index],ans=s.answers[s.index];
+ get("question-counter").textContent="السُّؤَالُ "+n(s.index+1)+" مِنْ "+n(l.questions.length);
+ get("question-text").textContent=q.q;
+ const container=get("options");container.replaceChildren();
+ q.options.forEach((option,i)=>{
+  const b=document.createElement("button");
+  b.type="button";b.className="choice";b.disabled=ans!==undefined;
+  if(ans!==undefined&&i===q.correct)b.classList.add("correct");
+  else if(ans===i)b.classList.add("wrong");
+  const letter=document.createElement("span");letter.className="letter";letter.textContent=letters[i]+".";
+  const value=document.createElement("span");value.textContent=option;b.append(letter,value);
+  b.addEventListener("click",()=>choose(i));
+  container.appendChild(b);
+ });
+ const feedback=get("feedback");
+ feedback.hidden=ans===undefined;
+ if(ans!==undefined){
+  feedback.className=ans===q.correct?"":"wrong";
+  feedback.textContent=(ans===q.correct?"إِجَابَةٌ صَحِيحَة. ":"إِجَابَةٌ غَيْرُ صَحِيحَة. ")+"الْإِجَابَةُ الصَّحِيحَة: "+q.options[q.correct];
+ }
+ get("previous").disabled=s.index===0;
+ get("next").disabled=ans===undefined;
+ get("next").textContent=s.index===l.questions.length-1?"عَرْضُ النَّتِيجَة":"السُّؤَالُ التَّالِي";
+ get("audio-status").textContent="يُمْكِنُكَ الِاسْتِمَاعُ إِلَى السُّؤَالِ وَالْخِيَارَات.";
+}
+function choose(i){
+ const s=states[active],q=lessons[active].questions[s.index];
+ if(s.finished||s.answers[s.index]!==undefined||i<0||i>=q.options.length)return;
+ s.answers[s.index]=i;render();
+}
+function next(){
+ const s=states[active],l=lessons[active];
+ if(s.finished||s.answers[s.index]===undefined)return;
+ stopSound();
+ if(s.index+1<l.questions.length)s.index++;
+ else s.finished=true;
+ render();
+}
+function previous(){
+ const s=states[active];if(s.finished||s.index===0)return;
+ stopSound();s.index--;render();
+}
+function reset(){
+ stopSound();states[active]={index:0,answers:[],finished:false};render();
+}
+function playAudio(){
+ stopSound();
+ const token=soundRequest;
+ const filename="unit2-exit-"+String(active+1).padStart(2,"0")+"-"+String(states[active].index+1).padStart(2,"0")+".mp3";
+ const audio=new Audio("./assets/audio/"+filename);
+ playing=audio;
+ get("audio-status").textContent="يَجْرِي تَحْمِيلُ الصَّوْتِ الْعَرَبِيِّ الْمُحَسَّن...";
+ audio.addEventListener("playing",()=>{if(token===soundRequest)get("audio-status").textContent="يَجْرِي تَشْغِيلُ السُّؤَالِ وَالْخِيَارَات...";});
+ audio.addEventListener("ended",()=>{if(token===soundRequest){playing=null;get("audio-status").textContent="انْتَهَى التَّسْجِيلُ الصَّوْتِيّ."; }});
+ audio.addEventListener("error",()=>{if(token===soundRequest){playing=null;get("audio-status").textContent="تَعَذَّرَ تَحْمِيلُ التَّسْجِيل. تَأَكَّدْ مِنِ الِاتِّصَالِ بِالْإِنْتَرْنِت."; }});
+ const attempt=audio.play();
+ if(attempt&&typeof attempt.catch==="function")attempt.catch(()=>{if(token===soundRequest)get("audio-status").textContent="تَعَذَّرَ بَدْءُ الصَّوْتِ. اضْغَطْ عَلَى زِرِّ الِاسْتِمَاعِ مَرَّةً أُخْرَى.";});
+}
+get("previous").addEventListener("click",previous);
+get("next").addEventListener("click",next);
+get("reset-current").addEventListener("click",reset);
+get("reset-result").addEventListener("click",reset);
+get("play").addEventListener("click",playAudio);
+get("stop").addEventListener("click",()=>{stopSound();get("audio-status").textContent="تَمَّ إِيقَافُ الصَّوْت.";});
+get("print").addEventListener("click",()=>window.print());
+window.addEventListener("pagehide",stopSound);
+render();
 </script>
-</body>
-</html>
+</body></html>
