@@ -1,0 +1,4 @@
+[functions.listening-gate]
+# Google ID tokens are verified explicitly by google-auth-library in the handler.
+# This endpoint does not accept unverified token claims.
+verify_jwt = false
