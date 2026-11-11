@@ -1,0 +1,38 @@
+name: Generate Listening Review Arabic Audio
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/listening_review_voice_data.json'
+      - 'scripts/generate_listening_review_audio.py'
+      - '.github/workflows/generate-listening-review-audio.yml'
+permissions:
+  contents: write
+concurrency:
+  group: grade8-listening-review-audio
+  cancel-in-progress: false
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'edge-tts>=7,<9'
+      - run: python scripts/generate_listening_review_audio.py
+      - name: Commit audio files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/audio/listening-review/*.mp3
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Generate listening-review Arabic audio recordings"
+          for n in 1 2 3 4 5; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then exit 0; fi
+            sleep $((n*2))
+          done
+          exit 1
