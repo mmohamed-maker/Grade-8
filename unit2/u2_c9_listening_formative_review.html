@@ -143,7 +143,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #eab543!important;outline
 <div class="flex flex-wrap items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 p-3">
 <button type="button" class="narration-button" onclick="playReviewQuestionAudio()">استمع إلى السؤال والاختيارات</button>
 <button type="button" class="narration-button" onclick="stopReviewQuestionAudio()">إيقاف الصوت</button>
-<p class="w-full text-xs sm:text-sm text-indigo-900" id="reviewAudioStatus" role="status" aria-live="polite">التسجيل الصوتي يقرأ السؤال والاختيارات، وليس نص الاستماع التدريبي الأصلي.</p>
+<p class="w-full text-xs sm:text-sm text-indigo-900" id="reviewAudioStatus" role="status" aria-live="polite">سيُقرأ السؤال ثم الاختيارات أ، ب، ج، د بالترتيب الظاهر على الشاشة. هذا ليس تسجيل النص الأصلي.</p>
 </div>
         <!-- Context Pill -->
         <div id="questionPhaseBox" class="bg-amber-50 border border-amber-200 rounded-xl px-3.5 py-2 text-xs sm:text-sm text-amber-900 font-semibold flex items-center justify-between gap-2">
@@ -436,7 +436,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #eab543!important;outline
     function toggleSound() {
       soundEnabled = !soundEnabled;
       const btn = document.getElementById('soundToggleBtn');
-      btn.textContent = soundEnabled ? '🔊 الصوت: مفعّل' : '🔇 الصوت: مكتوم';
+      btn.textContent = soundEnabled ? 'المؤثرات: مفعّلة' : 'المؤثرات: مكتومة';
     }
 
     // Lesson Questions covering Tahi'a (10m), 'Ard & Criterion A Strands (35m), and Khatima Exam Prep (10m)
@@ -454,7 +454,13 @@ button:focus-visible,a:focus-visible{outline:3px solid #eab543!important;outline
     "correct": 0,
     "hintM": "فكّر في دلالة «الْجُذُور» للشجرة وعلاقتها بجملة البحث: الغرض من ارتباط الفرد بأرضه الاستدلال على انتمائه.",
     "hintN": "تذكّر السؤال السابع في ورقة تدريب الِاسْتِمَاع (ن): الشجرة بلا جذور تفقد أصولها.",
-    "explanation": "أحسنت! وفق الفرع (أ) من الْمِعْيَار (أ)، نستنتج من تشبيه الكاتبة أن اللُّغَة هي جذر الْهُوِيَّة، والابتعاد عنها هو انقطاع عن الأصول والانتماء."
+    "explanation": "أحسنت! وفق الفرع (أ) من الْمِعْيَار (أ)، نستنتج من تشبيه الكاتبة أن اللُّغَة هي جذر الْهُوِيَّة، والابتعاد عنها هو انقطاع عن الأصول والانتماء.",
+    "displayOrder": [
+      0,
+      3,
+      2,
+      1
+    ]
   },
   {
     "strand": "التهيئة | الْمِعْيَار أ (أ)",
@@ -469,7 +475,13 @@ button:focus-visible,a:focus-visible{outline:3px solid #eab543!important;outline
     "correct": 0,
     "hintM": "اربط بين سياق «اللُّغَة المشفرة» وخطر ضياع الْهُوِيَّة لتحديد الْمَعْنَى الدقيق لكلمة «طمس».",
     "hintN": "تذكّر السؤال الرابع في ورقة التدريب: عكس الانتشار والازدهار هو الاندثار.",
-    "explanation": "إجابة دقيقة! كلمة (طمس) في السياق المسموع تعني (اندثار ومحو)، وتحديد دلالات المفردات السياقية ركن أساسي في الفرع الأول من الْمِعْيَار (أ)."
+    "explanation": "إجابة دقيقة! كلمة (طمس) في السياق المسموع تعني (اندثار ومحو)، وتحديد دلالات المفردات السياقية ركن أساسي في الفرع الأول من الْمِعْيَار (أ).",
+    "displayOrder": [
+      1,
+      3,
+      2,
+      0
+    ]
   },
   {
     "strand": "العرض | الْمِعْيَار أ (أ)",
@@ -484,7 +496,13 @@ button:focus-visible,a:focus-visible{outline:3px solid #eab543!important;outline
     "correct": 0,
     "hintM": "فرّق بين التفصيل الداعم الوارد فعلياً في المقطع المسموع وبين الافتراضات المبالغ فيها.",
     "hintN": "راجع السؤال حول: «لكي تحافظ بعض البلدان على لغتها... ماذا فعلت؟».",
-    "explanation": "ممتاز! ذكرت الكاتبة تفصيلاً داعماً واضحاً وهو أن بعض البلدان سنّت قوانين لحماية لغتها، في حين تعزّز الْعَرَبِيَّة أيضاً بقراءة الكتب الْعَرَبِيَّة والعالمية المترجمة إليها."
+    "explanation": "ممتاز! ذكرت الكاتبة تفصيلاً داعماً واضحاً وهو أن بعض البلدان سنّت قوانين لحماية لغتها، في حين تعزّز الْعَرَبِيَّة أيضاً بقراءة الكتب الْعَرَبِيَّة والعالمية المترجمة إليها.",
+    "displayOrder": [
+      0,
+      1,
+      2,
+      3
+    ]
   },
   {
     "strand": "العرض | الْمِعْيَار أ (ب)",
@@ -499,7 +517,13 @@ button:focus-visible,a:focus-visible{outline:3px solid #eab543!important;outline
     "correct": 0,
     "hintM": "تذكّر أن تحليل الأعراف يربط بين الأسلوب (التوكيد والتشبيه) وبين الرسالة الموجهة للجمهور العام من متحدثي الْعَرَبِيَّة.",
     "hintN": "راجع سؤالي الْمِعْيَار أ (ب-ج) رقم ١١ و١٢ في ورقة تدريب المستوى (ن).",
-    "explanation": "رائع! في تحليل الأعراف (الْمِعْيَار أ: ب) نحدد غرض المتحدث (التنبيه لخطورة إهمال الْعَرَبِيَّة والحث على تعزيزها) والجمهور المستهدف (الآباء والأبناء وكل ناطق بالعربية)."
+    "explanation": "رائع! في تحليل الأعراف (الْمِعْيَار أ: ب) نحدد غرض المتحدث (التنبيه لخطورة إهمال الْعَرَبِيَّة والحث على تعزيزها) والجمهور المستهدف (الآباء والأبناء وكل ناطق بالعربية).",
+    "displayOrder": [
+      1,
+      0,
+      3,
+      2
+    ]
   },
   {
     "strand": "العرض | الْمِعْيَار أ (ج)",
@@ -514,7 +538,13 @@ button:focus-visible,a:focus-visible{outline:3px solid #eab543!important;outline
     "correct": 0,
     "hintM": "انظر إلى الأفعال الإجرائية في ورقة ثامن (م): (يبرّر: يقدم أسباباً أو شواهد صحيحة لدعم إجابة أو استنتاج ما).",
     "hintN": "تذكّر الملاحظة المكتوبة في ورقة ثامن (ن): (إجابة حرة بشرط كتابة التبرير).",
-    "explanation": "أحسنت الانتباه! في أسئلة الْمِعْيَار أ (ج)، الدرجة الكاملة تتطلب دائما: (إجابة واضحة + تبرير مقنع + دليل أو شاهد من النَّصّ المسموع)."
+    "explanation": "أحسنت الانتباه! في أسئلة الْمِعْيَار أ (ج)، الدرجة الكاملة تتطلب دائما: (إجابة واضحة + تبرير مقنع + دليل أو شاهد من النَّصّ المسموع).",
+    "displayOrder": [
+      0,
+      3,
+      2,
+      1
+    ]
   },
   {
     "strand": "الخاتمة | إرشادات التكويني",
@@ -529,7 +559,13 @@ button:focus-visible,a:focus-visible{outline:3px solid #eab543!important;outline
     "correct": 0,
     "hintM": "فكّر في كيفية استثمار الدقائق الخمس قبل التسجيل ومرتي الِاسْتِمَاع بذكاء.",
     "hintN": "تذكّر المراحل الثلاث: قبل الِاسْتِمَاع (قراءة الأسئلة)، الِاسْتِمَاع الأول (الفهم)، الِاسْتِمَاع الثاني (التحليل والمراجعة).",
-    "explanation": "بطل الِاسْتِمَاع الواعي! بتطبيقك لهذه الإرشادات الثلاث غداً ستضمن بإذن الله إجابات دقيقة وتامة في جميع أفرع الْمِعْيَار (أ)."
+    "explanation": "بطل الِاسْتِمَاع الواعي! بتطبيقك لهذه الإرشادات الثلاث غداً ستضمن بإذن الله إجابات دقيقة وتامة في جميع أفرع الْمِعْيَار (أ).",
+    "displayOrder": [
+      1,
+      3,
+      2,
+      0
+    ]
   }
 ];
 
@@ -596,13 +632,10 @@ button:focus-visible,a:focus-visible{outline:3px solid #eab543!important;outline
       const container = document.getElementById('optionsContainer');
       container.innerHTML = '';
 
-      // Create shuffled index mapping so correct answer isn't always first
-      const indices = [0, 1, 2, 3];
-      for (let i = indices.length - 1; i > 0; i--) {
-        const j = (currentIdx * 3 + i * 7) % (i + 1);
-        const temp = indices[i];
-        indices[i] = indices[j];
-        indices[j] = temp;
+      // Exactly the same order used when recording the audio (in the JSON voice source).
+      const indices = item.displayOrder.slice();
+      if (indices.length !== 4 || new Set(indices).size !== 4 || indices.some(n => !Number.isInteger(n) || n < 0 || n > 3)) {
+        throw new Error('Invalid display order for question ' + (currentIdx + 1));
       }
 
       const letters = ['أ', 'ب', 'ج', 'د'];
@@ -659,6 +692,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #eab543!important;outline
 
     function nextQuestion() {
       if (!answered) return;
+      stopReviewQuestionAudio(true);
       answered = false;
       if (currentIdx < questions.length - 1) {
         currentIdx++;
@@ -802,7 +836,7 @@ button:focus-visible,a:focus-visible{outline:3px solid #eab543!important;outline
     function playReviewQuestionAudio() {
       stopReviewQuestionAudio(true);
       const token = reviewAudioToken;
-      const audio = new Audio('../assets/audio/listening-review/review-q' + (currentIdx + 1) + '.mp3');
+      const audio = new Audio('../assets/audio/listening-review/review-q' + (currentIdx + 1) + '-ordered-v2.mp3');
       reviewAudioPlayer = audio;
       const status = document.getElementById('reviewAudioStatus');
       status.textContent = 'يجري تحميل التسجيل الصوتي العربي...';
